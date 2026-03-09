@@ -1,0 +1,117 @@
+{% extends 'marketing/base.html' %}
+{% load to_json %}
+
+{% block title %}BeyondCode AI - AI-Powered Debt Collection for EU Lenders{% endblock %}
+{% block description %}Transform your debt collection operations with AI-powered automation while maintaining full EU compliance. Scale your collections without adding headcount.{% endblock %}
+
+{% block content %}
+    <div class="homepage">
+        {% if page and page.blocks_json %}
+            {% for block in page.blocks_json.blocks %}
+                {% include 'marketing/blocks/block_renderer.html' with block=block %}
+            {% endfor %}
+        {% else %}
+            <!-- Default homepage content if no CMS page exists -->
+            <section class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <div class="hero-text">
+                            <h1 class="hero-title">AI-Powered Debt Collection for EU Lenders</h1>
+                            <p class="hero-subtitle">
+                                Transform your collections operations with intelligent automation 
+                                while maintaining full compliance with EU regulations.
+                            </p>
+                            <div class="hero-actions">
+                                <a href="{% url 'marketing:page_detail' 'about' %}" class="btn btn-primary">Learn More</a>
+                                <a href="{% url 'marketing:contact' %}" class="btn btn-secondary">Get a Demo</a>
+                            </div>
+                        </div>
+                        <div class="hero-image">
+                            <div class="hero-placeholder">
+                                <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="400" height="300" rx="8" fill="#f3f4f6"/>
+                                    <path d="M50 150 L350 150 M200 50 L200 250" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 5"/>
+                                    <circle cx="200" cy="150" r="40" fill="#e5e7eb"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features">
+                <div class="container">
+                    <div class="section-header">
+                        <h2 class="section-title">Why Choose BeyondCode AI?</h2>
+                        <p class="section-subtitle">We've built the platform we always wished we had in the collections industry.</p>
+                    </div>
+                    
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2 17L12 22L22 17" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2 12L12 17L22 12" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <h3 class="feature-title">AI-Powered Outreach</h3>
+                            <p class="feature-description">
+                                Every debtor on your list gets contacted on time, every cycle. 
+                                Scale from hundreds to thousands of calls without adding headcount.
+                            </p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 22S8 18 8 13V5L12 3L16 5V13C16 18 12 22 12 22Z" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <h3 class="feature-title">GDPR-Compliant by Design</h3>
+                            <p class="feature-description">
+                                Calling windows, retry rules, and consent guardrails enforced automatically. 
+                                Audit-ready evidence logs for every interaction.
+                            </p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                    <path d="M16 8V4M12 12V4M8 16V4M4 20H20" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <h3 class="feature-title">Predictable Operations</h3>
+                            <p class="feature-description">
+                                Turn collections into measurable weekly output with real-time analytics, 
+                                coverage reports, and structured outcome tracking.
+                            </p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 15V3M12 15L8 11M12 15L16 11" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <h3 class="feature-title">Zero Manual Work</h3>
+                            <p class="feature-description">
+                                Free your team from repetitive chasing. Humans only for exceptions and disputes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <div class="container">
+                    <div class="cta-content">
+                        <h2 class="cta-title">Ready to transform your collections?</h2>
+                        <p class="cta-subtitle">See the product in action with a personalized demo from our team.</p>
+                        <a href="{% url 'marketing:contact' %}" class="btn btn-primary btn-large">Book a Demo</a>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+    </div>
+{% endblock %}

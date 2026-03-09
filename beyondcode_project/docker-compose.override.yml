@@ -1,0 +1,38 @@
+version: '3.8'
+
+# This file is automatically used by docker-compose
+# It overrides settings from docker-compose.yml for development
+services:
+  web:
+    # Use development command instead of production gunicorn
+    command: python manage.py runserver 0.0.0.0:8000
+    
+    # Add development-specific environment variables
+    environment:
+      - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=beyondcode_project.settings
+    
+    # Mount source code for live reloading
+    volumes:
+      - .:/app
+      - /app/staticfiles
+      - /app/media
+    
+    # Don't restart on failure during development
+    restart: "no"
+    
+    # Add development ports if needed
+    ports:
+      - "8000:8000"
+
+  db:
+    # Don't restart database during development
+    restart: "no"
+    
+    # Keep database data persistent
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    # Don't restart redis during development  
+    restart: "no"

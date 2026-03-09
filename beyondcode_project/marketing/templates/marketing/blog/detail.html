@@ -1,0 +1,214 @@
+{% extends 'marketing/base.html' %}
+{% load to_json %}
+
+{% block title %}{{ post.title }} - BeyondCode AI{% endblock %}
+{% block description %}{{ post.excerpt|default:post.title }}{% endblock %}
+
+{% block content %}
+    <div class="blog-detail">
+        <article class="post-detail">
+            <div class="container">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb" aria-label="Breadcrumb">
+                    <a href="{% url 'marketing:home' %}" class="breadcrumb-link">Home</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="{% url 'marketing:blog_list' %}" class="breadcrumb-link">Blog</a>
+                    {% if post.categories.all %}
+                        {% for category in post.categories.all %}
+                            <span class="breadcrumb-separator">/</span>
+                            <a href="{% url 'marketing:blog_by_category' category.slug %}" class="breadcrumb-link">{{ category.name }}</a>
+                        {% endfor %}
+                    {% endif %}
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-current">{{ post.title }}</span>
+                </nav>
+
+                <!-- Post Header -->
+                <header class="post-header">
+                    <div class="post-meta">
+                        {% if post.categories.all %}
+                            <div class="post-categories">
+                                {% for category in post.categories.all %}
+                                    <span class="category-badge">{{ category.name }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="post-date-author">
+                            <time class="post-date" datetime="{{ post.publish_at|date:'c' }}">
+                                {{ post.publish_at|date:"F j, Y" }}
+                            </time>
+                            {% if post.author_name %}
+                                <span class="post-author">by {{ post.author_name }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <h1 class="post-title">{{ post.title }}</h1>
+                    
+                    {% if post.excerpt %}
+                        <div class="post-excerpt">
+                            {{ post.excerpt }}
+                        </div>
+                    {% endif %}
+                    
+                    {% if post.tags.all %}
+                        <div class="post-tags">
+                            {% for tag in post.tags.all %}
+                                <a href="{% url 'marketing:blog_by_tag' tag.slug %}" class="tag-link">{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </header>
+
+                <!-- Post Featured Image -->
+                {% if post.featured_image %}
+                    <div class="post-featured-image">
+                        <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="post-hero-image">
+                    </div>
+                {% endif %}
+
+                <!-- Post Content -->
+                <div class="post-content">
+                    {% if post.blocks_json %}
+                        {% for block in post.blocks_json.blocks %}
+                            {% include 'marketing/blocks/block_renderer.html' with block=block %}
+                        {% endfor %}
+                    {% elif post.body_json %}
+                        <!-- Fallback to body_json if blocks_json is not available -->
+                        {% for block in post.body_json.blocks %}
+                            {% include 'marketing/blocks/block_renderer.html' with block=block %}
+                        {% endfor %}
+                    {% else %}
+                        <!-- Fallback content if no blocks are available -->
+                        <div class="post-body">
+                            <p>This post is currently being developed. Please check back soon for the full content.</p>
+                            <a href="{% url 'marketing:blog_list' %}" class="btn btn-primary">Back to Blog</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Post Footer -->
+                <footer class="post-footer">
+                    <div class="post-actions">
+                        <a href="{% url 'marketing:blog_list' %}" class="btn btn-secondary">← Back to Blog</a>
+                        
+                        <!-- Social Sharing -->
+                        <div class="social-sharing">
+                            <span class="share-label">Share:</span>
+                            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}" 
+                               class="social-share-btn" target="_blank" rel="noopener noreferrer" aria-label="Share on Twitter">
+                                Twitter
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" 
+                               class="social-share-btn" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">
+                                LinkedIn
+                            </a>
+                            <button class="social-share-btn" onclick="copyLink()" aria-label="Copy link">
+                                Copy Link
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Author Info -->
+                    {% if post.author_name %}
+                        <div class="author-box">
+                            <div class="author-info">
+                                <div class="author-avatar">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke="#2563eb" stroke-width="2"/>
+                                        <path d="M20 21C20 18.7909 17.4112 17 14 17H10C6.58878 17 4 18.7909 4 21" stroke="#2563eb" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                                <div class="author-details">
+                                    <h4 class="author-name">{{ post.author_name }}</h4>
+                                    <p class="author-bio">Author of this post</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </footer>
+            </div>
+        </article>
+
+        <!-- Related Posts -->
+        {% with related_posts=post.categories.first.posts.filter(status='published', publish_at__lte=now).exclude(pk=post.pk).order_by('-publish_at')|slice:":3" %}
+            {% if related_posts %}
+                <section class="related-posts">
+                    <div class="container">
+                        <div class="section-header">
+                            <h2 class="section-title">Related Posts</h2>
+                            <p class="section-subtitle">Discover more insights on similar topics</p>
+                        </div>
+                        
+                        <div class="posts-grid">
+                            {% for related_post in related_posts %}
+                                <article class="post-card">
+                                    <div class="post-image">
+                                        {% if related_post.featured_image %}
+                                            <img src="{{ related_post.featured_image }}" alt="{{ related_post.title }}" class="post-thumbnail">
+                                        {% else %}
+                                            <div class="post-placeholder">
+                                                <svg width="400" height="250" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <rect width="400" height="250" rx="8" fill="#f3f4f6"/>
+                                                    <path d="M100 125 L300 125 M200 50 L200 200" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 5"/>
+                                                    <circle cx="200" cy="125" r="30" fill="#e5e7eb"/>
+                                                </svg>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="post-content">
+                                        <div class="post-meta">
+                                            {% if related_post.categories.all %}
+                                                <div class="post-categories">
+                                                    {% for category in related_post.categories.all %}
+                                                        <span class="category-badge">{{ category.name }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                            
+                                            <time class="post-date" datetime="{{ related_post.publish_at|date:'c' }}">
+                                                {{ related_post.publish_at|date:"F j, Y" }}
+                                            </time>
+                                        </div>
+                                        
+                                        <h3 class="post-title">
+                                            <a href="{% url 'marketing:blog_detail' related_post.slug %}">{{ related_post.title }}</a>
+                                        </h3>
+                                        
+                                        {% if related_post.excerpt %}
+                                            <p class="post-excerpt">{{ related_post.excerpt }}</p>
+                                        {% endif %}
+                                        
+                                        <div class="post-actions">
+                                            <a href="{% url 'marketing:blog_detail' related_post.slug %}" class="btn btn-primary btn-sm">Read More</a>
+                                        </div>
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- JavaScript for social sharing -->
+    <script>
+        function copyLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(function() {
+                // Simple feedback
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
+{% endblock %}

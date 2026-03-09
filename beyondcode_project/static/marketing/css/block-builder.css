@@ -1,0 +1,522 @@
+/* 
+ * BeyondCode AI - Block Builder CSS
+ * Styles for the drag-and-drop block builder interface
+ */
+
+/* ==========================================================================
+   BLOCK BUILDER LAYOUT
+   ========================================================================== */
+
+.block-builder {
+    padding: var(--spacing-4xl) 0;
+}
+
+.builder-header {
+    text-align: center;
+    margin-bottom: var(--spacing-3xl);
+}
+
+.builder-title {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--spacing-md);
+}
+
+.builder-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-muted);
+}
+
+.builder-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr 350px;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-4xl);
+}
+
+/* ==========================================================================
+   BLOCK PALETTE
+   ========================================================================== */
+
+.block-palette {
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.palette-title {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-md);
+}
+
+.block-types {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.block-type {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: grab;
+    transition: all 0.2s ease;
+    background-color: var(--color-bg);
+}
+
+.block-type:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-bg-alt);
+    transform: translateY(-1px);
+}
+
+.block-type:active {
+    cursor: grabbing;
+}
+
+.block-icon {
+    font-size: var(--font-size-2xl);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-bg-alt);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+}
+
+.block-info {
+    flex: 1;
+}
+
+.block-name {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text);
+}
+
+.block-description {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+/* ==========================================================================
+   CANVAS AREA
+   ========================================================================== */
+
+.canvas-area {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+}
+
+.canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-md);
+}
+
+.canvas-title {
+    font-size: var(--font-size-lg);
+    margin: 0;
+    color: var(--color-text);
+}
+
+.canvas-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.canvas {
+    min-height: 400px;
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    transition: border-color 0.2s ease;
+}
+
+.canvas.drag-over {
+    border-color: var(--color-primary);
+    background-color: rgba(37, 99, 235, 0.05);
+}
+
+.canvas-placeholder {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: var(--spacing-4xl) 0;
+}
+
+.canvas-block {
+    position: relative;
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.canvas-block:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-bg);
+}
+
+.canvas-block.selected {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    background-color: var(--color-bg);
+}
+
+.block-controls {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: flex;
+    gap: var(--spacing-xs);
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    display: none;
+}
+
+.canvas-block:hover .block-controls,
+.canvas-block.selected .block-controls {
+    display: flex;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background-color 0.2s ease;
+    font-size: var(--font-size-sm);
+}
+
+.control-btn:hover {
+    background-color: var(--color-bg-alt);
+}
+
+.edit-btn:hover { background-color: var(--color-secondary); color: white; }
+.delete-btn:hover { background-color: var(--color-danger); color: white; }
+.move-up-btn:hover { background-color: var(--color-info); color: white; }
+.move-down-btn:hover { background-color: var(--color-warning); color: white; }
+
+/* ==========================================================================
+   BLOCK PREVIEWS
+   ========================================================================== */
+
+.block-preview {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+}
+
+.block-preview h4 {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--font-size-base);
+    color: var(--color-text-muted);
+}
+
+.block-preview p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+}
+
+/* ==========================================================================
+   BLOCK EDITOR
+   ========================================================================== */
+
+.block-editor {
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.editor-title {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-md);
+}
+
+.editor-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.editor-placeholder {
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.editor-error {
+    color: var(--color-danger);
+    background-color: rgba(220, 38, 38, 0.1);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.editor-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.editor-save-btn {
+    align-self: flex-start;
+    margin-top: var(--spacing-md);
+}
+
+/* ==========================================================================
+   PREVIEW AREA
+   ========================================================================== */
+
+.preview-area {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+}
+
+.preview-title {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-md);
+}
+
+.preview-container {
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    min-height: 300px;
+}
+
+.preview-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.preview-block {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.preview-block:last-child {
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   FORM STYLES FOR EDITOR
+   ========================================================================== */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.form-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* ==========================================================================
+   DYNAMIC FORM ELEMENTS
+   ========================================================================== */
+
+.feature-items,
+.pricing-plans,
+.faq-items,
+.table-rows,
+.stats-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.form-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-alt);
+}
+
+.form-item.full-width {
+    grid-template-columns: 1fr;
+}
+
+.form-item .form-group {
+    margin-bottom: 0;
+}
+
+.remove-item-btn {
+    background-color: var(--color-danger);
+    color: white;
+    border: none;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    align-self: flex-start;
+    margin-top: var(--spacing-md);
+}
+
+.remove-item-btn:hover {
+    background-color: #b91c1c;
+}
+
+/* ==========================================================================
+   NOTIFICATIONS
+   ========================================================================== */
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-xl);
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .builder-layout {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+    
+    .block-editor {
+        position: static;
+        order: 3;
+    }
+    
+    .canvas-area {
+        order: 2;
+    }
+    
+    .block-palette {
+        position: static;
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .block-controls {
+        position: static;
+        display: flex !important;
+        margin-top: var(--spacing-md);
+        justify-content: center;
+    }
+    
+    .form-item {
+        grid-template-columns: 1fr;
+    }
+    
+    .notification {
+        right: 10px;
+        left: 10px;
+        bottom: 10px;
+    }
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.canvas-block {
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.block-type.dragging {
+    animation: pulse 0.5s infinite;
+}

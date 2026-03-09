@@ -1,0 +1,343 @@
+{% load to_json %}
+
+{# Rich Text Block #}
+{% if block.type == 'rich_text' %}
+    <section class="block rich-text-block">
+        <div class="container">
+            {% if block.content.blocks %}
+                {% for editorjs_block in block.content.blocks %}
+                    {% if editorjs_block.type == 'header' %}
+                        <h{{ editorjs_block.data.level }} class="block-header">{{ editorjs_block.data.text }}</h{{ editorjs_block.data.level }}>
+                    {% elif editorjs_block.type == 'paragraph' %}
+                        <p class="block-paragraph">{{ editorjs_block.data.text|safe }}</p>
+                    {% elif editorjs_block.type == 'list' %}
+                        {% if editorjs_block.data.style == 'unordered' %}
+                            <ul class="block-list">
+                                {% for item in editorjs_block.data.items %}
+                                    <li>{{ item|safe }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <ol class="block-list">
+                                {% for item in editorjs_block.data.items %}
+                                    <li>{{ item|safe }}</li>
+                                {% endfor %}
+                            </ol>
+                        {% endif %}
+                    {% elif editorjs_block.type == 'quote' %}
+                        <blockquote class="block-quote">
+                            <p>{{ editorjs_block.data.text|safe }}</p>
+                            {% if editorjs_block.data.caption %}
+                                <cite>{{ editorjs_block.data.caption }}</cite>
+                            {% endif %}
+                        </blockquote>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </section>
+{% endif %}
+
+{# Callout Block #}
+{% if block.type == 'callout' %}
+    <section class="block callout-block">
+        <div class="container">
+            <div class="callout">
+                {% if block.title %}
+                    <h3 class="callout-title">{{ block.title }}</h3>
+                {% endif %}
+                {% if block.body %}
+                    <div class="callout-body">{{ block.body|safe }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+{# Feature Grid Block #}
+{% if block.type == 'feature_grid' %}
+    <section class="block feature-grid-block">
+        <div class="container">
+            {% if block.title %}
+                <div class="section-header">
+                    <h2 class="section-title">{{ block.title }}</h2>
+                </div>
+            {% endif %}
+            
+            {% if block.items %}
+                <div class="features-grid">
+                    {% for item in block.items %}
+                        <div class="feature-card">
+                            {% if item.icon %}
+                                <div class="feature-icon">
+                                    {{ item.icon|safe }}
+                                </div>
+                            {% endif %}
+                            {% if item.title %}
+                                <h3 class="feature-title">{{ item.title }}</h3>
+                            {% endif %}
+                            {% if item.body %}
+                                <p class="feature-description">{{ item.body|safe }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endif %}
+
+{# CTA Block #}
+{% if block.type == 'cta' %}
+    <section class="block cta-block">
+        <div class="container">
+            <div class="cta-content">
+                {% if block.title %}
+                    <h2 class="cta-title">{{ block.title }}</h2>
+                {% endif %}
+                {% if block.body %}
+                    <p class="cta-subtitle">{{ block.body|safe }}</p>
+                {% endif %}
+                {% if block.button_label and block.button_url %}
+                    <a href="{{ block.button_url }}" class="btn btn-primary">
+                        {{ block.button_label }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+{# Pricing Table Block #}
+{% if block.type == 'pricing_table' %}
+    <section class="block pricing-table-block">
+        <div class="container">
+            {% if block.title %}
+                <div class="section-header">
+                    <h2 class="section-title">{{ block.title }}</h2>
+                </div>
+            {% endif %}
+            
+            {% if block.plans %}
+                <div class="pricing-grid">
+                    {% for plan in block.plans %}
+                        <div class="pricing-card">
+                            {% if plan.title %}
+                                <h3 class="pricing-title">{{ plan.title }}</h3>
+                            {% endif %}
+                            {% if plan.price %}
+                                <div class="pricing-price">{{ plan.price }}</div>
+                            {% endif %}
+                            {% if plan.description %}
+                                <p class="pricing-description">{{ plan.description }}</p>
+                            {% endif %}
+                            {% if plan.features %}
+                                <ul class="pricing-features">
+                                    {% for feature in plan.features %}
+                                        <li>{{ feature }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% if plan.button_label and plan.button_url %}
+                                <a href="{{ plan.button_url }}" class="btn btn-primary">{{ plan.button_label }}</a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endif %}
+
+{# FAQ Block #}
+{% if block.type == 'faq' %}
+    <section class="block faq-block">
+        <div class="container">
+            {% if block.title %}
+                <div class="section-header">
+                    <h2 class="section-title">{{ block.title }}</h2>
+                </div>
+            {% endif %}
+            
+            {% if block.items %}
+                <div class="faq-list">
+                    {% for item in block.items %}
+                        <div class="faq-item">
+                            <h3 class="faq-question">{{ item.question }}</h3>
+                            <div class="faq-answer">{{ item.answer|safe }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endif %}
+
+{# Comparison Table Block #}
+{% if block.type == 'comparison_table' %}
+    <section class="block comparison-table-block">
+        <div class="container">
+            {% if block.title %}
+                <div class="section-header">
+                    <h2 class="section-title">{{ block.title }}</h2>
+                </div>
+            {% endif %}
+            
+            {% if block.headers and block.rows %}
+                <div class="comparison-table-wrapper">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                {% for header in block.headers %}
+                                    <th>{{ header }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in block.rows %}
+                                <tr>
+                                    {% for cell in row %}
+                                        <td>{{ cell }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endif %}
+
+{# Image Block #}
+{% if block.type == 'image' %}
+    <section class="block image-block">
+        <div class="container">
+            {% if block.image_url %}
+                <div class="image-wrapper">
+                    <img src="{{ block.image_url }}" alt="{{ block.alt_text|default:'' }}" class="block-image">
+                    {% if block.caption %}
+                        <div class="image-caption">{{ block.caption|safe }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endif %}
+
+{# Video Block #}
+{% if block.type == 'video' %}
+    <section class="block video-block">
+        <div class="container">
+            {% if block.video_url %}
+                <div class="video-wrapper">
+                    {% if block.video_url|slice:":11" == 'https://www' %}
+                        {# YouTube embed #}
+                        {% with video_id=block.video_url|slice:"32:" %}
+                            <iframe 
+                                width="560" 
+                                height="315" 
+                                src="https://www.youtube.com/embed/{{ video_id }}" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        {% endwith %}
+                    {% else %}
+                        {# Generic video embed #}
+                        <video controls class="block-video">
+                            <source src="{{ block.video_url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                    {% if block.caption %}
+                        <div class="video-caption">{{ block.caption|safe }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endif %}
+
+{# Testimonial Block #}
+{% if block.type == 'testimonial' %}
+    <section class="block testimonial-block">
+        <div class="container">
+            <div class="testimonial">
+                {% if block.quote %}
+                    <blockquote class="testimonial-quote">{{ block.quote|safe }}</blockquote>
+                {% endif %}
+                {% if block.author %}
+                    <div class="testimonial-author">{{ block.author }}</div>
+                {% endif %}
+                {% if block.company %}
+                    <div class="testimonial-company">{{ block.company }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+{# Stats Block #}
+{% if block.type == 'stats' %}
+    <section class="block stats-block">
+        <div class="container">
+            {% if block.title %}
+                <div class="section-header">
+                    <h2 class="section-title">{{ block.title }}</h2>
+                </div>
+            {% endif %}
+            
+            {% if block.items %}
+                <div class="stats-grid">
+                    {% for stat in block.items %}
+                        <div class="stat-item">
+                            {% if stat.value %}
+                                <div class="stat-value">{{ stat.value }}</div>
+                            {% endif %}
+                            {% if stat.label %}
+                                <div class="stat-label">{{ stat.label }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endif %}
+
+{# Contact Form Block #}
+{% if block.type == 'contact_form' %}
+    <section class="block contact-form-block">
+        <div class="container">
+            {% if block.title %}
+                <div class="section-header">
+                    <h2 class="section-title">{{ block.title }}</h2>
+                </div>
+            {% endif %}
+            
+            {% if block.description %}
+                <div class="section-description">{{ block.description|safe }}</div>
+            {% endif %}
+            
+            <form class="contact-form" method="post" action="{% url 'marketing:contact_submit' %}">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" id="name" name="name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea id="message" name="message" rows="5" class="form-textarea" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </section>
+{% endif %}

@@ -1,0 +1,136 @@
+{% extends 'marketing/base.html' %}
+
+{% block title %}Blog - BeyondCode AI{% endblock %}
+{% block description %}Latest insights and updates on AI-powered debt collection, compliance, and collections automation for EU lenders.{% endblock %}
+
+{% block content %}
+    <div class="blog-list">
+        <!-- Blog Header -->
+        <section class="blog-header">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title">Latest Insights</h1>
+                    <p class="section-subtitle">Stay updated with the latest trends, tips, and insights on AI-powered debt collection and compliance.</p>
+                </div>
+                
+                <!-- Filter Section -->
+                {% if categories or tags %}
+                    <div class="blog-filters">
+                        <div class="filter-group">
+                            <h3 class="filter-title">Categories</h3>
+                            <div class="filter-links">
+                                <a href="{% url 'marketing:blog_list' %}" class="filter-link {% if not category %}active{% endif %}">All</a>
+                                {% for cat in categories %}
+                                    <a href="{% url 'marketing:blog_by_category' cat.slug %}" class="filter-link {% if category.slug == cat.slug %}active{% endif %}">
+                                        {{ cat.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h3 class="filter-title">Tags</h3>
+                            <div class="filter-tags">
+                                {% for tag in tags %}
+                                    <a href="{% url 'marketing:blog_by_tag' tag.slug %}" class="tag-link">{{ tag.name }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Blog Posts Grid -->
+        <section class="blog-posts">
+            <div class="container">
+                {% if page_obj %}
+                    <div class="posts-grid">
+                        {% for post in page_obj %}
+                            <article class="post-card">
+                                <div class="post-image">
+                                    {% if post.featured_image %}
+                                        <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="post-thumbnail">
+                                    {% else %}
+                                        <div class="post-placeholder">
+                                            <svg width="400" height="250" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="400" height="250" rx="8" fill="#f3f4f6"/>
+                                                <path d="M100 125 L300 125 M200 50 L200 200" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 5"/>
+                                                <circle cx="200" cy="125" r="30" fill="#e5e7eb"/>
+                                            </svg>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="post-content">
+                                    <div class="post-meta">
+                                        {% if post.categories.all %}
+                                            <div class="post-categories">
+                                                {% for category in post.categories.all %}
+                                                    <span class="category-badge">{{ category.name }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <time class="post-date" datetime="{{ post.publish_at|date:'c' }}">
+                                            {{ post.publish_at|date:"F j, Y" }}
+                                        </time>
+                                    </div>
+                                    
+                                    <h2 class="post-title">
+                                        <a href="{% url 'marketing:blog_detail' post.slug %}">{{ post.title }}</a>
+                                    </h2>
+                                    
+                                    {% if post.excerpt %}
+                                        <p class="post-excerpt">{{ post.excerpt }}</p>
+                                    {% endif %}
+                                    
+                                    <div class="post-actions">
+                                        <a href="{% url 'marketing:blog_detail' post.slug %}" class="btn btn-primary btn-sm">Read More</a>
+                                        
+                                        {% if post.tags.all %}
+                                            <div class="post-tags">
+                                                {% for tag in post.tags.all %}
+                                                    <span class="tag-badge">{{ tag.name }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if page_obj.has_other_pages %}
+                        <div class="pagination">
+                            <div class="container">
+                                <nav aria-label="Blog pagination" class="pagination-nav">
+                                    {% if page_obj.has_previous %}
+                                        <a href="?page=1" class="pagination-link" aria-label="First page">&laquo; First</a>
+                                        <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link" aria-label="Previous page">Previous</a>
+                                    {% endif %}
+                                    
+                                    <span class="pagination-info">
+                                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                                    </span>
+                                    
+                                    {% if page_obj.has_next %}
+                                        <a href="?page={{ page_obj.next_page_number }}" class="pagination-link" aria-label="Next page">Next</a>
+                                        <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-link" aria-label="Last page">Last &raquo;</a>
+                                    {% endif %}
+                                </nav>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="no-posts">
+                        <h2 class="no-posts-title">No posts yet</h2>
+                        <p class="no-posts-text">Check back soon for our latest insights and updates.</p>
+                        <a href="{% url 'marketing:home' %}" class="btn btn-primary">Back to Home</a>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+{% endblock %}

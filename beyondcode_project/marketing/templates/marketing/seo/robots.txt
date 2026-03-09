@@ -1,0 +1,127 @@
+# Robots.txt for BeyondCode AI
+# https://www.beyondcode.ai/robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: {{ request.scheme }}://{{ request.get_host }}/sitemap.xml
+
+# Crawl delay to be respectful to servers
+Crawl-delay: 1
+
+# Allow all search engines to crawl all content
+# This is a marketing website with public content
+
+# Disallow crawling of admin and CMS areas
+Disallow: /admin/
+Disallow: /cms/
+Disallow: /marketing/cms/
+
+# Disallow crawling of API endpoints
+Disallow: /api/
+Disallow: /marketing/api/
+
+# Disallow crawling of media files directly (they're served through CDN)
+Disallow: /media/
+Disallow: /static/
+
+# Allow crawling of blog and pages
+Allow: /blog/
+Allow: /pages/
+
+# Allow crawling of sitemap
+Allow: /sitemap.xml
+
+# Allow crawling of RSS feeds
+Allow: /rss/
+Allow: /feed/
+
+# Google AdsBot
+User-agent: AdsBot-Google
+Allow: /
+
+# Googlebot Image
+User-agent: Googlebot-Image
+Allow: /
+
+# Bingbot
+User-agent: bingbot
+Allow: /
+
+# Yandex
+User-agent: Yandex
+Allow: /
+
+# Baiduspider
+User-agent: Baiduspider
+Allow: /
+
+# Sogou
+User-agent: Sogou
+Allow: /
+
+# 360Spider
+User-agent: 360Spider
+Allow: /
+
+# Soso
+User-agent: Sosospider
+Allow: /
+
+# Yahoo
+User-agent: Slurp
+Allow: /
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# Facebook
+User-agent: facebookexternalhit
+Allow: /
+
+# Twitter
+User-agent: Twitterbot
+Allow: /
+
+# LinkedIn
+User-agent: LinkedInBot
+Allow: /
+
+# Pinterest
+User-agent: Pinterest
+Allow: /
+
+# WhatsApp
+User-agent: WhatsApp
+Allow: /
+
+# Telegram
+User-agent: TelegramBot
+Allow: /
+
+# Discord
+User-agent: Discordbot
+Allow: /
+
+# Slack
+User-agent: Slackbot
+Allow: /
+
+# Applebot
+User-agent: Applebot
+Allow: /
+
+# Archive.org
+User-agent: ia_archiver
+Allow: /
+
+# Common bots that should be allowed
+User-agent: *
+Allow: /$
+Allow: /blog/
+Allow: /pages/
+Allow: /sitemap.xml
+Allow: /rss.xml
+Allow: /feed.xml

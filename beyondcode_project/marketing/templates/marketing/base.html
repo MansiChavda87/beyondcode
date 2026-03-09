@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BeyondCode AI{% endblock %}</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{% block description %}AI-powered debt collection platform for EU-regulated lenders. Automate outreach while maintaining full compliance.{% endblock %}">
+    <meta name="keywords" content="debt collection, AI, automation, compliance, EU lenders, collections software">
+    <meta name="author" content="BeyondCode AI">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}{{ block.super }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ block.super }}{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ block.super }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ block.super }}{% endblock %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/marketing/css/main.css">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="{% url 'marketing:home' %}">
+                        <img src="/static/marketing/images/logo.svg" alt="BeyondCode AI" class="logo-image">
+                    </a>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="main-nav" role="navigation" aria-label="Main navigation">
+                    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    
+                    <ul class="nav-menu">
+                        {% if nav_menu %}
+                            {% for item in nav_menu.items_json %}
+                                <li class="nav-item">
+                                    <a href="{{ item.url }}" class="nav-link">{{ item.label }}</a>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="nav-item">
+                                <a href="{% url 'marketing:home' %}" class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'marketing:blog_list' %}" class="nav-link">Blog</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            {% if footer %}
+                <!-- Footer CTA -->
+                {% if footer.cta_title %}
+                    <div class="footer-cta">
+                        <div class="footer-cta-content">
+                            <h2 class="footer-cta-title">{{ footer.cta_title }}</h2>
+                            <p class="footer-cta-body">{{ footer.cta_body }}</p>
+                            {% if footer.cta_button_label and footer.cta_button_url %}
+                                <a href="{{ footer.cta_button_url }}" class="btn btn-primary footer-cta-btn">
+                                    {{ footer.cta_button_label }}
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Footer Columns -->
+                <div class="footer-columns">
+                    {% for column in footer.columns_json %}
+                        <div class="footer-column">
+                            {% if column.title %}
+                                <h3 class="footer-column-title">{{ column.title }}</h3>
+                            {% endif %}
+                            {% if column.links %}
+                                <ul class="footer-links">
+                                    {% for link in column.links %}
+                                        <li>
+                                            <a href="{{ link.url }}" class="footer-link">{{ link.label }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    {% if footer and footer.legal_text %}
+                        <p class="footer-legal-text">{{ footer.legal_text }}</p>
+                    {% else %}
+                        <p class="footer-legal-text">
+                            &copy; {% now "Y" %} BeyondCode AI. All rights reserved.
+                        </p>
+                    {% endif %}
+                </div>
+                
+                <div class="footer-social">
+                    <!-- Social media links can be added here -->
+                    <ul class="social-links">
+                        <li><a href="#" aria-label="Twitter" class="social-link">Twitter</a></li>
+                        <li><a href="#" aria-label="LinkedIn" class="social-link">LinkedIn</a></li>
+                        <li><a href="#" aria-label="GitHub" class="social-link">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/static/marketing/js/main.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

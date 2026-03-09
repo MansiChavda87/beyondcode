@@ -1,0 +1,259 @@
+{% extends 'marketing/base.html' %}
+
+{% block title %}Block Builder - BeyondCode AI CMS{% endblock %}
+
+{% block content %}
+    <div class="block-builder">
+        <div class="container">
+            <div class="builder-header">
+                <h1 class="builder-title">Block Builder</h1>
+                <p class="builder-subtitle">Drag and drop blocks to create your content</p>
+            </div>
+
+            <div class="builder-layout">
+                <!-- Block Palette -->
+                <div class="block-palette">
+                    <h3 class="palette-title">Available Blocks</h3>
+                    <div class="block-types">
+                        {% for block_type in block_types %}
+                            <div class="block-type" draggable="true" data-block-type="{{ block_type.name }}">
+                                <div class="block-icon">{{ block_type.icon }}</div>
+                                <div class="block-info">
+                                    <h4 class="block-name">{{ block_type.label }}</h4>
+                                    <p class="block-description">{{ block_type.description }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Canvas -->
+                <div class="canvas-area">
+                    <div class="canvas-header">
+                        <h3 class="canvas-title">Content Canvas</h3>
+                        <div class="canvas-actions">
+                            <button class="btn btn-ghost" id="clear-canvas">Clear All</button>
+                            <button class="btn btn-primary" id="save-content">Save Content</button>
+                        </div>
+                    </div>
+                    
+                    <div class="canvas" id="content-canvas">
+                        <div class="canvas-placeholder">
+                            <p>Drag blocks from the palette to start building your content</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Block Editor -->
+                <div class="block-editor">
+                    <h3 class="editor-title">Block Editor</h3>
+                    <div class="editor-content" id="block-editor-content">
+                        <p class="editor-placeholder">Select a block to edit its content</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Area -->
+            <div class="preview-area">
+                <h3 class="preview-title">Live Preview</h3>
+                <div class="preview-container">
+                    <div class="preview-content" id="preview-content">
+                        <!-- Preview will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Block Editor Templates -->
+    <template id="editor-template-rich-text">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Content</label>
+                <textarea class="form-textarea editor-content-input" rows="10" placeholder="Enter your content using Editor.js format"></textarea>
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-callout">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input editor-title-input" placeholder="Enter title">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Body</label>
+                <textarea class="form-textarea editor-body-input" rows="5" placeholder="Enter callout content"></textarea>
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-feature-grid">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input editor-title-input" placeholder="Enter grid title">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Items</label>
+                <div class="feature-items" id="feature-items">
+                    <!-- Feature items will be added here -->
+                </div>
+                <button type="button" class="btn btn-ghost" id="add-feature-item">+ Add Feature</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-cta">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input editor-title-input" placeholder="Enter CTA title">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Body</label>
+                <textarea class="form-textarea editor-body-input" rows="3" placeholder="Enter CTA content"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Button Label</label>
+                <input type="text" class="form-input editor-button-label-input" placeholder="Enter button text">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Button URL</label>
+                <input type="url" class="form-input editor-button-url-input" placeholder="Enter button URL">
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-pricing-table">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input editor-title-input" placeholder="Enter table title">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Plans</label>
+                <div class="pricing-plans" id="pricing-plans">
+                    <!-- Pricing plans will be added here -->
+                </div>
+                <button type="button" class="btn btn-ghost" id="add-pricing-plan">+ Add Plan</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-faq">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input editor-title-input" placeholder="Enter FAQ title">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Items</label>
+                <div class="faq-items" id="faq-items">
+                    <!-- FAQ items will be added here -->
+                </div>
+                <button type="button" class="btn btn-ghost" id="add-faq-item">+ Add Question</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-comparison-table">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input editor-title-input" placeholder="Enter table title">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Headers</label>
+                <input type="text" class="form-input editor-headers-input" placeholder="Enter headers separated by commas">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Rows</label>
+                <div class="table-rows" id="table-rows">
+                    <!-- Table rows will be added here -->
+                </div>
+                <button type="button" class="btn btn-ghost" id="add-table-row">+ Add Row</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-image">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Image URL</label>
+                <input type="url" class="form-input editor-image-url-input" placeholder="Enter image URL">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Alt Text</label>
+                <input type="text" class="form-input editor-alt-text-input" placeholder="Enter alt text">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Caption</label>
+                <textarea class="form-textarea editor-caption-input" rows="2" placeholder="Enter caption"></textarea>
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-video">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Video URL</label>
+                <input type="url" class="form-input editor-video-url-input" placeholder="Enter video URL (YouTube or direct)">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Caption</label>
+                <textarea class="form-textarea editor-caption-input" rows="2" placeholder="Enter caption"></textarea>
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-testimonial">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Quote</label>
+                <textarea class="form-textarea editor-quote-input" rows="4" placeholder="Enter testimonial quote"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Author</label>
+                <input type="text" class="form-input editor-author-input" placeholder="Enter author name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Company</label>
+                <input type="text" class="form-input editor-company-input" placeholder="Enter company name">
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-stats">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input editor-title-input" placeholder="Enter stats title">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Items</label>
+                <div class="stats-items" id="stats-items">
+                    <!-- Stats items will be added here -->
+                </div>
+                <button type="button" class="btn btn-ghost" id="add-stats-item">+ Add Stat</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="editor-template-contact-form">
+        <div class="editor-form">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input editor-title-input" placeholder="Enter form title">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-textarea editor-description-input" rows="3" placeholder="Enter form description"></textarea>
+            </div>
+        </div>
+    </template>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="/static/marketing/js/block-builder.js"></script>
+{% endblock %}
