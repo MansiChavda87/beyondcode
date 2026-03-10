@@ -6,6 +6,16 @@ app_name = 'marketing'
 urlpatterns = [
     # Public views
     path('', views.home, name='home'),
+    path('contact/', views.contact, name='contact'),
+    path('contact/submit/', views.contact_submit, name='contact_submit'),
+    # Common page shortcuts that redirect to the dynamic page system
+    path('about/', views.page_detail, {'slug': 'about'}, name='about'),
+    path('pricing/', views.page_detail, {'slug': 'pricing'}, name='pricing'),
+    path('services/', views.page_detail, {'slug': 'services'}, name='services'),
+    path('team/', views.page_detail, {'slug': 'team'}, name='team'),
+    path('careers/', views.page_detail, {'slug': 'careers'}, name='careers'),
+    path('privacy/', views.page_detail, {'slug': 'privacy'}, name='privacy'),
+    path('terms/', views.page_detail, {'slug': 'terms'}, name='terms'),
     path('page/<slug:slug>/', views.page_detail, name='page_detail'),
     path('blog/', views.blog_list, name='blog_list'),
     path('blog/<slug:slug>/', views.blog_detail, name='blog_detail'),

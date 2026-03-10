@@ -1,11 +1,11 @@
-version: '3.8'
+#version: '3.8'
 
 services:
   # Django Application
   web:
     build: .
     ports:
-      - "8000:8000"
+      - "5000:5000"
     environment:
       - DEBUG=True
       - SECRET_KEY=docker-secret-key-for-development-only
@@ -21,7 +21,7 @@ services:
       - media_volume:/app/media
     depends_on:
       - db
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:5000
     restart: unless-stopped
 
   # PostgreSQL Database

@@ -2,6 +2,70 @@ from html import escape
 
 from .renderers import render_editorjs
 
+# Define available block types for the block builder
+BLOCK_TYPES = [
+    {
+        'type': 'rich_text',
+        'name': 'Rich Text',
+        'description': 'Editor.js rich text content'
+    },
+    {
+        'type': 'code',
+        'name': 'Code/HTML',
+        'description': 'Raw HTML or JavaScript code'
+    },
+    {
+        'type': 'callout',
+        'name': 'Callout',
+        'description': 'Highlighted text block'
+    },
+    {
+        'type': 'cta',
+        'name': 'Call to Action',
+        'description': 'Button with title and description'
+    },
+    {
+        'type': 'feature_grid',
+        'name': 'Feature Grid',
+        'description': 'Grid of feature cards'
+    },
+    {
+        'type': 'comparison_table',
+        'name': 'Comparison Table',
+        'description': 'Feature comparison table'
+    },
+    {
+        'type': 'table',
+        'name': 'Table',
+        'description': 'Simple data table'
+    },
+    {
+        'type': 'faq',
+        'name': 'FAQ',
+        'description': 'Frequently asked questions'
+    },
+    {
+        'type': 'quote',
+        'name': 'Quote',
+        'description': 'Blockquote with optional author'
+    },
+    {
+        'type': 'logo_cloud',
+        'name': 'Logo Cloud',
+        'description': 'Grid of company logos'
+    },
+    {
+        'type': 'pricing_table',
+        'name': 'Pricing Table',
+        'description': 'Pricing plans comparison'
+    },
+    {
+        'type': 'image_gallery',
+        'name': 'Image Gallery',
+        'description': 'Grid or carousel of images'
+    },
+]
+
 
 def render_blocks(payload):
     if not payload:

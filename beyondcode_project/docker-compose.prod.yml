@@ -1,12 +1,11 @@
-version: '3.8'
+#version: '3.8'
 
-# Production configuration overrides
 services:
+  # Django Application
   web:
-    # Use production command with gunicorn
-    command: gunicorn --bind 0.0.0.0:8000 --workers 3 --timeout 120 beyondcode_project.wsgi:application
-    
-    # Production environment variables
+    build: .
+    ports:
+      - "5000:5000"
     environment:
       - DEBUG=False
       - SECRET_KEY=${SECRET_KEY}
@@ -16,50 +15,39 @@ services:
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
       - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
       - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
-      - REDIS_URL=${REDIS_URL}
-      - SECURE_SSL_REDIRECT=True
-      - SECURE_PROXY_SSL_HEADER=HTTP_X_FORWARDED_PROTO,https
-      - SESSION_COOKIE_SECURE=True
-      - CSRF_COOKIE_SECURE=True
-    
-    # Remove volume mounts for production
-    volumes: []
-    
-    # Production restart policy
-    restart: always
-    
-    # Health check
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - db
+      - redis
+    command: gunicorn beyondcode_project.wsgi:application --bind 0.0.0.0:5000
+    restart: unless-stopped
 
+  # PostgreSQL Database
   db:
-    # Production database settings
+    image: postgres:15-alpine
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-beyondcode_prod}
+      - POSTGRES_DB=${POSTGRES_DB:-beyondcode_db}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    
-    # Production restart policy
-    restart: always
-    
-    # Health check for database
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
 
+  # Redis for caching
   redis:
-    # Production restart policy
-    restart: always
-    
-    # Health check for Redis
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_volume:
+  media_volume:

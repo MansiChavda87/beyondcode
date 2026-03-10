@@ -1,11 +1,11 @@
-version: '3.8'
+#version: '3.8'
 
 # This file is automatically used by docker-compose
 # It overrides settings from docker-compose.yml for development
 services:
   web:
     # Use development command instead of production gunicorn
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:5000
     
     # Add development-specific environment variables
     environment:
@@ -21,9 +21,9 @@ services:
     # Don't restart on failure during development
     restart: "no"
     
-    # Add development ports if needed
+    # Use port 8001 for development to avoid conflicts
     ports:
-      - "8000:8000"
+      - "5001:8000"
 
   db:
     # Don't restart database during development

@@ -1,0 +1,45 @@
+{% extends 'marketing/base.html' %}
+
+{% block title %}{{ page.title }} - BeyondCode AI{% endblock %}
+{% block description %}{{ page.meta_description|default:"AI-powered debt collection platform for EU-regulated lenders. Automate outreach while maintaining full compliance." }}{% endblock %}
+
+{% block content %}
+    <div class="page-detail">
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <div class="page-header-content">
+                    <h1 class="page-title">{{ page.title }}</h1>
+                    {% if page.subtitle %}
+                        <p class="page-subtitle">{{ page.subtitle }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Page Content -->
+        <section class="page-content">
+            <div class="container">
+                {% if page.blocks_json %}
+                    {% for block in page.blocks_json.blocks %}
+                        {% include 'marketing/blocks/block_renderer.html' with block=block %}
+                    {% endfor %}
+                {% else %}
+                    <!-- Fallback content if no blocks are defined -->
+                    <div class="page-content-fallback">
+                        {% if page.content %}
+                            <div class="page-text-content">
+                                {{ page.content|safe }}
+                            </div>
+                        {% else %}
+                            <div class="page-empty">
+                                <p>This page is currently under construction.</p>
+                                <p>Please check back soon or <a href="{% url 'marketing:contact' %}">contact us</a> for more information.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+{% endblock %}

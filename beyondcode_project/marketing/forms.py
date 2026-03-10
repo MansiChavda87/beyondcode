@@ -1,9 +1,13 @@
 from django import forms
+from django_editorjs import EditorJsField
 
-from .models import Page, Post, NavMenu, Footer
+from .models import Page, Post, NavMenu, Footer, MediaAsset
 
 
 class PageForm(forms.ModelForm):
+    body_json = EditorJsField(blank=True, null=True)
+    blocks_json = EditorJsField(blank=True, null=True)
+
     class Meta:
         model = Page
         fields = [
@@ -22,6 +26,9 @@ class PageForm(forms.ModelForm):
 
 
 class PostForm(forms.ModelForm):
+    body_json = EditorJsField(blank=True, null=True)
+    blocks_json = EditorJsField(blank=True, null=True)
+
     class Meta:
         model = Post
         fields = [
@@ -55,4 +62,12 @@ class FooterForm(forms.ModelForm):
         fields = [
             'label', 'columns_json', 'cta_title', 'cta_body',
             'cta_button_label', 'cta_button_url', 'legal_text',
+        ]
+
+
+class MediaAssetForm(forms.ModelForm):
+    class Meta:
+        model = MediaAsset
+        fields = [
+            'file', 'alt_text', 'caption', 'width', 'height', 'content_type'
         ]

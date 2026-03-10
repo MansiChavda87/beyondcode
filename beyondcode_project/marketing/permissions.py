@@ -10,3 +10,8 @@ def cms_admin_required(view_func):
         raise PermissionDenied('CMS access restricted')
 
     return _wrapped
+
+
+def is_cms_admin(user):
+    """Check if user has CMS admin permissions."""
+    return user.groups.filter(name='CMS Admins').exists()

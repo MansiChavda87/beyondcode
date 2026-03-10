@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for file in .claude/skills/*/resources/*.md)",
+      "Bash(done)",
+      "Skill(skill-developer)",
+      "Bash(node:*)",
+      "Bash(npx tsx:*)",
+      "Bash(tree:*)",
+      "Bash(ls:*)",
+      "Bash(test:*)",
+      "Bash(for:*)",
+      "Bash(wc:*)",
+      "Bash(mkdir:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(do if [ ! -d \"$dir/resources\" ])",
+      "Bash(fi:*)",
+      "Bash(do if [ ! -f \"$dir/SKILL.md\" ])",
+      "Bash(then echo \"MISSING SKILL.md: $dir\")",
+      "Bash(if [ ! -d \"$dir/resources/\" ])",
+      "Bash(then echo \"MISSING resources/: $dir\")",
+      "Bash(xargs:*)",
+      "mcp__web-search-prime__web_search_prime",
+      "WebSearch",
+      "mcp__context7__resolve-library-id",
+      "mcp__web-reader__webReader",
+      "Bash(git add:*)",
+      "Bash(git reset:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(.claude/scripts/validate-skill.sh:*)",
+      "Bash(bash:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

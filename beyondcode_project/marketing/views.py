@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 
 from .models import Page, Post, NavMenu, Footer, Category, Tag, MediaAsset
 from .forms import PageForm, PostForm, NavMenuForm, FooterForm, MediaAssetForm
-from .permissions import is_cms_admin
+from .permissions import cms_admin_required
 from .renderers import render_block
 from .blocks import BLOCK_TYPES
 
@@ -39,6 +39,43 @@ def home(request):
         'footer': footer,
     }
     return render(request, 'marketing/pages/home.html', context)
+
+
+def contact(request):
+    """Contact page view."""
+    nav_menu = NavMenu.objects.filter(name='Primary').first()
+    footer = Footer.objects.filter(label='Default').first()
+    
+    context = {
+        'nav_menu': nav_menu,
+        'footer': footer,
+    }
+    return render(request, 'marketing/pages/contact.html', context)
+
+
+def contact_submit(request):
+    """Handle contact form submission."""
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        message = request.POST.get('message', '').strip()
+        
+        # Basic validation
+        if not name or not email or not message:
+            messages.error(request, 'Please fill in all required fields.')
+            return redirect('marketing:contact')
+        
+        # Here you would typically:
+        # 1. Send an email notification
+        # 2. Save to database
+        # 3. Or integrate with a CRM
+        
+        # For now, just show a success message
+        messages.success(request, 'Thank you for your message! We will get back to you soon.')
+        return redirect('marketing:contact')
+    
+    # If not POST, redirect to contact page
+    return redirect('marketing:contact')
 
 
 def page_detail(request, slug):
@@ -156,7 +193,7 @@ def blog_by_tag(request, slug):
 # -- CMS Admin Views --------------------------------------------------------
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def cms_dashboard(request):
     """CMS dashboard for content management."""
     pages = Page.objects.all().order_by('-updated_at')
@@ -172,7 +209,7 @@ def cms_dashboard(request):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def page_list(request):
     """List all pages."""
     pages = Page.objects.all().order_by('-updated_at')
@@ -180,7 +217,7 @@ def page_list(request):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def page_create(request):
     """Create a new page."""
     if request.method == 'POST':
@@ -201,7 +238,7 @@ def page_create(request):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def page_edit(request, pk):
     """Edit an existing page."""
     page = get_object_or_404(Page, pk=pk)
@@ -223,7 +260,7 @@ def page_edit(request, pk):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def page_delete(request, pk):
     """Delete a page."""
     page = get_object_or_404(Page, pk=pk)
@@ -237,7 +274,7 @@ def page_delete(request, pk):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def post_list(request):
     """List all blog posts."""
     posts = Post.objects.all().order_by('-updated_at')
@@ -245,7 +282,7 @@ def post_list(request):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def post_create(request):
     """Create a new blog post."""
     if request.method == 'POST':
@@ -266,7 +303,7 @@ def post_create(request):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def post_edit(request, pk):
     """Edit an existing blog post."""
     post = get_object_or_404(Post, pk=pk)
@@ -288,7 +325,7 @@ def post_edit(request, pk):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def post_delete(request, pk):
     """Delete a blog post."""
     post = get_object_or_404(Post, pk=pk)
@@ -302,7 +339,7 @@ def post_delete(request, pk):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def media_list(request):
     """List all media assets."""
     media_assets = MediaAsset.objects.all().order_by('-uploaded_at')
@@ -310,7 +347,7 @@ def media_list(request):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def media_upload(request):
     """Upload a new media asset."""
     if request.method == 'POST':
@@ -331,7 +368,7 @@ def media_upload(request):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def media_delete(request, pk):
     """Delete a media asset."""
     media = get_object_or_404(MediaAsset, pk=pk)
@@ -345,7 +382,7 @@ def media_delete(request, pk):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def navigation_edit(request):
     """Edit navigation menu."""
     nav_menu, created = NavMenu.objects.get_or_create(
@@ -369,7 +406,7 @@ def navigation_edit(request):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def footer_edit(request):
     """Edit footer content."""
     footer, created = Footer.objects.get_or_create(
@@ -402,7 +439,7 @@ def footer_edit(request):
 # -- Block Builder Views ----------------------------------------------------
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def block_builder(request):
     """Block builder interface."""
     return render(request, 'marketing/cms/blocks/builder.html', {
@@ -413,7 +450,7 @@ def block_builder(request):
 @csrf_exempt
 @require_POST
 @login_required
-@is_cms_admin
+@cms_admin_required
 def render_block_preview(request):
     """Render a block preview for the block builder."""
     try:
@@ -433,7 +470,7 @@ def render_block_preview(request):
 # -- API Views --------------------------------------------------------------
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def api_media_list(request):
     """API endpoint for media assets (used by block builder)."""
     media_assets = MediaAsset.objects.all().values('id', 'title', 'file_url', 'file_type')
@@ -441,7 +478,7 @@ def api_media_list(request):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def api_categories(request):
     """API endpoint for categories."""
     categories = Category.objects.all().values('id', 'name', 'slug')
@@ -449,7 +486,7 @@ def api_categories(request):
 
 
 @login_required
-@is_cms_admin
+@cms_admin_required
 def api_tags(request):
     """API endpoint for tags."""
     tags = Tag.objects.all().values('id', 'name', 'slug')
