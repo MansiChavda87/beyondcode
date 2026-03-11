@@ -985,23 +985,24 @@ img {
     color: var(--color-text-muted);
 }
 
-/* Blog Grid - Enhanced for 2-column layout */
+/* Blog Grid - Bootstrap Grid Support */
 .blog-grid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: var(--spacing-2xl);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0 -15px; /* Counteract Bootstrap's negative margin */
 }
 
 .blog-grid .post-card {
     background-color: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-xl);
     transition: all 0.3s ease;
     box-shadow: var(--shadow-sm);
     height: 100%;
     display: flex;
     flex-direction: column;
+    margin-bottom: 0;
 }
 
 .blog-grid .post-card:hover {
@@ -1079,14 +1080,17 @@ img {
 .blog-grid .post-actions {
     margin-top: auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
 }
 
 .blog-grid .post-tags {
     display: flex;
     gap: var(--spacing-xs);
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .blog-grid .tag-badge {
@@ -1118,24 +1122,22 @@ img {
     object-fit: cover;
 }
 
-/* Enhanced responsive behavior for 2-column layout */
-@media (min-width: 768px) {
+/* Responsive behavior for Bootstrap grid columns */
+@media (min-width: 576px) {
     .blog-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .post-card {
-        min-height: 400px;
+        gap: 0;
     }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
     .blog-grid {
-        grid-template-columns: repeat(2, 1fr);
+        gap: 0;
     }
-    
-    .post-card {
-        min-height: 450px;
+}
+
+@media (min-width: 992px) {
+    .blog-grid {
+        gap: 0;
     }
 }
 
@@ -1144,6 +1146,9 @@ img {
     border: 1px solid var(--color-border);
     background: white;
     margin-bottom: var(--spacing-2xl);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .blog-list .post-image {
@@ -1165,6 +1170,9 @@ img {
 
 .blog-list .post-content {
     padding: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .blog-list .post-card h2.post-title {
@@ -1175,6 +1183,7 @@ img {
 .blog-list .post-excerpt {
     font-size: var(--font-size-base);
     margin-bottom: var(--spacing-xl);
+    flex-grow: 1;
 }
 
 .blog-list .post-meta {
@@ -1189,6 +1198,16 @@ img {
 .blog-list .post-date {
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
+}
+
+.blog-list .post-actions {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+    margin-top: var(--spacing-lg);
 }
 
 .blog-list .btn-primary {
@@ -1211,6 +1230,36 @@ img {
     background-color: var(--color-bg-alt);
     color: var(--color-text-muted);
     border: 1px solid var(--color-border);
+}
+
+/* Bootstrap column support for blog grid */
+.blog-grid .col-lg-4,
+.blog-grid .col-md-6,
+.blog-grid .col-sm-12 {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Ensure proper spacing for Bootstrap columns */
+@media (min-width: 576px) {
+    .blog-grid .col-sm-12 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+@media (min-width: 768px) {
+    .blog-grid .col-md-6 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+@media (min-width: 992px) {
+    .blog-grid .col-lg-4 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 }
 
 /* Contact Form Block */
