@@ -68,6 +68,13 @@
                     </div>
                 {% endif %}
 
+                <!-- Post Primary Image -->
+                {% if post.primary_image_url %}
+                    <div class="post-primary-image">
+                        <img src="{{ post.primary_image_url }}" alt="{{ post.title }} - Primary Image" class="post-primary-image">
+                    </div>
+                {% endif %}
+
                 <!-- Post Content -->
                 <div class="post-content">
                     {% if post.blocks_json %}

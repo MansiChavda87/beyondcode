@@ -29,6 +29,7 @@ class SeoFieldsMixin(models.Model):
 
 class MediaAsset(models.Model):
     file = models.URLField(max_length=500, blank=True)
+    file_upload = models.FileField(upload_to='media_assets/', blank=True, null=True)
     alt_text = models.CharField(max_length=255, blank=True)
     caption = models.CharField(max_length=255, blank=True)
     width = models.PositiveIntegerField(blank=True, null=True)
@@ -37,7 +38,21 @@ class MediaAsset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.alt_text or self.file
+        return self.alt_text or self.file or f"Media Asset {self.id}"
+
+    @property
+    def display_url(self):
+        """Return the actual file URL for display"""
+        if self.file_upload:
+            return self.file_upload.url
+        return self.file
+
+    @property
+    def is_image(self):
+        """Check if this asset is an image"""
+        if self.file_upload:
+            return self.file_upload.name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'))
+        return self.content_type.startswith('image/') if self.content_type else False
 
 
 class Category(models.Model):
@@ -77,6 +92,7 @@ class Page(SeoFieldsMixin):
     blocks_json = models.JSONField(blank=True, null=True)
     blocks_html = models.TextField(blank=True)
     primary_image = models.URLField(max_length=500, blank=True)
+    primary_image_upload = models.FileField(upload_to='pages/primary_images/', blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -114,6 +130,13 @@ class Page(SeoFieldsMixin):
             return bool(self.publish_at and self.publish_at <= now)
         return False
 
+    @property
+    def primary_image_url(self):
+        """Return the primary image URL (primary_image_upload takes precedence over primary_image)"""
+        if self.primary_image_upload:
+            return self.primary_image_upload.url
+        return self.primary_image
+
 
 class Post(SeoFieldsMixin):
     title = models.CharField(max_length=255)
@@ -134,7 +157,9 @@ class Post(SeoFieldsMixin):
     blocks_json = models.JSONField(blank=True, null=True)
     blocks_html = models.TextField(blank=True)
     cover_image = models.URLField(max_length=500, blank=True)
+    cover_image_upload = models.FileField(upload_to='posts/cover_images/', blank=True, null=True)
     primary_image = models.URLField(max_length=500, blank=True)
+    primary_image_upload = models.FileField(upload_to='posts/primary_images/', blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -183,6 +208,20 @@ class Post(SeoFieldsMixin):
             from django.utils.text import Truncator
             return Truncator(raw).chars(200)
         return ''
+
+    @property
+    def featured_image(self):
+        """Return the featured image URL (cover_image_upload takes precedence over cover_image)"""
+        if self.cover_image_upload:
+            return self.cover_image_upload.url
+        return self.cover_image
+
+    @property
+    def primary_image_url(self):
+        """Return the primary image URL (primary_image_upload takes precedence over primary_image)"""
+        if self.primary_image_upload:
+            return self.primary_image_upload.url
+        return self.primary_image
 
 
 class NavMenu(models.Model):

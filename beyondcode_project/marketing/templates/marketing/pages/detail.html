@@ -8,6 +8,12 @@
         <!-- Page Header -->
         <section class="page-header">
             <div class="container section-padding bg-background">
+                {% if page.primary_image_url %}
+                    <div class="page-hero-image">
+                        <img src="{{ page.primary_image_url }}" alt="{{ page.title }}" class="page-hero-img">
+                    </div>
+                {% endif %}
+                
                 <div class="page-header-content">
                     <h1 class="page-title">{{ page.title }}</h1>
                     {% if page.subtitle %}
