@@ -132,66 +132,66 @@
         </article>
 
         <!-- Related Posts -->
-        {% with related_posts=post.categories.first.posts.filter(status='published', publish_at__lte=now).exclude(pk=post.pk).order_by('-publish_at')|slice:":3" %}
-            {% if related_posts %}
-                <section class="related-posts">
-                    <div class="container">
-                        <div class="section-header">
-                            <h2 class="section-title">Related Posts</h2>
-                            <p class="section-subtitle">Discover more insights on similar topics</p>
-                        </div>
-                        
-                        <div class="posts-grid">
-                            {% for related_post in related_posts %}
-                                <article class="post-card">
-                                    <div class="post-image">
-                                        {% if related_post.featured_image %}
-                                            <img src="{{ related_post.featured_image }}" alt="{{ related_post.title }}" class="post-thumbnail">
-                                        {% else %}
-                                            <div class="post-placeholder">
-                                                <svg width="400" height="250" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <rect width="400" height="250" rx="8" fill="#f3f4f6"/>
-                                                    <path d="M100 125 L300 125 M200 50 L200 200" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 5"/>
-                                                    <circle cx="200" cy="125" r="30" fill="#e5e7eb"/>
-                                                </svg>
+        {% load blog_extras %}
+        {% get_related_posts post as related_posts %}
+        {% if related_posts %}
+            <section class="related-posts">
+                <div class="container">
+                    <div class="section-header">
+                        <h2 class="section-title">Related Posts</h2>
+                        <p class="section-subtitle">Discover more insights on similar topics</p>
+                    </div>
+                    
+                    <div class="posts-grid">
+                        {% for related_post in related_posts %}
+                            <article class="post-card">
+                                <div class="post-image">
+                                    {% if related_post.featured_image %}
+                                        <img src="{{ related_post.featured_image }}" alt="{{ related_post.title }}" class="post-thumbnail">
+                                    {% else %}
+                                        <div class="post-placeholder">
+                                            <svg width="400" height="250" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="400" height="250" rx="8" fill="#f3f4f6"/>
+                                                <path d="M100 125 L300 125 M200 50 L200 200" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 5"/>
+                                                <circle cx="200" cy="125" r="30" fill="#e5e7eb"/>
+                                            </svg>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="post-content">
+                                    <div class="post-meta">
+                                        {% if related_post.categories.all %}
+                                            <div class="post-categories">
+                                                {% for category in related_post.categories.all %}
+                                                    <span class="category-badge">{{ category.name }}</span>
+                                                {% endfor %}
                                             </div>
                                         {% endif %}
+                                        
+                                        <time class="post-date" datetime="{{ related_post.publish_at|date:'c' }}">
+                                            {{ related_post.publish_at|date:"F j, Y" }}
+                                        </time>
                                     </div>
                                     
-                                    <div class="post-content">
-                                        <div class="post-meta">
-                                            {% if related_post.categories.all %}
-                                                <div class="post-categories">
-                                                    {% for category in related_post.categories.all %}
-                                                        <span class="category-badge">{{ category.name }}</span>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-                                            
-                                            <time class="post-date" datetime="{{ related_post.publish_at|date:'c' }}">
-                                                {{ related_post.publish_at|date:"F j, Y" }}
-                                            </time>
-                                        </div>
-                                        
-                                        <h3 class="post-title">
-                                            <a href="{% url 'marketing:blog_detail' related_post.slug %}">{{ related_post.title }}</a>
-                                        </h3>
-                                        
-                                        {% if related_post.excerpt %}
-                                            <p class="post-excerpt">{{ related_post.excerpt }}</p>
-                                        {% endif %}
-                                        
-                                        <div class="post-actions">
-                                            <a href="{% url 'marketing:blog_detail' related_post.slug %}" class="btn btn-primary btn-sm">Read More</a>
-                                        </div>
+                                    <h3 class="post-title">
+                                        <a href="{% url 'marketing:blog_detail' related_post.slug %}">{{ related_post.title }}</a>
+                                    </h3>
+                                    
+                                    {% if related_post.excerpt %}
+                                        <p class="post-excerpt">{{ related_post.excerpt }}</p>
+                                    {% endif %}
+                                    
+                                    <div class="post-actions">
+                                        <a href="{% url 'marketing:blog_detail' related_post.slug %}" class="btn btn-primary btn-sm">Read More</a>
                                     </div>
-                                </article>
-                            {% endfor %}
-                        </div>
+                                </div>
+                            </article>
+                        {% endfor %}
                     </div>
-                </section>
-            {% endif %}
-        {% endwith %}
+                </div>
+            </section>
+        {% endif %}
     </div>
 
     <!-- JavaScript for social sharing -->
