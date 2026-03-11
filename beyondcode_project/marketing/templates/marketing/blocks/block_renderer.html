@@ -3,7 +3,7 @@
 {# Rich Text Block #}
 {% if block.type == 'rich_text' %}
     <section class="block rich-text-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             {% if block.content.blocks %}
                 {% for editorjs_block in block.content.blocks %}
                     {% if editorjs_block.type == 'header' %}
@@ -41,7 +41,7 @@
 {# Callout Block #}
 {% if block.type == 'callout' %}
     <section class="block callout-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             <div class="callout">
                 {% if block.title %}
                     <h3 class="callout-title">{{ block.title }}</h3>
@@ -57,7 +57,7 @@
 {# Feature Grid Block #}
 {% if block.type == 'feature_grid' %}
     <section class="block feature-grid-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             {% if block.title %}
                 <div class="section-header">
                     <h2 class="section-title">{{ block.title }}</h2>
@@ -90,7 +90,7 @@
 {# CTA Block #}
 {% if block.type == 'cta' %}
     <section class="block cta-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             <div class="cta-content">
                 {% if block.title %}
                     <h2 class="cta-title">{{ block.title }}</h2>
@@ -111,7 +111,7 @@
 {# Pricing Table Block #}
 {% if block.type == 'pricing_table' %}
     <section class="block pricing-table-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             {% if block.title %}
                 <div class="section-header">
                     <h2 class="section-title">{{ block.title }}</h2>
@@ -152,7 +152,7 @@
 {# FAQ Block #}
 {% if block.type == 'faq' %}
     <section class="block faq-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             {% if block.title %}
                 <div class="section-header">
                     <h2 class="section-title">{{ block.title }}</h2>
@@ -176,7 +176,7 @@
 {# Comparison Table Block #}
 {% if block.type == 'comparison_table' %}
     <section class="block comparison-table-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             {% if block.title %}
                 <div class="section-header">
                     <h2 class="section-title">{{ block.title }}</h2>
@@ -212,7 +212,7 @@
 {# Image Block #}
 {% if block.type == 'image' %}
     <section class="block image-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             {% if block.image_url %}
                 <div class="image-wrapper">
                     <img src="{{ block.image_url }}" alt="{{ block.alt_text|default:'' }}" class="block-image">
@@ -228,7 +228,7 @@
 {# Video Block #}
 {% if block.type == 'video' %}
     <section class="block video-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             {% if block.video_url %}
                 <div class="video-wrapper">
                     {% if block.video_url|slice:":11" == 'https://www' %}
@@ -262,7 +262,7 @@
 {# Testimonial Block #}
 {% if block.type == 'testimonial' %}
     <section class="block testimonial-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             <div class="testimonial">
                 {% if block.quote %}
                     <blockquote class="testimonial-quote">{{ block.quote|safe }}</blockquote>
@@ -281,7 +281,7 @@
 {# Stats Block #}
 {% if block.type == 'stats' %}
     <section class="block stats-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             {% if block.title %}
                 <div class="section-header">
                     <h2 class="section-title">{{ block.title }}</h2>
@@ -309,7 +309,7 @@
 {# Contact Form Block #}
 {% if block.type == 'contact_form' %}
     <section class="block contact-form-block">
-        <div class="container">
+        <div class="container section-padding bg-background">
             {% if block.title %}
                 <div class="section-header">
                     <h2 class="section-title">{{ block.title }}</h2>
