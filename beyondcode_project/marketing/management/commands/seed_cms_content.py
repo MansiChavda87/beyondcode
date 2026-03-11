@@ -42,6 +42,119 @@ class Command(BaseCommand):
     def _seed_pages(self):
         pages = [
             {
+                'title': 'Privacy Notice',
+                'slug': 'privacy',
+                'status': 'published',
+                'blocks_json': {
+                    'blocks': [
+                        {
+                            'type': 'rich_text',
+                            'content': _editorjs_body([
+                                {'type': 'header', 'data': {'text': 'Privacy Notice', 'level': 1}},
+                                {'type': 'paragraph', 'data': {'text': 'Last updated: March 2026'}},
+                                {'type': 'header', 'data': {'text': 'Introduction', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'BeyondCode AI ("we", "our", "us") is committed to protecting and respecting your privacy. This Privacy Notice explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.'}},
+                                {'type': 'header', 'data': {'text': 'Information We Collect', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'We collect information that you provide directly to us when you:'}},
+                                {'type': 'list', 'data': {'style': 'unordered', 'items': [
+                                    'Register for an account or use our services',
+                                    'Contact us for customer support or sales inquiries',
+                                    'Subscribe to our newsletter or marketing communications',
+                                    'Participate in surveys, contests, or promotions',
+                                    'Provide feedback or communicate with us through various channels'
+                                ]}},
+                                {'type': 'header', 'data': {'text': 'How We Use Your Information', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'We use the information we collect for various purposes, including:'}},
+                                {'type': 'list', 'data': {'style': 'unordered', 'items': [
+                                    'Providing, maintaining, and improving our services',
+                                    'Processing transactions and sending related communications',
+                                    'Sending you technical notices, updates, security alerts, and support messages',
+                                    'Communicating with you about products, services, offers, and events',
+                                    'Monitoring and analyzing trends, usage, and activities',
+                                    'Detecting, investigating, and preventing fraudulent or illegal activities'
+                                ]}},
+                                {'type': 'header', 'data': {'text': 'Information Sharing and Disclosure', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'We may share your information with third parties in the following circumstances:'}},
+                                {'type': 'list', 'data': {'style': 'unordered', 'items': [
+                                    'With vendors, consultants, and other service providers who need access to your information to carry out work on our behalf',
+                                    'In connection with, or during negotiations of, any merger, sale of company assets, financing, or acquisition of all or a portion of our business',
+                                    'With your consent or at your direction',
+                                    'To comply with legal obligations, enforce our policies, or protect our rights, privacy, safety, or property'
+                                ]}},
+                                {'type': 'header', 'data': {'text': 'Data Retention', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'We will retain your information only for as long as is necessary for the purposes set out in this Privacy Notice. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.'}},
+                                {'type': 'header', 'data': {'text': 'Your Rights and Choices', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'Depending on your location, you may have certain rights regarding your personal information, including:'}},
+                                {'type': 'list', 'data': {'style': 'unordered', 'items': [
+                                    'Access to your personal information',
+                                    'Correction of inaccurate personal information',
+                                    'Deletion of your personal information',
+                                    'Restriction of processing your personal information',
+                                    'Objection to processing your personal information',
+                                    'Data portability'
+                                ]}},
+                                {'type': 'header', 'data': {'text': 'Contact Us', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'If you have questions or comments about this Privacy Notice, please contact us at:'}},
+                                {'type': 'paragraph', 'data': {'text': 'Email: privacy@beyondcode.ai<br>Address: BeyondCode AI, Data Protection Officer, [Company Address]'}},
+                            ])},
+                        },
+                        {
+                            'type': 'callout',
+                            'title': 'EU Data Protection',
+                            'body': 'We comply with the General Data Protection Regulation (GDPR) and other applicable EU data protection laws.',
+                        },
+                    ]
+                },
+                'seo_title': 'Privacy Notice',
+                'seo_description': 'Learn how BeyondCode AI collects, uses, and protects your personal information.',
+            },
+            {
+                'title': 'Terms of Use',
+                'slug': 'terms',
+                'status': 'published',
+                'blocks_json': {
+                    'blocks': [
+                        {
+                            'type': 'rich_text',
+                            'content': _editorjs_body([
+                                {'type': 'header', 'data': {'text': 'Terms of Use', 'level': 1}},
+                                {'type': 'paragraph', 'data': {'text': 'Last updated: March 2026'}},
+                                {'type': 'header', 'data': {'text': 'Acceptance of Terms', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'By accessing and using BeyondCode AI ("we", "our", "us") website and services, you accept and agree to be bound by the terms and provision of this agreement. In addition, when using our services, you shall be subject to any posted guidelines or rules applicable to such services.'}},
+                                {'type': 'header', 'data': {'text': 'Use License', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'Permission is granted to temporarily download one copy of the materials (information or software) on BeyondCode AI\'s website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:'}},
+                                {'type': 'list', 'data': {'style': 'unordered', 'items': [
+                                    'Modify or copy the materials',
+                                    'Use the materials for any commercial purpose or for any public display (commercial or non-commercial)',
+                                    'Attempt to decompile or reverse engineer any software contained on the site',
+                                    'Remove any copyright or other proprietary notations from the materials',
+                                    'Transfer the materials to another person or "mirror" the materials on any other server'
+                                ]}},
+                                {'type': 'header', 'data': {'text': 'Disclaimer', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'The materials on BeyondCode AI\'s website are provided on an \'as is\' basis. BeyondCode AI makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.'}},
+                                {'type': 'header', 'data': {'text': 'Limitations', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'In no event shall BeyondCode AI or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on BeyondCode AI\'s website, even if BeyondCode AI or a BeyondCode AI authorized representative has been notified orally or in writing of the possibility of such damage.'}},
+                                {'type': 'header', 'data': {'text': 'Accuracy of Materials', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'The materials appearing on BeyondCode AI\'s website could include technical, typographical, or photographic errors. BeyondCode AI does not warrant that any of the materials on its website are accurate, complete, or current. BeyondCode AI may make changes to the materials contained on its website at any time without notice.'}},
+                                {'type': 'header', 'data': {'text': 'Links', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'BeyondCode AI has not reviewed all of the sites linked to our website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by BeyondCode AI of the site. Use of any such linked website is at the user\'s own risk.'}},
+                                {'type': 'header', 'data': {'text': 'Modifications', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'BeyondCode AI may revise these terms of service for its website at any time without notice. By using this website you are agreeing to be bound by the then current version of these terms of service.'}},
+                                {'type': 'header', 'data': {'text': 'Governing Law', 'level': 2}},
+                                {'type': 'paragraph', 'data': {'text': 'These terms and conditions are governed by and construed in accordance with the laws of the jurisdiction in which BeyondCode AI operates and you irrevocably submit to the exclusive jurisdiction of the courts in that state or location.'}},
+                            ])},
+                        },
+                        {
+                            'type': 'callout',
+                            'title': 'Professional Services',
+                            'body': 'Our services are intended for professional use by businesses and organizations. Individual consumers should consult with their legal advisors regarding compliance requirements.',
+                        },
+                    ]
+                },
+                'seo_title': 'Terms of Use',
+                'seo_description': 'Terms and conditions for using BeyondCode AI website and services.',
+            },
+            {
                 'title': 'About BeyondCode AI',
                 'slug': 'about',
                 'status': 'published',
@@ -55,7 +168,7 @@ class Command(BaseCommand):
                                 {'type': 'paragraph', 'data': {'text': 'Our platform combines automated calling, intelligent scripts, and audit-ready evidence logs to help lenders recover funds efficiently and ethically.'}},
                                 {'type': 'header', 'data': {'text': 'Our Story', 'level': 2}},
                                 {'type': 'paragraph', 'data': {'text': 'We started with firsthand experience in the collections industry. We saw the inefficiencies, compliance challenges, and manual work that plagued traditional approaches. We set out to build the platform we always wished we had.'}},
-                            ]),
+                            ])},
                         },
                         {
                             'type': 'callout',
@@ -408,8 +521,8 @@ class Command(BaseCommand):
                     {
                         'title': 'Links',
                         'links': [
-                            {'label': 'Privacy Notice', 'url': '/privacy-policy'},
-                            {'label': 'Terms of Use', 'url': '/terms-conditions'},
+                            {'label': 'Privacy Notice', 'url': '/privacy/'},
+                            {'label': 'Terms of Use', 'url': '/terms/'},
                             {'label': 'Sitemap', 'url': '/sitemap.xml'},
                             {'label': 'Contact Us', 'url': '/contact/'},
                         ],
