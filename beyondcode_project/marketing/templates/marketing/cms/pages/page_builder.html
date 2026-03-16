@@ -1,0 +1,272 @@
+{% extends 'marketing/base.html' %}
+
+{% block title %}Page Builder - BeyondCode AI CMS{% endblock %}
+
+{% block content %}
+    <div class="page-builder">
+        <div class="container section-padding">
+            <div class="builder-header">
+                <h1 class="builder-title">Page Builder</h1>
+                <p class="builder-subtitle">Create and edit pages with Editor.js and custom blocks</p>
+            </div>
+
+            <div class="builder-layout">
+                <!-- Sidebar -->
+                <div class="builder-sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Page Settings</h3>
+                        <form id="page-settings-form">
+                            <div class="form-group">
+                                <label class="form-label">Page Title</label>
+                                <input type="text" id="page-title" class="form-input" placeholder="Enter page title">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Slug</label>
+                                <input type="text" id="page-slug" class="form-input" placeholder="page-slug">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select id="page-status" class="form-input">
+                                    <option value="draft">Draft</option>
+                                    <option value="published">Published</option>
+                                    <option value="scheduled">Scheduled</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="publish-date-group" style="display: none;">
+                                <label class="form-label">Publish Date</label>
+                                <input type="datetime-local" id="page-publish-date" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Primary Image</label>
+                                <input type="url" id="page-primary-image" class="form-input" placeholder="Image URL">
+                                <div class="image-preview" id="primary-image-preview"></div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">SEO Settings</h3>
+                        <div class="form-group">
+                            <label class="form-label">SEO Title</label>
+                            <input type="text" id="seo-title" class="form-input" placeholder="SEO title">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">SEO Description</label>
+                            <textarea id="seo-description" class="form-textarea" rows="3" placeholder="SEO description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">OG Image</label>
+                            <input type="url" id="og-image" class="form-input" placeholder="Open Graph image URL">
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Media Library</h3>
+                        <div class="media-search">
+                            <input type="text" id="media-search" class="form-input" placeholder="Search media...">
+                        </div>
+                        <div class="media-library" id="media-library">
+                            <!-- Media items will be loaded here -->
+                        </div>
+                        <div class="media-actions">
+                            <input type="file" id="media-upload-input" accept="image/*,video/*" style="display: none;">
+                            <button class="btn btn-secondary" id="media-upload-btn">Upload Media</button>
+                            <button class="btn btn-ghost" id="refresh-media-btn">Refresh</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Editor Area -->
+                <div class="editor-area">
+                    <!-- Editor.js Toolbar -->
+                    <div class="editor-toolbar">
+                        <div class="toolbar-left">
+                            <button class="btn btn-ghost" id="add-block-btn">
+                                <span>➕</span> Add Block
+                            </button>
+                            <div class="block-types-dropdown" id="block-types-dropdown" style="display: none;">
+                                <div class="block-type-item" data-block-type="editorjs">
+                                    <span>📝</span> Editor.js Content
+                                </div>
+                                <div class="block-type-item" data-block-type="rich_text">
+                                    <span>📄</span> Rich Text
+                                </div>
+                                <div class="block-type-item" data-block-type="callout">
+                                    <span>⚠️</span> Callout
+                                </div>
+                                <div class="block-type-item" data-block-type="cta">
+                                    <span>🎯</span> Call to Action
+                                </div>
+                                <div class="block-type-item" data-block-type="feature_grid">
+                                    <span>🔲</span> Feature Grid
+                                </div>
+                                <div class="block-type-item" data-block-type="pricing_table">
+                                    <span>💰</span> Pricing Table
+                                </div>
+                                <div class="block-type-item" data-block-type="faq">
+                                    <span>❓</span> FAQ
+                                </div>
+                                <div class="block-type-item" data-block-type="image">
+                                    <span>🖼️</span> Image
+                                </div>
+                                <div class="block-type-item" data-block-type="video">
+                                    <span>🎥</span> Video
+                                </div>
+                                <div class="block-type-item" data-block-type="testimonial">
+                                    <span>💬</span> Testimonial
+                                </div>
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn btn-ghost" id="preview-btn">Preview</button>
+                            <button class="btn btn-primary" id="save-page-btn">Save Page</button>
+                        </div>
+                    </div>
+
+                    <!-- Editor Content Area -->
+                    <div class="editor-content" id="editor-content">
+                        <div class="editor-placeholder">
+                            <p>Click "Add Block" to start building your page</p>
+                            <p>Use Editor.js blocks for rich content or custom blocks for specific layouts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Modal -->
+            <div class="modal" id="preview-modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Page Preview</h3>
+                        <button class="btn btn-ghost" id="close-preview-btn">Close</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="preview-rendered-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Block Templates -->
+    <template id="editorjs-block-template">
+        <div class="editorjs-block block-item" data-block-id="" data-block-type="editorjs">
+            <div class="block-header">
+                <span class="block-type-label">📝 Editor.js Content</span>
+                <div class="block-actions">
+                    <button class="btn btn-ghost block-action-btn" data-action="move-up">⬆️</button>
+                    <button class="btn btn-ghost block-action-btn" data-action="move-down">⬇️</button>
+                    <button class="btn btn-ghost block-action-btn" data-action="delete">🗑️</button>
+                </div>
+            </div>
+            <div class="block-content">
+                <div class="editorjs-container" id="editorjs-container-"></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="rich-text-block-template">
+        <div class="rich-text-block block-item" data-block-id="" data-block-type="rich_text">
+            <div class="block-header">
+                <span class="block-type-label">📄 Rich Text</span>
+                <div class="block-actions">
+                    <button class="btn btn-ghost block-action-btn" data-action="move-up">⬆️</button>
+                    <button class="btn btn-ghost block-action-btn" data-action="move-down">⬇️</button>
+                    <button class="btn btn-ghost block-action-btn" data-action="delete">🗑️</button>
+                </div>
+            </div>
+            <div class="block-content">
+                <div class="form-group">
+                    <label class="form-label">Content</label>
+                    <textarea class="form-textarea rich-text-content" rows="10" placeholder="Enter your content"></textarea>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="callout-block-template">
+        <div class="callout-block block-item" data-block-id="" data-block-type="callout">
+            <div class="block-header">
+                <span class="block-type-label">⚠️ Callout</span>
+                <div class="block-actions">
+                    <button class="btn btn-ghost block-action-btn" data-action="move-up">⬆️</button>
+                    <button class="btn btn-ghost block-action-btn" data-action="move-down">⬇️</button>
+                    <button class="btn btn-ghost block-action-btn" data-action="delete">🗑️</button>
+                </div>
+            </div>
+            <div class="block-content">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input callout-title" placeholder="Enter callout title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Body</label>
+                    <textarea class="form-textarea callout-body" rows="4" placeholder="Enter callout content"></textarea>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="cta-block-template">
+        <div class="cta-block block-item" data-block-id="" data-block-type="cta">
+            <div class="block-header">
+                <span class="block-type-label">🎯 Call to Action</span>
+                <div class="block-actions">
+                    <button class="btn btn-ghost block-action-btn" data-action="move-up">⬆️</button>
+                    <button class="btn btn-ghost block-action-btn" data-action="move-down">⬇️</button>
+                    <button class="btn btn-ghost block-action-btn" data-action="delete">🗑️</button>
+                </div>
+            </div>
+            <div class="block-content">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input cta-title" placeholder="Enter CTA title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Body</label>
+                    <textarea class="form-textarea cta-body" rows="3" placeholder="Enter CTA content"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Button Label</label>
+                    <input type="text" class="form-input cta-button-label" placeholder="Enter button text">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Button URL</label>
+                    <input type="url" class="form-input cta-button-url" placeholder="Enter button URL">
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="image-block-template">
+        <div class="image-block block-item" data-block-id="" data-block-type="image">
+            <div class="block-header">
+                <span class="block-type-label">🖼️ Image</span>
+                <div class="block-actions">
+                    <button class="btn btn-ghost block-action-btn" data-action="move-up">⬆️</button>
+                    <button class="btn btn-ghost block-action-btn" data-action="move-down">⬇️</button>
+                    <button class="btn btn-ghost block-action-btn" data-action="delete">🗑️</button>
+                </div>
+            </div>
+            <div class="block-content">
+                <div class="form-group">
+                    <label class="form-label">Image URL</label>
+                    <div class="image-input-group">
+                        <input type="url" class="form-input image-url" placeholder="Enter image URL">
+                        <button class="btn btn-secondary image-select-btn">Select from Library</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Alt Text</label>
+                    <input type="text" class="form-input image-alt-text" placeholder="Enter alt text">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Caption</label>
+                    <textarea class="form-textarea image-caption" rows="2" placeholder="Enter caption"></textarea>
+                </div>
+                <div class="image-preview-container">
+                    <img class="image-preview" src="" alt="" style="max-width: 100%; max-height: 200px; display: none;">
+                </div>
+            </div>
+        </div>
+    </template>

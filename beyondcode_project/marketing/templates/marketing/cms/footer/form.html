@@ -1,0 +1,130 @@
+{% extends 'marketing/cms/dashboard.html' %}
+
+{% block title %}Edit Footer - BeyondCode AI CMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Edit Footer Content</h4>
+                    <a href="{% url 'marketing:cms_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.label.id_for_label }}" class="form-label">Footer Label</label>
+                                    {{ form.label }}
+                                    {% if form.label.errors %}
+                                        <div class="text-danger">{{ form.label.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.columns_json.id_for_label }}" class="form-label">Footer Columns (JSON)</label>
+                            {{ form.columns_json }}
+                            {% if form.columns_json.errors %}
+                                <div class="text-danger">{{ form.columns_json.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">
+                                Define your footer columns in JSON format. Example structure:
+                                <pre class="bg-light p-2 mt-2 small"><code>[
+  {
+    "title": "Company",
+    "links": [
+      {"label": "About", "url": "/about/"},
+      {"label": "Careers", "url": "/careers/"},
+      {"label": "Contact", "url": "/contact/"}
+    ]
+  },
+  {
+    "title": "Services",
+    "links": [
+      {"label": "Consulting", "url": "/services/consulting/"},
+      {"label": "Development", "url": "/services/development/"}
+    ]
+  }
+]</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.cta_title.id_for_label }}" class="form-label">Call-to-Action Title</label>
+                                    {{ form.cta_title }}
+                                    {% if form.cta_title.errors %}
+                                        <div class="text-danger">{{ form.cta_title.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.cta_body.id_for_label }}" class="form-label">Call-to-Action Body</label>
+                                    {{ form.cta_body }}
+                                    {% if form.cta_body.errors %}
+                                        <div class="text-danger">{{ form.cta_body.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.cta_button_label.id_for_label }}" class="form-label">Button Label</label>
+                                    {{ form.cta_button_label }}
+                                    {% if form.cta_button_label.errors %}
+                                        <div class="text-danger">{{ form.cta_button_label.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.cta_button_url.id_for_label }}" class="form-label">Button URL</label>
+                                    {{ form.cta_button_url }}
+                                    {% if form.cta_button_url.errors %}
+                                        <div class="text-danger">{{ form.cta_button_url.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.legal_text.id_for_label }}" class="form-label">Legal Text</label>
+                                    {{ form.legal_text }}
+                                    {% if form.legal_text.errors %}
+                                        <div class="text-danger">{{ form.legal_text.errors.0 }}</div>
+                                    {% endif %}
+                                    <div class="form-text">Copyright notice or legal text</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'marketing:cms_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Save Footer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

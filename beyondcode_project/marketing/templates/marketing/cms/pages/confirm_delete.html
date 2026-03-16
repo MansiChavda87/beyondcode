@@ -1,0 +1,46 @@
+{% extends 'marketing/cms/dashboard.html' %}
+
+{% block title %}Delete Page - BeyondCode AI CMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Delete Page</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning!</strong> This action cannot be undone.
+                    </div>
+
+                    <p>Are you sure you want to delete the page <strong>"{{ page.title }}"</strong>?</p>
+
+                    <div class="mb-3">
+                        <strong>Page Details:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><strong>Title:</strong> {{ page.title }}</li>
+                            <li><strong>Slug:</strong> {{ page.slug }}</li>
+                            <li><strong>Status:</strong> {{ page.get_status_display }}</li>
+                            <li><strong>Created:</strong> {{ page.created_at|date:"M j, Y H:i" }}</li>
+                            <li><strong>Last Updated:</strong> {{ page.updated_at|date:"M j, Y H:i" }}</li>
+                        </ul>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'marketing:page_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>Yes, Delete Page
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

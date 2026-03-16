@@ -1,16 +1,24 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.conf import settings
 
 from .models import Page, Post, NavMenu, Footer, Category, Tag, MediaAsset
-from .forms import PageForm, PostForm, NavMenuForm, FooterForm, MediaAssetForm
+from .forms import PageForm, PostForm, NavMenuForm, FooterForm, MediaAssetForm, LoginForm, RegisterForm
 from .permissions import cms_admin_required
 from .renderers import render_block
 from .blocks import BLOCK_TYPES
@@ -286,7 +294,7 @@ def post_list(request):
 def post_create(request):
     """Create a new blog post."""
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
@@ -296,7 +304,7 @@ def post_create(request):
     else:
         form = PostForm()
     
-    return render(request, 'marketing/cms/posts/form.html', {
+    return render(request, 'marketing/cms/posts/editor.html', {
         'form': form,
         'title': 'Create Blog Post',
     })
@@ -309,7 +317,7 @@ def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
     
     if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
+        form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             form.save()
             messages.success(request, 'Blog post updated successfully.')
@@ -317,7 +325,7 @@ def post_edit(request, pk):
     else:
         form = PostForm(instance=post)
     
-    return render(request, 'marketing/cms/posts/form.html', {
+    return render(request, 'marketing/cms/posts/editor.html', {
         'form': form,
         'post': post,
         'title': 'Edit Blog Post',
@@ -465,6 +473,180 @@ def render_block_preview(request):
         return JsonResponse({'html': html})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+# -- Authentication Views -------------------------------------------------
+
+def login_view(request):
+    """Custom login view."""
+    if request.user.is_authenticated:
+        return redirect('marketing:account')
+    
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            messages.success(request, f'Welcome back, {user.username}!')
+            next_url = request.GET.get('next', 'marketing:account')
+            return redirect(next_url)
+    else:
+        form = LoginForm()
+    
+    return render(request, 'marketing/auth/login.html', {
+        'form': form,
+        'title': 'Login'
+    })
+
+
+def register_view(request):
+    """User registration view."""
+    if request.user.is_authenticated:
+        return redirect('marketing:account')
+    
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            messages.success(request, 'Account created successfully! Welcome to BeyondCode AI.')
+            return redirect('marketing:account')
+    else:
+        form = RegisterForm()
+    
+    return render(request, 'marketing/auth/register.html', {
+        'form': form,
+        'title': 'Register'
+    })
+
+
+def logout_view(request):
+    """Custom logout view."""
+    auth_logout(request)
+    messages.info(request, 'You have been logged out.')
+    return redirect('marketing:home')
+
+
+@login_required
+def account_view(request):
+    """User account/profile page."""
+    user = request.user
+    
+    # Get user's recent posts if they have any
+    user_posts = Post.objects.filter(author=user).order_by('-publish_at')[:5]
+    
+    context = {
+        'user': user,
+        'user_posts': user_posts,
+        'title': 'My Account'
+    }
+    return render(request, 'marketing/auth/account.html', context)
+
+
+def password_reset_view(request):
+    """Password reset request view."""
+    if request.user.is_authenticated:
+        return redirect('marketing:cms_dashboard')
+    
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            # Find users with this email
+            users = User.objects.filter(email=email)
+            for user in users:
+                # Generate token
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                
+                # Send email
+                subject = 'Password Reset - BeyondCode AI'
+                reset_url = request.build_absolute_uri(
+                    f'/accounts/reset/{uid}/{token}/'
+                )
+                context = {
+                    'user': user,
+                    'reset_url': reset_url,
+                }
+                message = render_to_string('marketing/auth/password_reset_email.html', context)
+                
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=True
+                )
+            
+            messages.success(request, 'If an account with that email exists, we have sent you password reset instructions.')
+            return redirect('marketing:login')
+    else:
+        form = PasswordResetForm()
+    
+    return render(request, 'marketing/auth/password_reset.html', {
+        'form': form,
+        'title': 'Reset Password'
+    })
+
+
+def password_reset_confirm_view(request, uidb64, token):
+    """Password reset confirmation view."""
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Your password has been reset successfully. You can now log in.')
+                return redirect('marketing:login')
+        else:
+            form = SetPasswordForm(user)
+        
+        return render(request, 'marketing/auth/password_reset_confirm.html', {
+            'form': form,
+            'title': 'Set New Password',
+            'validlink': True
+        })
+    else:
+        return render(request, 'marketing/auth/password_reset_confirm.html', {
+            'form': None,
+            'title': 'Password Reset Link Invalid',
+            'validlink': False
+        })
+
+
+# -- SEO Views --------------------------------------------------------------
+
+def sitemap_view(request):
+    """Generate dynamic XML sitemap."""
+    from django.utils import timezone
+    pages = Page.objects.filter(status='published')
+    posts = Post.objects.filter(status='published', publish_at__lte=timezone.now())
+    categories = Category.objects.all()
+    tags = Tag.objects.all()
+
+    context = {
+        'request': request,
+        'pages': pages,
+        'posts': posts,
+        'categories': categories,
+        'tags': tags,
+        'now': timezone.now(),
+    }
+
+    sitemap_content = render_to_string('marketing/seo/sitemap.xml', context)
+    return HttpResponse(sitemap_content, content_type='application/xml')
+
+
+def robots_view(request):
+    """Serve robots.txt file."""
+    robots_content = render_to_string('marketing/seo/robots.txt', {'request': request})
+    return HttpResponse(robots_content, content_type='text/plain')
 
 
 # -- API Views --------------------------------------------------------------

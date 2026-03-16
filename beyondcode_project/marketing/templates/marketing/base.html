@@ -69,6 +69,17 @@
                                 <a href="{% url 'marketing:blog_list' %}" class="nav-link">Blog</a>
                             </li>
                         {% endif %}
+
+                        <!-- User Account Links -->
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a href="{% url 'marketing:account' %}" class="nav-link">My Account</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a href="{% url 'marketing:login' %}" class="nav-link">Login</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </nav>
             </div>

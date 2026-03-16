@@ -103,7 +103,7 @@ class Page(SeoFieldsMixin):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('marketing-page-detail', kwargs={'slug': self.slug})
+        return reverse('marketing:page_detail', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
         if self.body_json:
@@ -154,7 +154,7 @@ class Post(SeoFieldsMixin):
     tags = models.ManyToManyField(Tag, blank=True, related_name='posts')
     body_json = models.JSONField(blank=True, null=True)
     body_html = models.TextField(blank=True)
-    blocks_json = models.JSONField(blank=True, null=True)
+    blocks_json = models.JSONField(blank=True, null=True, help_text="Block-based content in JSON format")
     blocks_html = models.TextField(blank=True)
     cover_image = models.URLField(max_length=500, blank=True)
     cover_image_upload = models.FileField(upload_to='posts/cover_images/', blank=True, null=True)
@@ -170,7 +170,7 @@ class Post(SeoFieldsMixin):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('marketing-blog-post', kwargs={'slug': self.slug})
+        return reverse('marketing:blog_detail', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
         if self.body_json:

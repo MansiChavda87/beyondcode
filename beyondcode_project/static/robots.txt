@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Block access to admin
+Disallow: /admin/
+
+# Block access to CMS
+Disallow: /cms/
+
+# Block access to authentication pages
+Disallow: /login/
+Disallow: /register/
+Disallow: /password-reset/
+
+# Allow access to sitemap
+Allow: /sitemap.xml
+
+# Sitemap location
+Sitemap: https://yourdomain.com/sitemap.xml

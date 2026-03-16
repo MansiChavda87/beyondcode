@@ -1,0 +1,166 @@
+{% extends 'marketing/cms/dashboard.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - BeyondCode AI CMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">{{ title }}</h4>
+                    <div>
+                        <a href="{% url 'marketing:page_list' %}" class="btn btn-secondary">Back to Pages</a>
+                        {% if page %}
+                            <a href="{% url 'marketing:page_detail' page.slug %}" target="_blank" class="btn btn-outline-primary">View Page</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Basic Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="{{ form.title.id_for_label }}" class="form-label">Page Title *</label>
+                                    {{ form.title }}
+                                    {% if form.title.errors %}
+                                        <div class="text-danger">{{ form.title.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.slug.id_for_label }}" class="form-label">Slug *</label>
+                                    {{ form.slug }}
+                                    {% if form.slug.errors %}
+                                        <div class="text-danger">{{ form.slug.errors.0 }}</div>
+                                    {% endif %}
+                                    <div class="form-text">URL-friendly version of the title</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+                                    {{ form.status }}
+                                    {% if form.status.errors %}
+                                        <div class="text-danger">{{ form.status.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.publish_at.id_for_label }}" class="form-label">Publish Date</label>
+                                    {{ form.publish_at }}
+                                    {% if form.publish_at.errors %}
+                                        <div class="text-danger">{{ form.publish_at.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.unpublish_at.id_for_label }}" class="form-label">Unpublish Date</label>
+                                    {{ form.unpublish_at }}
+                                    {% if form.unpublish_at.errors %}
+                                        <div class="text-danger">{{ form.unpublish_at.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SEO Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="mb-3">SEO Settings</h5>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.seo_title.id_for_label }}" class="form-label">SEO Title</label>
+                                    {{ form.seo_title }}
+                                    {% if form.seo_title.errors %}
+                                        <div class="text-danger">{{ form.seo_title.errors.0 }}</div>
+                                    {% endif %}
+                                    <div class="form-text">Leave blank to use page title</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.seo_description.id_for_label }}" class="form-label">SEO Description</label>
+                                    {{ form.seo_description }}
+                                    {% if form.seo_description.errors %}
+                                        <div class="text-danger">{{ form.seo_description.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Images -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="mb-3">Images</h5>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.primary_image.id_for_label }}" class="form-label">Primary Image URL</label>
+                                    {{ form.primary_image }}
+                                    {% if form.primary_image.errors %}
+                                        <div class="text-danger">{{ form.primary_image.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.primary_image_upload.id_for_label }}" class="form-label">Or Upload Primary Image</label>
+                                    {{ form.primary_image_upload }}
+                                    {% if form.primary_image_upload.errors %}
+                                        <div class="text-danger">{{ form.primary_image_upload.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">Content</h5>
+                            <div class="mb-3">
+                                <label for="{{ form.blocks_json.id_for_label }}" class="form-label">Page Content</label>
+                                {{ form.blocks_json }}
+                                {% if form.blocks_json.errors %}
+                                    <div class="text-danger">{{ form.blocks_json.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'marketing:page_list' %}" class="btn btn-secondary">Cancel</a>
+                            <div>
+                                <button type="submit" class="btn btn-primary">
+                                    {% if page %}Update Page{% else %}Create Page{% endif %}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Editor.js CSS and JS -->
+<link href="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.26.5/dist/editorjs.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.26.5/dist/editorjs.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Editor.js if blocks_json field exists
+    const blocksField = document.getElementById('id_blocks_json');
+    if (blocksField) {
+        // Editor.js initialization would go here
+        // This is a placeholder for the actual Editor.js setup
+        console.log('Editor.js would be initialized here');
+    }
+});
+</script>
+{% endblock %}

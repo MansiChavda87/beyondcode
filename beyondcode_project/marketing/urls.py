@@ -1,9 +1,24 @@
 from django.urls import path
+from django.shortcuts import render
+from django.contrib.sitemaps.views import sitemap
+from django.http import HttpResponse
 from . import views
 
 app_name = 'marketing'
 
 urlpatterns = [
+    # Authentication views
+    path('login/', views.login_view, name='login'),
+    path('register/', views.register_view, name='register'),
+    path('account/', views.account_view, name='account'),
+    path('logout/', views.logout_view, name='logout'),
+    path('password-reset/', views.password_reset_view, name='password_reset'),
+    path('password-reset/<uidb64>/<token>/', views.password_reset_confirm_view, name='password_reset_confirm'),
+    
+    # SEO views
+    path('sitemap.xml', views.sitemap_view, name='sitemap'),
+    path('robots.txt', views.robots_view, name='robots'),
+    
     # Public views
     path('', views.home, name='home'),
     path('contact/', views.contact, name='contact'),

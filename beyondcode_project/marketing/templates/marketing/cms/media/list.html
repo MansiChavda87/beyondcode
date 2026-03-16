@@ -1,0 +1,90 @@
+{% extends 'marketing/cms/dashboard.html' %}
+
+{% block title %}Media Assets - BeyondCode AI CMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Media Assets</h1>
+                <a href="{% url 'marketing:media_upload' %}" class="btn btn-primary">
+                    <i class="fas fa-upload me-2"></i>Upload Media
+                </a>
+            </div>
+
+            {% if media_assets %}
+                <div class="row">
+                    {% for media in media_assets %}
+                        <div class="col-md-3 col-sm-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    {% if media.is_image %}
+                                        <img src="{{ media.file_url }}" alt="{{ media.alt_text|default:media.title }}" class="img-fluid mb-3" style="max-height: 150px; object-fit: cover;">
+                                    {% elif media.is_video %}
+                                        <i class="fas fa-video fa-3x text-muted mb-3"></i>
+                                    {% elif media.is_audio %}
+                                        <i class="fas fa-music fa-3x text-muted mb-3"></i>
+                                    {% else %}
+                                        <i class="fas fa-file fa-3x text-muted mb-3"></i>
+                                    {% endif %}
+
+                                    <h6 class="card-title mb-2">{{ media.title }}</h6>
+                                    <p class="card-text small text-muted mb-2">{{ media.file_type|upper }} • {{ media.file_size|filesizeformat }}</p>
+                                    <p class="card-text small text-muted mb-3">{{ media.uploaded_at|date:"M j, Y" }}</p>
+
+                                    <div class="btn-group btn-group-sm w-100">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="copyToClipboard('{{ media.file_url }}')" title="Copy URL">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                        <a href="{{ media.file_url }}" target="_blank" class="btn btn-outline-secondary btn-sm" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{% url 'marketing:media_delete' media.pk %}" class="btn btn-outline-danger btn-sm" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-images fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No media assets yet</h5>
+                        <p class="text-muted mb-4">Upload your first media file to get started.</p>
+                        <a href="{% url 'marketing:media_upload' %}" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>Upload Your First Media
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        // Show a temporary success message
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            <i class="fas fa-check me-2"></i>URL copied to clipboard!
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(notification);
+
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 3000);
+    });
+}
+</script>
+{% endblock %}

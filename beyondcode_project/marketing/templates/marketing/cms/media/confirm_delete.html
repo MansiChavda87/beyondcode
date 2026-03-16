@@ -1,0 +1,63 @@
+{% extends 'marketing/cms/dashboard.html' %}
+
+{% block title %}Delete Media Asset - BeyondCode AI CMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Delete Media Asset</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning!</strong> This action cannot be undone.
+                    </div>
+
+                    <p>Are you sure you want to delete the media asset <strong>"{{ media.title }}"</strong>?</p>
+
+                    <div class="text-center mb-3">
+                        {% if media.is_image %}
+                            <img src="{{ media.file_url }}" alt="{{ media.alt_text|default:media.title }}" class="img-fluid" style="max-height: 200px; max-width: 100%;">
+                        {% elif media.is_video %}
+                            <i class="fas fa-video fa-4x text-muted"></i>
+                        {% elif media.is_audio %}
+                            <i class="fas fa-music fa-4x text-muted"></i>
+                        {% else %}
+                            <i class="fas fa-file fa-4x text-muted"></i>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Media Details:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><strong>Title:</strong> {{ media.title }}</li>
+                            <li><strong>File Type:</strong> {{ media.file_type|upper }}</li>
+                            <li><strong>Size:</strong> {{ media.file_size|filesizeformat }}</li>
+                            <li><strong>Uploaded:</strong> {{ media.uploaded_at|date:"M j, Y H:i" }}</li>
+                            {% if media.alt_text %}
+                                <li><strong>Alt Text:</strong> {{ media.alt_text }}</li>
+                            {% endif %}
+                            {% if media.caption %}
+                                <li><strong>Caption:</strong> {{ media.caption }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'marketing:media_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>Yes, Delete Media
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'marketing/cms/dashboard.html' %}
+
+{% block title %}Blog Posts - BeyondCode AI CMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Blog Posts</h1>
+                <a href="{% url 'marketing:post_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Create Post
+                </a>
+            </div>
+
+            {% if posts %}
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Author</th>
+                                        <th>Published</th>
+                                        <th>Updated</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for post in posts %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <h6 class="mb-0">
+                                                            <a href="{% url 'marketing:post_edit' post.pk %}" class="text-decoration-none">
+                                                                {{ post.title }}
+                                                            </a>
+                                                        </h6>
+                                                        <small class="text-muted">/blog/{{ post.slug }}/</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{{ post.status|lower }}">{{ post.get_status_display }}</span>
+                                            </td>
+                                            <td>
+                                                <small>{{ post.author.username }}</small>
+                                            </td>
+                                            <td>
+                                                {% if post.publish_at %}
+                                                    <small class="text-muted">{{ post.publish_at|date:"M j, Y" }}</small>
+                                                {% else %}
+                                                    <small class="text-muted">-</small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">{{ post.updated_at|date:"M j, Y H:i" }}</small>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{% url 'marketing:post_edit' post.pk %}" class="btn btn-outline-primary">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    {% if post.status == 'published' %}
+                                                        <a href="{% url 'marketing:blog_detail' post.slug %}" target="_blank" class="btn btn-outline-secondary">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                    <a href="{% url 'marketing:post_delete' post.pk %}" class="btn btn-outline-danger">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-blog fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No blog posts yet</h5>
+                        <p class="text-muted mb-4">Create your first blog post to get started.</p>
+                        <a href="{% url 'marketing:post_create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create Your First Post
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

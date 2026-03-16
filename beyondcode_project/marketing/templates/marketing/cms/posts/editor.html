@@ -1,0 +1,403 @@
+{% extends 'marketing/cms/dashboard.html' %}
+{% load static %}
+
+{% block title %}Post Editor - BeyondCode AI CMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        {% if post %}
+                            Edit Post: {{ post.title }}
+                        {% else %}
+                            Create New Post
+                        {% endif %}
+                    </h4>
+                    <div>
+                        <a href="{% url 'marketing:post_list' %}" class="btn btn-secondary">Back to Posts</a>
+                        {% if post %}
+                            <a href="{% url 'marketing:blog_detail' post.slug %}" target="_blank" class="btn btn-outline-primary">View Post</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="post-form" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.title.id_for_label }}" class="form-label">Post Title</label>
+                                    {{ form.title }}
+                                    {% if form.title.errors %}
+                                        <div class="text-danger">{{ form.title.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.slug.id_for_label }}" class="form-label">Slug</label>
+                                    {{ form.slug }}
+                                    {% if form.slug.errors %}
+                                        <div class="text-danger">{{ form.slug.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.excerpt.id_for_label }}" class="form-label">Excerpt</label>
+                                    {{ form.excerpt }}
+                                    {% if form.excerpt.errors %}
+                                        <div class="text-danger">{{ form.excerpt.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+                                    {{ form.status }}
+                                    {% if form.status.errors %}
+                                        <div class="text-danger">{{ form.status.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.publish_at.id_for_label }}" class="form-label">Publish Date</label>
+                                    {{ form.publish_at }}
+                                    {% if form.publish_at.errors %}
+                                        <div class="text-danger">{{ form.publish_at.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.author_name.id_for_label }}" class="form-label">Author Name</label>
+                                    {{ form.author_name }}
+                                    {% if form.author_name.errors %}
+                                        <div class="text-danger">{{ form.author_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.categories.id_for_label }}" class="form-label">Categories</label>
+                                    {{ form.categories }}
+                                    {% if form.categories.errors %}
+                                        <div class="text-danger">{{ form.categories.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.tags.id_for_label }}" class="form-label">Tags</label>
+                                    {{ form.tags }}
+                                    {% if form.tags.errors %}
+                                        <div class="text-danger">{{ form.tags.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- SEO Fields -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>SEO Settings</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ form.seo_title.id_for_label }}" class="form-label">SEO Title</label>
+                                                    {{ form.seo_title }}
+                                                    {% if form.seo_title.errors %}
+                                                        <div class="text-danger">{{ form.seo_title.errors.0 }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ form.seo_description.id_for_label }}" class="form-label">SEO Description</label>
+                                                    {{ form.seo_description }}
+                                                    {% if form.seo_description.errors %}
+                                                        <div class="text-danger">{{ form.seo_description.errors.0 }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ form.og_title.id_for_label }}" class="form-label">Open Graph Title</label>
+                                                    {{ form.og_title }}
+                                                    {% if form.og_title.errors %}
+                                                        <div class="text-danger">{{ form.og_title.errors.0 }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ form.og_description.id_for_label }}" class="form-label">Open Graph Description</label>
+                                                    {{ form.og_description }}
+                                                    {% if form.og_description.errors %}
+                                                        <div class="text-danger">{{ form.og_description.errors.0 }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Uploads -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.cover_image_upload.id_for_label }}" class="form-label">Cover Image</label>
+                                    {{ form.cover_image_upload }}
+                                    {% if form.cover_image_upload.errors %}
+                                        <div class="text-danger">{{ form.cover_image_upload.errors.0 }}</div>
+                                    {% endif %}
+                                    {% if post and post.cover_image_upload %}
+                                        <div class="mt-2">
+                                            <img src="{{ post.cover_image_upload.url }}" alt="Current Cover Image" style="max-width: 200px; max-height: 150px;">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.primary_image_upload.id_for_label }}" class="form-label">Primary Image</label>
+                                    {{ form.primary_image_upload }}
+                                    {% if form.primary_image_upload.errors %}
+                                        <div class="text-danger">{{ form.primary_image_upload.errors.0 }}</div>
+                                    {% endif %}
+                                    {% if post and post.primary_image_upload %}
+                                        <div class="mt-2">
+                                            <img src="{{ post.primary_image_upload.url }}" alt="Current Primary Image" style="max-width: 200px; max-height: 150px;">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Block Editor -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5>Block Editor</h5>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-primary" id="add-block-btn">
+                                                <i class="bi bi-plus-circle"></i> Add Block
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary" id="preview-btn">
+                                                <i class="bi bi-eye"></i> Preview
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Block Selection Panel -->
+                                        <div class="block-selector-panel" id="block-selector-panel" style="display: none;">
+                                            <div class="block-selector-header">
+                                                <h6>Choose a Block Type</h6>
+                                                <input type="text" id="block-search" class="form-control" placeholder="Search for a block...">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary mt-2" id="close-selector-btn">
+                                                    <i class="bi bi-x-circle"></i> Close
+                                                </button>
+                                            </div>
+                                            <div class="block-types-grid" id="block-types-grid">
+                                                <!-- Block types will be populated here -->
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Blocks Container -->
+                                        <div class="blocks-container" id="blocks-container">
+                                            <!-- Existing blocks will be loaded here -->
+                                        </div>
+                                        
+                                        <!-- Hidden field for blocks JSON -->
+                                        {{ form.blocks_json }}
+                                        {% if form.blocks_json.errors %}
+                                            <div class="text-danger">{{ form.blocks_json.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Buttons -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <button type="submit" class="btn btn-primary">Save Post</button>
+                                        <button type="button" class="btn btn-success" id="save-draft-btn">Save as Draft</button>
+                                        <button type="button" class="btn btn-info" id="save-preview-btn">Save & Preview</button>
+                                    </div>
+                                    <div>
+                                        <a href="{% url 'marketing:post_list' %}" class="btn btn-secondary">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Block Templates -->
+<div id="block-templates" style="display: none;">
+    <!-- Paragraph Block Template -->
+    <div class="block-template" data-block-type="paragraph">
+        <div class="block-content">
+            <textarea class="form-control block-input" rows="4" placeholder="Enter your paragraph text..."></textarea>
+        </div>
+    </div>
+    
+    <!-- Heading Block Template -->
+    <div class="block-template" data-block-type="heading">
+        <div class="block-content">
+            <input type="text" class="form-control block-input" placeholder="Enter heading text...">
+            <select class="form-select block-level" style="width: auto; display: inline-block; margin-top: 5px;">
+                <option value="h1">Heading 1</option>
+                <option value="h2">Heading 2</option>
+                <option value="h3">Heading 3</option>
+                <option value="h4">Heading 4</option>
+                <option value="h5">Heading 5</option>
+                <option value="h6">Heading 6</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- List Block Template -->
+    <div class="block-template" data-block-type="list">
+        <div class="block-content">
+            <select class="form-select block-style" style="width: auto; display: inline-block; margin-bottom: 10px;">
+                <option value="unordered">Bulleted List</option>
+                <option value="ordered">Numbered List</option>
+            </select>
+            <div class="list-items">
+                <div class="list-item">
+                    <input type="text" class="form-control" placeholder="List item...">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-list-item">Remove</button>
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary add-list-item">+ Add Item</button>
+        </div>
+    </div>
+    
+    <!-- Quote Block Template -->
+    <div class="block-template" data-block-type="quote">
+        <div class="block-content">
+            <textarea class="form-control block-input" rows="3" placeholder="Enter your quote..."></textarea>
+            <input type="text" class="form-control block-citation" style="margin-top: 5px;" placeholder="Quote author (optional)">
+        </div>
+    </div>
+    
+    <!-- Code Block Template -->
+    <div class="block-template" data-block-type="code">
+        <div class="block-content">
+            <textarea class="form-control block-input" rows="6" placeholder="Enter your code..."></textarea>
+            <input type="text" class="form-control block-language" style="margin-top: 5px;" placeholder="Language (optional)">
+        </div>
+    </div>
+    
+    <!-- Classic Block Template -->
+    <div class="block-template" data-block-type="classic">
+        <div class="block-content">
+            <textarea class="form-control block-input" rows="6" placeholder="Enter your content with basic formatting..."></textarea>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="preview-modal" tabindex="-1" aria-labelledby="preview-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="preview-modal-label">Post Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="preview-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'marketing/js/post-editor.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the post editor
+    const postEditor = new PostEditor({
+        blocksContainer: document.getElementById('blocks-container'),
+        blockSelectorPanel: document.getElementById('block-selector-panel'),
+        blockTypesGrid: document.getElementById('block-types-grid'),
+        blocksJsonField: document.querySelector('input[name="blocks_json"]'),
+        addBlockBtn: document.getElementById('add-block-btn'),
+        closeSelectorBtn: document.getElementById('close-selector-btn'),
+        previewBtn: document.getElementById('preview-btn'),
+        previewModal: new bootstrap.Modal(document.getElementById('preview-modal')),
+        previewContent: document.getElementById('preview-content'),
+        saveDraftBtn: document.getElementById('save-draft-btn'),
+        savePreviewBtn: document.getElementById('save-preview-btn'),
+        blockSearch: document.getElementById('block-search')
+    });
+    
+    // Load existing blocks if editing
+    {% if post and post.blocks_json %}
+        postEditor.loadBlocks(JSON.parse('{{ post.blocks_json|escapejs }}'));
+    {% endif %}
+    
+    // Block types configuration
+    const blockTypes = [
+        {
+            type: 'paragraph',
+            name: 'Paragraph',
+            description: 'Write standard text content',
+            icon: '📝'
+        },
+        {
+            type: 'heading',
+            name: 'Heading',
+            description: 'Add titles or section headings',
+            icon: '🔤'
+        },
+        {
+            type: 'list',
+            name: 'List',
+            description: 'Create ordered or unordered lists',
+            icon: '📋'
+        },
+        {
+            type: 'quote',
+            name: 'Quote',
+            description: 'Highlight quotations or highlighted text',
+            icon: '💬'
+        },
+        {
+            type: 'code',
+            name: 'Code',
+            description: 'Display code snippets',
+            icon: '💻'
+        },
+        {
+            type: 'classic',
+            name: 'Classic',
+            description: 'Insert traditional formatted content',
+            icon: '📄'
+        }
+    ];
+    
+    postEditor.initialize(blockTypes);
+});
+</script>
+{% endblock %}
