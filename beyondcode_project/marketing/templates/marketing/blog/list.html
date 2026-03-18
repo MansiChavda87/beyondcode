@@ -46,8 +46,9 @@
             <div class="container section-padding bg-background">
                 {% if page_obj %}
                     <div class="row blog-grid">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {% for post in page_obj %}
-                            <div class="col-lg-4 col-md-6 col-sm-12">
+                            
                                 <article class="post-card feature-card h-100">
                                     <div class="post-image">
                                         {% if post.featured_image %}
@@ -101,8 +102,8 @@
                                         </div>
                                     </div>
                                 </article>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
                     
                     <!-- Pagination -->

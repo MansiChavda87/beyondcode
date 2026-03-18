@@ -1,0 +1,343 @@
+/* ============================================================================
+   BeyondCode Custom Styles & Overrides
+   ============================================================================
+   This file contains project-specific customizations that override or extend
+   the design system. Keep this file minimal to avoid conflicts.
+   ============================================================================ */
+
+/* ============================================================================
+   CUSTOM HEADING STYLES
+   ============================================================================ */
+
+h1 {
+    font-family: var(--font-serif);
+    font-weight: var(--font-weight-bold);
+}
+
+h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+}
+
+/* ============================================================================
+   CUSTOM BUTTON OVERRIDES
+   ============================================================================ */
+
+.btn-large {
+    height: 2.75rem;
+    padding: var(--space-3) var(--space-8);
+    font-size: var(--text-base);
+}
+
+/* ============================================================================
+   GRADIENT ACCENTS
+   ============================================================================ */
+
+.gradient-text {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ============================================================================
+   CUSTOM HERO SECTION
+   ============================================================================ */
+
+.hero {
+    min-height: 500px;
+}
+
+.hero::before {
+    top: -25%;
+    right: -10%;
+    width: 800px;
+    height: 800px;
+}
+
+/* ============================================================================
+   CHECKBOX & RADIO CUSTOM STYLES
+   ============================================================================ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: hsl(var(--primary));
+    cursor: pointer;
+}
+
+/* ============================================================================
+   SCROLLBAR STYLING
+   ============================================================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+}
+
+/* ============================================================================
+   SELECTION STYLING
+   ============================================================================ */
+
+::selection {
+    background-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--foreground));
+}
+
+::-moz-selection {
+    background-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--foreground));
+}
+
+/* ============================================================================
+   FOCUS VISIBLE ENHANCEMENT
+   ============================================================================ */
+
+*:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+}
+
+/* ============================================================================
+   LINK STYLING ENHANCEMENTS
+   ============================================================================ */
+
+a {
+    transition: color var(--transition-fast), text-decoration var(--transition-fast);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================================
+   FORM ENHANCEMENTS
+   ============================================================================ */
+
+:required {
+    box-shadow: none;
+}
+
+input:invalid {
+    box-shadow: none;
+}
+
+input:valid {
+    box-shadow: none;
+}
+
+/* ============================================================================
+   CODE BLOCK STYLING
+   ============================================================================ */
+
+code {
+    background-color: hsl(var(--muted));
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: var(--text-sm);
+    color: hsl(var(--foreground));
+}
+
+pre {
+    background-color: hsl(var(--card));
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    overflow-x: auto;
+    border: 1px solid hsl(var(--border));
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+/* ============================================================================
+   BLOCKQUOTE STYLING
+   ============================================================================ */
+
+blockquote {
+    border-left: 4px solid hsl(var(--primary));
+    padding-left: var(--space-4);
+    margin-left: 0;
+    color: hsl(var(--muted-foreground));
+    font-style: italic;
+}
+
+/* ============================================================================
+   CUSTOM ANIMATIONS
+   ============================================================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ============================================================================
+   BREADCRUMB STYLING
+   ============================================================================ */
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+}
+
+.breadcrumb a {
+    color: hsl(var(--primary));
+}
+
+.breadcrumb-separator {
+    color: hsl(var(--muted-foreground));
+    margin: 0 var(--space-2);
+}
+
+/* ============================================================================
+   HERO IMAGE HOVER EFFECTS
+   ============================================================================ */
+
+.page-hero-img {
+    transition: transform 500ms ease-out, box-shadow 300ms ease-out;
+}
+
+.page-hero-img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 20px 40px -10px rgb(33 54 112 / 0.2);
+}
+
+/* ============================================================================
+   SKIP LINK FIX
+   ============================================================================ */
+
+.skip-link:focus {
+    top: var(--space-4);
+    left: var(--space-4);
+}
+
+/* ============================================================================
+   PRINT MEDIA ENHANCEMENTS
+   ============================================================================ */
+
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .no-print,
+    .site-header,
+    .site-footer {
+        display: none !important;
+    }
+    
+    a {
+        color: #0066cc;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+    }
+    
+    p {
+        orphans: 3;
+        widows: 3;
+    }
+}
+
+/* ============================================================================
+   LOADER SPINNER
+   ============================================================================ */
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid hsl(var(--muted));
+    border-top-color: hsl(var(--primary));
+    border-radius: var(--radius-full);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================================================
+   EMPTY STATE
+   ============================================================================ */
+
+.empty-state {
+    text-align: center;
+    padding: var(--space-12);
+}
+
+.empty-state-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--space-4);
+    opacity: 0.5;
+}
+
+.empty-state-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-2);
+}
+
+.empty-state-description {
+    color: hsl(var(--muted-foreground));
+    margin-bottom: var(--space-4);
+}

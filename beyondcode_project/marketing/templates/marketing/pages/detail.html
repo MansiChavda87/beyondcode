@@ -6,18 +6,20 @@
 {% block content %}
     <div class="page-detail">
         <!-- Page Header -->
-        <section class="page-header">
-            <div class="container section-padding bg-background">
-                {% if page.primary_image_url %}
-                    <div class="page-hero-image">
-                        <img src="{{ page.primary_image_url }}" alt="{{ page.title }}" class="page-hero-img">
+        <section class="page-header bg-background section-padding">
+            <div class="container">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="page-header-content">
+                        <h1 class="page-title text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">{{ page.title }}</h1>
+                        {% if page.subtitle %}
+                            <p class="page-subtitle text-lg md:text-xl text-muted-foreground leading-relaxed">{{ page.subtitle }}</p>
+                        {% endif %}
                     </div>
-                {% endif %}
-                
-                <div class="page-header-content">
-                    <h1 class="page-title">{{ page.title }}</h1>
-                    {% if page.subtitle %}
-                        <p class="page-subtitle">{{ page.subtitle }}</p>
+                    
+                    {% if page.primary_image_url %}
+                        <div class="page-hero-image">
+                            <img src="{{ page.primary_image_url }}" alt="{{ page.title }}" class="page-hero-img rounded-lg shadow-lg w-full h-auto">
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -34,13 +36,13 @@
                     <!-- Fallback content if no blocks are defined -->
                     <div class="page-content-fallback">
                         {% if page.content %}
-                            <div class="page-text-content">
+                            <div class="page-text-content richtext max-w-4xl mx-auto">
                                 {{ page.content|safe }}
                             </div>
                         {% else %}
-                            <div class="page-empty">
-                                <p>This page is currently under construction.</p>
-                                <p>Please check back soon or <a href="{% url 'marketing:contact' %}">contact us</a> for more information.</p>
+                            <div class="page-empty text-center py-12">
+                                <p class="text-lg text-muted-foreground mb-4">This page is currently under construction.</p>
+                                <p class="text-muted-foreground">Please check back soon or <a href="{% url 'marketing:contact' %}" class="text-primary hover:underline">contact us</a> for more information.</p>
                             </div>
                         {% endif %}
                     </div>
