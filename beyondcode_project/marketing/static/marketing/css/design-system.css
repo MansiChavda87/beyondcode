@@ -1037,3 +1037,8 @@ textarea {
     flex-direction: column;
   }
 }
+
+.contact-form-container{
+    width: 60%;
+    margin: auto;
+}

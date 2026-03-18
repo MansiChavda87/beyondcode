@@ -182,8 +182,8 @@ img {
 }
 
 .section-padding {
-    padding-top: var(--spacing-4xl);
-    padding-bottom: var(--spacing-4xl);
+    padding-top: var(--spacing-2xl);
+    padding-bottom: var(--spacing-2xl);
 }
 
 /* .bg-background {
