@@ -85,12 +85,21 @@ class PageAdmin(admin.ModelAdmin):
     search_fields = ['title', 'slug']
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ['created_at', 'updated_at', 'primary_image_preview']
+    exclude = (
+        'body_json',
+        'body_html',
+        'blocks_html',
+    )
     fieldsets = (
         (None, {
             'fields': ('title', 'slug', 'status', 'publish_at', 'unpublish_at')
         }),
+        ('Block Builder', {
+            'fields': ('blocks_json',),
+            'classes': ('collapse',)
+        }),
         ('Content', {
-            'fields': ('body_json', 'body_html', 'blocks_json', 'blocks_html', 'primary_image', 'primary_image_upload'),
+            'fields': ('primary_image', 'primary_image_upload'),
             'classes': ('collapse',)
         }),
         ('SEO', {
@@ -137,12 +146,21 @@ class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ['created_at', 'updated_at', 'computed_excerpt', 'cover_image_preview', 'primary_image_preview']
     filter_horizontal = ['categories', 'tags']
+    exclude = (
+        'body_json',
+        'body_html',
+        'blocks_html',
+    )
     fieldsets = (
         (None, {
             'fields': ('title', 'slug', 'status', 'publish_at', 'author_name', 'excerpt')
         }),
+        ('Block Builder', {
+            'fields': ('blocks_json',),
+            'classes': ('collapse',)
+        }),
         ('Content', {
-            'fields': ('body_json', 'body_html', 'blocks_json', 'blocks_html', 'cover_image', 'cover_image_upload', 'primary_image', 'primary_image_upload'),
+            'fields': ('cover_image', 'cover_image_upload', 'primary_image', 'primary_image_upload'),
             'classes': ('collapse',)
         }),
         ('Categories & Tags', {
