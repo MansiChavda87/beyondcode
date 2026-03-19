@@ -3,6 +3,7 @@ from django.utils.html import format_html
 from django.urls import reverse
 from .models import Page, Post, Category, Tag, NavMenu, NavItem, Footer, MediaAsset
 from .forms import PageForm, PostForm, NavMenuForm, FooterForm, MediaAssetForm
+from .widgets import EditorJSAdminWidget
 
 
 @admin.register(MediaAsset)

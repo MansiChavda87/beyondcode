@@ -1,15 +1,16 @@
 {% load to_json %}
 
-{# Rich Text Block #}
+{# STEP 10: RICH TEXT FRONTEND #}
+{# Render rich text blocks using EditorJS data #}
 {% if block.type == 'rich_text' %}
     <section class="block rich-text-block">
         <div class="container section-padding bg-background">
-            {% if block.content.blocks %}
-                {% for editorjs_block in block.content.blocks %}
-                    {% if editorjs_block.type == 'header' %}
-                        <h{{ editorjs_block.data.level }} class="block-header">{{ editorjs_block.data.text }}</h{{ editorjs_block.data.level }}>
-                    {% elif editorjs_block.type == 'paragraph' %}
+            {% if block.data.blocks %}
+                {% for editorjs_block in block.data.blocks %}
+                    {% if editorjs_block.type == 'paragraph' %}
                         <p class="block-paragraph">{{ editorjs_block.data.text|safe }}</p>
+                    {% elif editorjs_block.type == 'header' %}
+                        <h{{ editorjs_block.data.level }} class="block-header">{{ editorjs_block.data.text }}</h{{ editorjs_block.data.level }}>
                     {% elif editorjs_block.type == 'list' %}
                         {% if editorjs_block.data.style == 'unordered' %}
                             <ul class="block-list">
@@ -31,6 +32,33 @@
                                 <cite>{{ editorjs_block.data.caption }}</cite>
                             {% endif %}
                         </blockquote>
+                    {% elif editorjs_block.type == 'checklist' %}
+                        <ul class="checklist">
+                            {% for item in editorjs_block.data.items %}
+                                <li>
+                                    <input type="checkbox" {% if item.checked %}checked{% endif %}>
+                                    {{ item.text|safe }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% elif editorjs_block.type == 'embed' %}
+                        <div class="embed-block">{{ editorjs_block.data.embed|safe }}</div>
+                    {% elif editorjs_block.type == 'table' %}
+                        <table class="block-table">
+                            {% for row in editorjs_block.data.content %}
+                                <tr>
+                                    {% for cell in row %}
+                                        <td>{{ cell|safe }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% elif editorjs_block.type == 'link' %}
+                        <a href="{{ editorjs_block.data.link }}" class="block-link">{{ editorjs_block.data.meta.title|default:editorjs_block.data.link }}</a>
+                    {% elif editorjs_block.type == 'marker' %}
+                        <mark>{{ editorjs_block.data.text|safe }}</mark>
+                    {% elif editorjs_block.type == 'inlineCode' %}
+                        <code>{{ editorjs_block.data.text|safe }}</code>
                     {% endif %}
                 {% endfor %}
             {% endif %}
@@ -38,6 +66,52 @@
     </section>
 {% endif %}
 
+{# STEP 9: FRONTEND RENDERING - CTA Block #}
+{% if block.type == 'cta' %}
+    <section class="block cta-block">
+        <div class="container section-padding bg-background">
+            <div class="cta-content">
+                {% if block.data.title %}
+                    <h2 class="cta-title">{{ block.data.title }}</h2>
+                {% endif %}
+                {% if block.data.body %}
+                    <p class="cta-subtitle">{{ block.data.body|safe }}</p>
+                {% endif %}
+                {% if block.data.button_label and block.data.button_url %}
+                    <a href="{{ block.data.button_url }}" class="btn btn-primary">
+                        {{ block.data.button_label }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+{# STEP 9: FRONTEND RENDERING - FAQ Block #}
+{% if block.type == 'faq' %}
+    <section class="block faq-block">
+        <div class="container section-padding bg-background">
+            {% if block.data.title %}
+                <div class="section-header">
+                    <h2 class="section-title">{{ block.data.title }}</h2>
+                </div>
+            {% endif %}
+            
+            {% if block.data.items %}
+                <div class="faq-list">
+                    {% for item in block.data.items %}
+                        <div class="faq-item">
+                            <h3 class="faq-question">{{ item.question }}</h3>
+                            <div class="faq-answer">{{ item.answer|safe }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endif %}
+
+{# Legacy block types for backward compatibility #}
 {# Callout Block #}
 {% if block.type == 'callout' %}
     <section class="block callout-block">
@@ -87,27 +161,6 @@
     </section>
 {% endif %}
 
-{# CTA Block #}
-{% if block.type == 'cta' %}
-    <section class="block cta-block">
-        <div class="container section-padding bg-background">
-            <div class="cta-content">
-                {% if block.title %}
-                    <h2 class="cta-title">{{ block.title }}</h2>
-                {% endif %}
-                {% if block.body %}
-                    <p class="cta-subtitle">{{ block.body|safe }}</p>
-                {% endif %}
-                {% if block.button_label and block.button_url %}
-                    <a href="{{ block.button_url }}" class="btn btn-primary">
-                        {{ block.button_label }}
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-{% endif %}
-
 {# Pricing Table Block #}
 {% if block.type == 'pricing_table' %}
     <section class="block pricing-table-block">
@@ -141,30 +194,6 @@
                             {% if plan.button_label and plan.button_url %}
                                 <a href="{{ plan.button_url }}" class="btn btn-primary">{{ plan.button_label }}</a>
                             {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-    </section>
-{% endif %}
-
-{# FAQ Block #}
-{% if block.type == 'faq' %}
-    <section class="block faq-block">
-        <div class="container section-padding bg-background">
-            {% if block.title %}
-                <div class="section-header">
-                    <h2 class="section-title">{{ block.title }}</h2>
-                </div>
-            {% endif %}
-            
-            {% if block.items %}
-                <div class="faq-list">
-                    {% for item in block.items %}
-                        <div class="faq-item">
-                            <h3 class="faq-question">{{ item.question }}</h3>
-                            <div class="faq-answer">{{ item.answer|safe }}</div>
                         </div>
                     {% endfor %}
                 </div>

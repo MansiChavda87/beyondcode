@@ -1,0 +1,927 @@
+{% extends 'marketing/base.html' %}
+
+{% block title %}Simple Block Builder - BeyondCode AI CMS{% endblock %}
+
+{% block content %}
+    <div class="container section-padding">
+        <div class="builder-header">
+            <h1>Simple Block Builder</h1>
+            <p class="text-muted">Build content using blocks: rich_text, cta, faq</p>
+        </div>
+
+        <!-- Add Block Bar at Top -->
+        <div class="add-block-bar top-bar">
+            <h3>Add Block</h3>
+            <div class="block-buttons">
+                <button class="btn btn-primary" onclick="addBlock('rich_text')">Rich Text</button>
+                <button class="btn btn-secondary" onclick="addBlock('cta')">Call to Action</button>
+                <button class="btn btn-info" onclick="addBlock('faq')">FAQ</button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="canvas" id="content-canvas">
+                <div class="empty-state">
+                    <p>No blocks yet. Add your first block using the buttons above.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Block Bar at Bottom -->
+        <div class="add-block-bar bottom-bar">
+            <h3>Add Block</h3>
+            <div class="block-buttons">
+                <button class="btn btn-primary" onclick="addBlock('rich_text')">Rich Text</button>
+                <button class="btn btn-secondary" onclick="addBlock('cta')">Call to Action</button>
+                <button class="btn btn-info" onclick="addBlock('faq')">FAQ</button>
+            </div>
+        </div>
+
+        <!-- Hidden Input for JSON Data -->
+        <input type="hidden" id="blocks-json-input" name="blocks_json" value="">
+
+        <!-- Preview Area -->
+        <div class="preview-area">
+            <h3>Live Preview</h3>
+            <div class="preview-content" id="preview-content">
+                <!-- Preview will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="save-area">
+            <button class="btn btn-success" onclick="saveContent()">Save Content</button>
+            <button class="btn btn-warning" onclick="clearContent()">Clear All</button>
+        </div>
+    </div>
+
+    <!-- Block Templates -->
+    <template id="rich-text-template">
+        <div class="block rich-text-block" draggable="true">
+            <div class="block-header">
+                <h4>Rich Text Block</h4>
+                <div class="block-actions">
+                    <button class="btn-sm btn-primary edit-btn">Edit</button>
+                    <button class="btn-sm btn-danger delete-btn">Delete</button>
+                </div>
+            </div>
+            <div class="block-content">
+                <div class="editor-container" id="editor-container-{id}">
+                    <!-- Editor.js will be initialized here -->
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="cta-template">
+        <div class="block cta-block" draggable="true">
+            <div class="block-header">
+                <h4>Call to Action Block</h4>
+                <div class="block-actions">
+                    <button class="btn-sm btn-primary edit-btn">Edit</button>
+                    <button class="btn-sm btn-danger delete-btn">Delete</button>
+                </div>
+            </div>
+            <div class="block-content">
+                <div class="cta-preview" id="cta-preview-{id}">
+                    <h5 class="cta-title">[Title]</h5>
+                    <p class="cta-body">[Description]</p>
+                    <a href="#" class="cta-button">[Button Text]</a>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="faq-template">
+        <div class="block faq-block" draggable="true">
+            <div class="block-header">
+                <h4>FAQ Block</h4>
+                <div class="block-actions">
+                    <button class="btn-sm btn-primary edit-btn">Edit</button>
+                    <button class="btn-sm btn-danger delete-btn">Delete</button>
+                </div>
+            </div>
+            <div class="block-content">
+                <div class="faq-preview" id="faq-preview-{id}">
+                    <p class="faq-count">[X questions]</p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Edit Modals -->
+    <div id="edit-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .builder-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .add-block-bar {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .add-block-bar h3 {
+        margin: 0 0 1rem 0;
+        font-size: 1.1rem;
+    }
+    
+    .block-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .content-area {
+        margin: 2rem 0;
+    }
+    
+    .canvas {
+        min-height: 200px;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 1rem;
+        background: #fff;
+    }
+    
+    .empty-state {
+        text-align: center;
+        color: #6c757d;
+        padding: 2rem;
+    }
+    
+    .block {
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .block-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .block-header h4 {
+        margin: 0;
+        color: #495057;
+    }
+    
+    .block-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 4px;
+    }
+    
+    .preview-area {
+        margin: 2rem 0;
+    }
+    
+    .preview-content {
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 2rem;
+        min-height: 200px;
+    }
+    
+    .save-area {
+        margin: 2rem 0;
+        text-align: center;
+    }
+    
+    /* Modal Styles */
+    .modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 2rem;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 8px;
+    }
+    
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .close-btn:hover {
+        color: black;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .form-input, .form-textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+    
+    .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .cta-preview {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 4px;
+    }
+    
+    .faq-preview {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 4px;
+    }
+    
+    /* Drag and Drop Styles */
+    .block[draggable="true"] {
+        cursor: grab;
+    }
+    
+    .block[draggable="true"]:active {
+        cursor: grabbing;
+    }
+    
+    .drag-over {
+        border-color: #007bff;
+        background-color: #e3f2fd;
+    }
+    
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 1rem;
+        transition: background-color 0.2s;
+    }
+    
+    .btn-primary { background-color: #007bff; color: white; }
+    .btn-primary:hover { background-color: #0056b3; }
+    
+    .btn-secondary { background-color: #6c757d; color: white; }
+    .btn-secondary:hover { background-color: #545b62; }
+    
+    .btn-info { background-color: #17a2b8; color: white; }
+    .btn-info:hover { background-color: #117a8b; }
+    
+    .btn-danger { background-color: #dc3545; color: white; }
+    .btn-danger:hover { background-color: #c82333; }
+    
+    .btn-success { background-color: #28a745; color: white; }
+    .btn-success:hover { background-color: #218838; }
+    
+    .btn-warning { background-color: #ffc107; color: #212529; }
+    .btn-warning:hover { background-color: #e0a800; }
+    
+    .text-muted {
+        color: #6c757d;
+    }
+    
+    .section-padding {
+        padding: 2rem 0;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.29.1/dist/editor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@2.10.0/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@2.8.1/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@1.10.0/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@2.6.0/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@1.7.0/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@2.7.0/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/table@2.2.2/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/link@2.6.1/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@1.3.0/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@1.4.0/dist/bundle.min.js"></script>
+
+<script>
+    // Global state
+    let blocks = [];
+    let currentEditIndex = -1;
+    let editors = {}; // Store Editor.js instances
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+        initDragAndDrop();
+        loadExistingContent();
+    });
+
+    // Initialize drag and drop functionality
+    function initDragAndDrop() {
+        const canvas = document.getElementById('content-canvas');
+        
+        canvas.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            canvas.classList.add('drag-over');
+        });
+        
+        canvas.addEventListener('dragleave', function() {
+            canvas.classList.remove('drag-over');
+        });
+        
+        canvas.addEventListener('drop', function(e) {
+            e.preventDefault();
+            canvas.classList.remove('drag-over');
+            
+            const blockType = e.dataTransfer.getData('text/plain');
+            if (blockType) {
+                addBlock(blockType);
+            }
+        });
+    }
+
+    // Add a new block
+    function addBlock(type) {
+        const blockId = Date.now();
+        const block = {
+            id: blockId,
+            type: type,
+            data: getDefaultData(type)
+        };
+        
+        blocks.push(block);
+        renderCanvas();
+        renderPreview();
+        
+        // Auto-edit rich text blocks
+        if (type === 'rich_text') {
+            setTimeout(() => {
+                editBlock(blocks.length - 1);
+            }, 100);
+        }
+    }
+
+    // Get default data for block type
+    function getDefaultData(type) {
+        switch(type) {
+            case 'rich_text':
+                return {
+                    time: Date.now(),
+                    version: '2.29.1',
+                    blocks: [
+                        {
+                            type: 'paragraph',
+                            data: {
+                                text: 'Start typing your content here...'
+                            }
+                        }
+                    ]
+                };
+            case 'cta':
+                return {
+                    title: 'Call to Action Title',
+                    body: 'Description for your call to action.',
+                    button_label: 'Click Here',
+                    button_url: '#'
+                };
+            case 'faq':
+                return {
+                    title: 'Frequently Asked Questions',
+                    items: [
+                        {
+                            question: 'What is this?',
+                            answer: 'This is a sample FAQ answer.'
+                        }
+                    ]
+                };
+            default:
+                return {};
+        }
+    }
+
+    // Render the canvas with all blocks
+    function renderCanvas() {
+        const canvas = document.getElementById('content-canvas');
+        
+        if (blocks.length === 0) {
+            canvas.innerHTML = '<div class="empty-state"><p>No blocks yet. Add your first block using the buttons above.</p></div>';
+            return;
+        }
+        
+        canvas.innerHTML = '';
+        
+        blocks.forEach((block, index) => {
+            const template = document.getElementById(`${block.type}-template`);
+            if (!template) return;
+            
+            const clone = template.content.cloneNode(true);
+            const blockElement = clone.firstElementChild;
+            
+            // Replace {id} placeholder
+            blockElement.innerHTML = blockElement.innerHTML.replace(/{id}/g, block.id);
+            
+            // Add data attributes
+            blockElement.dataset.index = index;
+            blockElement.dataset.id = block.id;
+            
+            // Add drag and drop events
+            blockElement.addEventListener('dragstart', function(e) {
+                e.dataTransfer.setData('text/plain', '');
+                e.dataTransfer.effectAllowed = 'move';
+                this.classList.add('dragging');
+            });
+            
+            blockElement.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+            });
+            
+            // Add event listeners for buttons
+            const editBtn = blockElement.querySelector('.edit-btn');
+            const deleteBtn = blockElement.querySelector('.delete-btn');
+            
+            if (editBtn) {
+                editBtn.addEventListener('click', () => editBlock(index));
+            }
+            
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', () => deleteBlock(index));
+            }
+            
+            canvas.appendChild(blockElement);
+            
+            // Initialize Editor.js for rich text blocks
+            if (block.type === 'rich_text') {
+                initEditorJS(block.id, block.data);
+            }
+        });
+    }
+
+    // Initialize Editor.js for a rich text block
+    function initEditorJS(blockId, data) {
+        const containerId = `editor-container-${blockId}`;
+        const container = document.getElementById(containerId);
+        
+        if (!container) return;
+        
+        // Destroy existing editor if it exists
+        if (editors[blockId]) {
+            editors[blockId].destroy();
+        }
+        
+        editors[blockId] = new EditorJS({
+            holder: containerId,
+            data: data,
+            tools: {
+                paragraph: {
+                    class: Paragraph,
+                    inlineToolbar: true
+                },
+                header: {
+                    class: Header,
+                    inlineToolbar: true,
+                    config: {
+                        placeholder: 'Header'
+                    }
+                },
+                list: {
+                    class: List,
+                    inlineToolbar: true
+                },
+                quote: {
+                    class: Quote,
+                    inlineToolbar: true,
+                    config: {
+                        quotePlaceholder: 'Enter a quote',
+                        captionPlaceholder: 'Quote\'s author'
+                    }
+                },
+                checklist: {
+                    class: Checklist,
+                    inlineToolbar: true
+                },
+                embed: {
+                    class: Embed,
+                    config: {
+                        services: {
+                            youtube: true,
+                            vimeo: true
+                        }
+                    }
+                },
+                table: {
+                    class: Table,
+                    inlineToolbar: true,
+                    config: {
+                        rows: 2,
+                        cols: 3
+                    }
+                },
+                link: {
+                    class: LinkTool,
+                    config: {
+                        endpoint: '/api/link/'
+                    }
+                },
+                marker: {
+                    class: Marker,
+                    shortcut: 'CMD+M'
+                },
+                inlineCode: {
+                    class: InlineCode,
+                    shortcut: 'CMD+SHIFT+M'
+                }
+            },
+            onChange: () => {
+                // Update the block data when content changes
+                updateBlockData(blockId);
+            }
+        });
+    }
+
+    // Update block data from Editor.js
+    function updateBlockData(blockId) {
+        const index = blocks.findIndex(block => block.id === blockId);
+        if (index === -1) return;
+        
+        if (editors[blockId]) {
+            editors[blockId].save().then((outputData) => {
+                blocks[index].data = outputData;
+                renderPreview();
+            }).catch((error) => {
+                console.log('Saving failed: ', error);
+            });
+        }
+    }
+
+    // Edit a block
+    function editBlock(index) {
+        currentEditIndex = index;
+        const block = blocks[index];
+        
+        let modalContent = '';
+        
+        if (block.type === 'cta') {
+            modalContent = `
+                <h3>Edit Call to Action</h3>
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" id="edit-title" value="${escapeHtml(block.data.title)}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="edit-body">${escapeHtml(block.data.body)}</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Button Text</label>
+                    <input type="text" class="form-input" id="edit-button-label" value="${escapeHtml(block.data.button_label)}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Button URL</label>
+                    <input type="url" class="form-input" id="edit-button-url" value="${escapeHtml(block.data.button_url)}">
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            `;
+        } else if (block.type === 'faq') {
+            modalContent = `
+                <h3>Edit FAQ</h3>
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" id="edit-faq-title" value="${escapeHtml(block.data.title)}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Questions</label>
+                    <div id="faq-items-container">
+                        ${block.data.items.map((item, i) => `
+                            <div class="faq-item" style="margin-bottom: 1rem; padding: 1rem; border: 1px solid #dee2e6; border-radius: 4px;">
+                                <div class="form-group">
+                                    <label class="form-label">Question ${i + 1}</label>
+                                    <input type="text" class="form-input faq-question" value="${escapeHtml(item.question)}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Answer ${i + 1}</label>
+                                    <textarea class="form-textarea faq-answer">${escapeHtml(item.answer)}</textarea>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="btn btn-info" onclick="addFAQItem()">+ Add Question</button>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            `;
+        }
+        
+        if (modalContent) {
+            document.getElementById('modal-body').innerHTML = modalContent;
+            document.getElementById('edit-modal').style.display = 'block';
+        }
+    }
+
+    // Add FAQ item
+    function addFAQItem() {
+        const container = document.getElementById('faq-items-container');
+        const index = container.children.length;
+        const newItem = document.createElement('div');
+        newItem.className = 'faq-item';
+        newItem.style.cssText = 'margin-bottom: 1rem; padding: 1rem; border: 1px solid #dee2e6; border-radius: 4px;';
+        newItem.innerHTML = `
+            <div class="form-group">
+                <label class="form-label">Question ${index + 1}</label>
+                <input type="text" class="form-input faq-question" placeholder="Enter question">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Answer ${index + 1}</label>
+                <textarea class="form-textarea faq-answer" placeholder="Enter answer"></textarea>
+            </div>
+        `;
+        container.appendChild(newItem);
+    }
+
+    // Save edit changes
+    function saveEdit() {
+        if (currentEditIndex === -1) return;
+        
+        const block = blocks[currentEditIndex];
+        
+        if (block.type === 'cta') {
+            block.data.title = document.getElementById('edit-title').value;
+            block.data.body = document.getElementById('edit-body').value;
+            block.data.button_label = document.getElementById('edit-button-label').value;
+            block.data.button_url = document.getElementById('edit-button-url').value;
+        } else if (block.type === 'faq') {
+            block.data.title = document.getElementById('edit-faq-title').value;
+            const items = [];
+            const questionInputs = document.querySelectorAll('.faq-question');
+            const answerInputs = document.querySelectorAll('.faq-answer');
+            
+            for (let i = 0; i < questionInputs.length; i++) {
+                items.push({
+                    question: questionInputs[i].value,
+                    answer: answerInputs[i].value
+                });
+            }
+            block.data.items = items;
+        }
+        
+        closeModal();
+        renderCanvas();
+        renderPreview();
+    }
+
+    // Close modal
+    function closeModal() {
+        document.getElementById('edit-modal').style.display = 'none';
+        currentEditIndex = -1;
+    }
+
+    // Delete a block
+    function deleteBlock(index) {
+        if (confirm('Are you sure you want to delete this block?')) {
+            const block = blocks[index];
+            
+            // Destroy Editor.js instance if it exists
+            if (block.type === 'rich_text' && editors[block.id]) {
+                editors[block.id].destroy();
+                delete editors[block.id];
+            }
+            
+            blocks.splice(index, 1);
+            renderCanvas();
+            renderPreview();
+        }
+    }
+
+    // Render preview
+    function renderPreview() {
+        const preview = document.getElementById('preview-content');
+        preview.innerHTML = '';
+        
+        blocks.forEach(block => {
+            const blockElement = document.createElement('div');
+            blockElement.className = `preview-block ${block.type}-preview`;
+            
+            if (block.type === 'rich_text') {
+                // Render Editor.js content
+                const html = renderEditorJSContent(block.data);
+                blockElement.innerHTML = html;
+            } else if (block.type === 'cta') {
+                blockElement.innerHTML = `
+                    <div class="cta-preview">
+                        <h3>${escapeHtml(block.data.title)}</h3>
+                        <p>${escapeHtml(block.data.body)}</p>
+                        <a href="${escapeHtml(block.data.button_url)}" class="btn btn-primary">${escapeHtml(block.data.button_label)}</a>
+                    </div>
+                `;
+            } else if (block.type === 'faq') {
+                const faqItems = block.data.items.map(item => `
+                    <div class="faq-item">
+                        <h4>${escapeHtml(item.question)}</h4>
+                        <p>${escapeHtml(item.answer)}</p>
+                    </div>
+                `).join('');
+                
+                blockElement.innerHTML = `
+                    <div class="faq-preview">
+                        <h3>${escapeHtml(block.data.title)}</h3>
+                        ${faqItems}
+                    </div>
+                `;
+            }
+            
+            preview.appendChild(blockElement);
+        });
+        
+        // Update hidden input
+        document.getElementById('blocks-json-input').value = JSON.stringify({ blocks: blocks });
+    }
+
+    // Render Editor.js content to HTML
+    function renderEditorJSContent(data) {
+        let html = '';
+        
+        if (data && data.blocks) {
+            data.blocks.forEach(block => {
+                switch(block.type) {
+                    case 'paragraph':
+                        html += `<p>${escapeHtml(block.data.text)}</p>`;
+                        break;
+                    case 'header':
+                        html += `<h${block.data.level}>${escapeHtml(block.data.text)}</h${block.data.level}>`;
+                        break;
+                    case 'list':
+                        const tag = block.data.style === 'ordered' ? 'ol' : 'ul';
+                        const items = block.data.items.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+                        html += `<${tag}>${items}</${tag}>`;
+                        break;
+                    case 'quote':
+                        html += `<blockquote><p>${escapeHtml(block.data.text)}</p><cite>${escapeHtml(block.data.caption)}</cite></blockquote>`;
+                        break;
+                    case 'checklist':
+                        html += '<ul class="checklist">';
+                        block.data.items.forEach(item => {
+                            html += `<li><input type="checkbox" ${item.checked ? 'checked' : ''}> ${escapeHtml(item.text)}</li>`;
+                        });
+                        html += '</ul>';
+                        break;
+                    case 'embed':
+                        html += `<div class="embed-block">${escapeHtml(block.data.embed)}</div>`;
+                        break;
+                    case 'table':
+                        html += '<table>';
+                        block.data.content.forEach(row => {
+                            html += '<tr>';
+                            row.forEach(cell => {
+                                html += `<td>${escapeHtml(cell)}</td>`;
+                            });
+                            html += '</tr>';
+                        });
+                        html += '</table>';
+                        break;
+                    case 'link':
+                        html += `<a href="${escapeHtml(block.data.link)}">${escapeHtml(block.data.meta.title || block.data.link)}</a>`;
+                        break;
+                    case 'marker':
+                        html += `<mark>${escapeHtml(block.data.text)}</mark>`;
+                        break;
+                    case 'inlineCode':
+                        html += `<code>${escapeHtml(block.data.text)}</code>`;
+                        break;
+                }
+            });
+        }
+        
+        return html;
+    }
+
+    // Save content
+    function saveContent() {
+        // Collect all Editor.js data
+        const promises = [];
+        
+        blocks.forEach(block => {
+            if (block.type === 'rich_text' && editors[block.id]) {
+                promises.push(editors[block.id].save().then(data => {
+                    block.data = data;
+                }));
+            }
+        });
+        
+        Promise.all(promises).then(() => {
+            // Update hidden input with final JSON
+            document.getElementById('blocks-json-input').value = JSON.stringify({ blocks: blocks });
+            
+            // Show success message
+            alert('Content saved successfully!');
+            
+            // In a real application, you would submit the form here
+            // document.getElementById('your-form-id').submit();
+        }).catch(error => {
+            console.error('Error saving content:', error);
+            alert('Error saving content. Please check the console for details.');
+        });
+    }
+
+    // Clear all content
+    function clearContent() {
+        if (confirm('Are you sure you want to clear all content?')) {
+            // Destroy all Editor.js instances
+            Object.keys(editors).forEach(id => {
+                editors[id].destroy();
+            });
+            editors = {};
+            
+            blocks = [];
+            currentEditIndex = -1;
+            renderCanvas();
+            renderPreview();
+        }
+    }
+
+    // Load existing content (for editing existing posts)
+    function loadExistingContent() {
+        // This would typically load from a hidden input or API
+        const existingInput = document.getElementById('blocks-json-input');
+        if (existingInput && existingInput.value) {
+            try {
+                const data = JSON.parse(existingInput.value);
+                if (data.blocks && Array.isArray(data.blocks)) {
+                    blocks = data.blocks;
+                    renderCanvas();
+                    renderPreview();
+                }
+            } catch (e) {
+                console.error('Error loading existing content:', e);
+            }
+        }
+    }
+
+    // Utility function to escape HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('edit-modal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+</script>
+{% endblock %}

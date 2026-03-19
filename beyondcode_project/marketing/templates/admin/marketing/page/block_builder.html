@@ -1,0 +1,1227 @@
+{% load static %}
+<!-- Editor.js Core -->
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+
+<!-- Tools -->
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/raw@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script>
+<style>
+    /* Block Builder Styles for Admin */
+    .block-builder-container {
+        margin: 20px 0;
+        padding: 20px;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        background: #fff;
+    }
+    
+    .block-builder-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .block-builder-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #495057;
+        margin: 0;
+    }
+    
+    .add-block-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .add-block-btn {
+        padding: 8px 16px;
+        border: 1px solid #007bff;
+        background: #007bff;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+    
+    .add-block-btn:hover {
+        background: #0056b3;
+        border-color: #0056b3;
+    }
+    
+    .add-block-btn.secondary {
+        background: #6c757d;
+        border-color: #6c757d;
+    }
+    
+    .add-block-btn.secondary:hover {
+        background: #545b62;
+        border-color: #545b62;
+    }
+    
+    .add-block-btn.info {
+        background: #17a2b8;
+        border-color: #17a2b8;
+    }
+    
+    .add-block-btn.info:hover {
+        background: #117a8b;
+        border-color: #117a8b;
+    }
+    
+    .blocks-canvas {
+        min-height: 200px;
+        margin-bottom: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 15px;
+        background: #f8f9fa;
+    }
+    
+    .empty-canvas {
+        text-align: center;
+        color: #6c757d;
+        padding: 40px 20px;
+        border: 2px dashed #dee2e6;
+        border-radius: 4px;
+        background: #fff;
+    }
+    
+    .block-item {
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        cursor: grab;
+    }
+    
+    .block-item.dragging {
+        opacity: 0.5;
+        border-color: #007bff;
+        background: #e3f2fd;
+    }
+    
+    .block-item.drag-over {
+        border-color: #007bff;
+        background: #e3f2fd;
+        border-style: solid;
+    }
+    
+    .block-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .block-type-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 14px;
+    }
+    
+    .block-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .block-btn {
+        padding: 4px 8px;
+        border: 1px solid #6c757d;
+        background: #6c757d;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s;
+    }
+    
+    .block-btn:hover {
+        background: #545b62;
+        border-color: #545b62;
+    }
+    
+    .block-btn.primary {
+        background: #007bff;
+        border-color: #007bff;
+    }
+    
+    .block-btn.primary:hover {
+        background: #0056b3;
+        border-color: #0056b3;
+    }
+    
+    .block-btn.danger {
+        background: #dc3545;
+        border-color: #dc3545;
+    }
+    
+    .block-btn.danger:hover {
+        background: #c82333;
+        border-color: #c82333;
+    }
+    
+    .block-content {
+        min-height: 50px;
+    }
+    
+    .block-preview {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .block-preview h3, .block-preview h4, .block-preview h5, .block-preview h6 {
+        margin: 0 0 8px 0;
+        font-size: 16px;
+    }
+    
+    .block-preview p {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+    }
+    
+    .block-preview a {
+        color: #007bff;
+        text-decoration: none;
+    }
+    
+    .block-preview a:hover {
+        text-decoration: underline;
+    }
+    
+    .block-preview ul, .block-preview ol {
+        margin: 0 0 8px 20px;
+        padding: 0;
+    }
+    
+    .block-preview li {
+        margin-bottom: 4px;
+    }
+    
+    .drag-handle {
+        cursor: grab;
+        color: #6c757d;
+        font-size: 18px;
+        padding: 0 10px;
+        border-right: 1px solid #dee2e6;
+        margin-right: 10px;
+    }
+    
+    .drag-handle:hover {
+        color: #007bff;
+    }
+    
+    .preview-section {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background: #fff;
+    }
+    
+    .preview-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .preview-content {
+        min-height: 100px;
+    }
+    
+    .save-controls {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+    
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    
+    .modal-content {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #6c757d;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    
+    .form-input, .form-textarea {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+    
+    .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .cta-preview {
+        background: #e3f2fd;
+        border: 1px solid #90caf9;
+        border-radius: 4px;
+        padding: 15px;
+    }
+    
+    .faq-preview {
+        background: #fff3e0;
+        border: 1px solid #ffb74d;
+        border-radius: 4px;
+        padding: 15px;
+    }
+    
+    .faq-item {
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #fff;
+        border: 1px solid #ffb74d;
+        border-radius: 4px;
+    }
+    
+    .faq-item:last-child {
+        margin-bottom: 0;
+    }
+</style>
+
+<div class="block-builder-container">
+    <div class="block-builder-header">
+        <h3 class="block-builder-title">Block Builder</h3>
+    <div class="add-block-controls">
+        <button class="add-block-btn" onclick="event.preventDefault(); addBlock('rich_text'); return false;" type="button">
+            <i class="fa fa-text-width"></i> Rich Text
+        </button>
+        <button class="add-block-btn secondary" onclick="event.preventDefault(); addBlock('cta')" type="button">
+            <i class="fa fa-bullhorn"></i> Call to Action
+        </button>
+        <button class="add-block-btn info" onclick="event.preventDefault(); addBlock('faq')" type="button">
+            <i class="fa fa-question-circle"></i> FAQ
+        </button>
+    </div>
+    </div>
+    
+    <div class="blocks-canvas" id="blocks-canvas">
+        <div class="empty-canvas" id="empty-canvas">
+            <p>No blocks yet. Add your first block using the buttons above.</p>
+        </div>
+    </div>
+    
+    <div class="preview-section">
+        <h4 class="preview-title">Live Preview</h4>
+        <div class="preview-content" id="preview-content">
+            <!-- Preview will be rendered here -->
+        </div>
+    </div>
+    
+    <div class="save-controls">
+        <button class="add-block-btn secondary" onclick="event.preventDefault(); event.stopPropagation(); clearAllBlocks(); return false;" type="button">
+            <i class="fa fa-trash"></i> Clear All
+        </button>
+        <button class="add-block-btn" onclick="event.preventDefault(); event.stopPropagation(); saveBlocks(); return false;" type="button">
+            <i class="fa fa-save"></i> Save Blocks
+        </button>
+    </div>
+</div>
+
+<!-- Edit Modal - Moved outside form to prevent form submission -->
+<div class="modal-overlay" id="edit-modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Edit Block</h4>
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+        <div id="modal-body">
+            <!-- Modal content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // STEP 1: CENTRAL STATE OBJECT - REMOVED (FIX 3)
+    // let blocks = {
+    //     richText: null,
+    //     cta: {},
+    //     faq: []
+    // };
+
+    // Global state for blocks
+    window.blocks = [];
+    window.currentEditIndex = -1;
+    window.editorInstances = window.editorInstances || {};
+
+    // Initialize the block builder
+    document.addEventListener('DOMContentLoaded', function() {
+        initDragAndDrop();
+        loadExistingBlocks();
+    });
+
+    // Initialize drag and drop functionality
+    function initDragAndDrop() {
+        const canvas = document.getElementById('blocks-canvas');
+        
+        canvas.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(canvas, e.clientY);
+            const draggable = document.querySelector('.dragging');
+            if (afterElement == null) {
+                canvas.appendChild(draggable);
+            } else {
+                canvas.insertBefore(draggable, afterElement);
+            }
+        });
+    }
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.block-item:not(.dragging)')];
+        
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    // Add a new block
+    window.addBlock = function(type) {
+        const blockId = Date.now();
+        const block = {
+            id: blockId,
+            type: type,
+            data: getDefaultData(type)
+        };
+        
+        window.blocks.push(block);
+        renderCanvas();
+        renderPreview();
+        
+        // Auto-edit rich text blocks
+        if (type === 'rich_text') {
+            setTimeout(() => {
+                editBlock(window.blocks.length - 1);
+            }, 100);
+        }
+    }
+
+    // Get default data for block type
+    function getDefaultData(type) {
+        switch(type) {
+            case 'rich_text':
+                return {
+                    time: Date.now(),
+                    version: '2.29.1',
+                    blocks: [
+                        {
+                            type: 'paragraph',
+                            data: {
+                                text: 'Start typing your content here...'
+                            }
+                        }
+                    ]
+                };
+            case 'cta':
+                return {
+                    title: 'Call to Action Title',
+                    body: 'Description for your call to action.',
+                    button_label: 'Click Here',
+                    button_url: '#'
+                };
+            case 'faq':
+                return {
+                    title: 'Frequently Asked Questions',
+                    items: [
+                        {
+                            question: 'What is this?',
+                            answer: 'This is a sample FAQ answer.'
+                        }
+                    ]
+                };
+            default:
+                return {};
+        }
+    }
+
+    // Render the canvas with all blocks
+    function renderCanvas() {
+        const canvas = document.getElementById('blocks-canvas');
+        const emptyCanvas = document.getElementById('empty-canvas');
+        
+        if (window.blocks.length === 0) {
+            emptyCanvas.style.display = 'block';
+            canvas.innerHTML = '';
+            canvas.appendChild(emptyCanvas);
+            return;
+        }
+        
+        emptyCanvas.style.display = 'none';
+        canvas.innerHTML = '';
+        canvas.appendChild(emptyCanvas);
+        
+        window.blocks.forEach((block, index) => {
+            const blockElement = document.createElement('div');
+            blockElement.className = 'block-item';
+            blockElement.draggable = true;
+            blockElement.dataset.index = index;
+            blockElement.dataset.id = block.id;
+            
+            blockElement.innerHTML = `
+                <div class="block-header">
+                    <div style="display: flex; align-items: center;">
+                        <span class="drag-handle">☰</span>
+                        <span class="block-type-label">${getBlockLabel(block.type)}</span>
+                    </div>
+                    <div class="block-actions">
+                        <button class="block-btn primary" onclick="event.preventDefault(); event.stopPropagation(); editBlock(${index}); return false;" type="button">Edit</button>
+                        <button class="block-btn danger" onclick="event.preventDefault(); event.stopPropagation(); deleteBlock(${index}); return false;" type="button">Delete</button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="block-preview" id="preview-${block.id}">
+                        ${renderBlockPreview(block)}
+                    </div>
+                </div>
+            `;
+            
+            // Add drag events
+            blockElement.addEventListener('dragstart', function() {
+                this.classList.add('dragging');
+            });
+            
+            blockElement.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+                // Update blocks array after drag ends
+                updateBlocksFromDOM();
+            });
+            
+            canvas.insertBefore(blockElement, emptyCanvas);
+        });
+    }
+
+    // Update blocks array after drag and drop
+    function updateBlocksFromDOM() {
+        const canvas = document.getElementById('blocks-canvas');
+        const blockElements = canvas.querySelectorAll('.block-item');
+        const newBlocks = [];
+        
+        blockElements.forEach((element) => {
+            const index = parseInt(element.dataset.index);
+            newBlocks.push(window.blocks[index]);
+        });
+        
+        window.blocks = newBlocks;
+        renderPreview();
+        updateHiddenInput();
+    }
+
+    // Get block type label
+    function getBlockLabel(type) {
+        const labels = {
+            'rich_text': 'Rich Text',
+            'cta': 'Call to Action',
+            'faq': 'FAQ'
+        };
+        return labels[type] || type;
+    }
+
+    // Render block preview
+    function renderBlockPreview(block) {
+        switch(block.type) {
+            case 'rich_text':
+                return '<p><strong>Rich Text Block</strong></p><p>Content: ' + (block.data.blocks ? block.data.blocks.length : 0) + ' blocks</p>';
+            case 'cta':
+                return `
+                    <div class="cta-preview">
+                        <h4>${escapeHtml(block.data.title || 'No title')}</h4>
+                        <p>${escapeHtml(block.data.body || 'No content')}</p>
+                        <a href="${escapeHtml(block.data.button_url || '#')}" class="btn btn-primary">${escapeHtml(block.data.button_label || 'Button')}</a>
+                    </div>
+                `;
+            case 'faq':
+                const items = block.data.items || [];
+                return `
+                    <div class="faq-preview">
+                        <h4>${escapeHtml(block.data.title || 'No title')}</h4>
+                        <p>${items.length} questions</p>
+                    </div>
+                `;
+            default:
+                return '<p>Unknown block type</p>';
+        }
+    }
+
+    // Edit a block
+    window.editBlock = function(index) {
+        window.currentEditIndex = index;
+        const block = window.blocks[index];
+        let modalContent = '';
+        
+        if (block.type === 'rich_text') {
+        
+            // Create a unique ID for this editor instance
+            const editorId = `editorjs-${block.id}`;
+            modalContent = `
+                <div class="form-group">
+                    <label class="form-label">Rich Text Content</label>
+                    <div id="${editorId}" style="min-height: 300px;"></div>
+                </div>
+                <div class="form-group">
+                    <button class="add-block-btn" onclick="saveRichTextEditor(${index})">
+                        <i class="fa fa-save"></i> Save Content
+                    </button>
+                </div>
+            `;
+        } else if (block.type === 'cta') {
+            modalContent = `
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" id="edit-title" value="${escapeHtml(block.data.title)}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="edit-body">${escapeHtml(block.data.body)}</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Button Text</label>
+                    <input type="text" class="form-input" id="edit-button-label" value="${escapeHtml(block.data.button_label)}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Button URL</label>
+                    <input type="url" class="form-input" id="edit-button-url" value="${escapeHtml(block.data.button_url)}">
+                </div>
+                <div class="form-group">
+                    <button class="add-block-btn" onclick="event.preventDefault(); event.stopPropagation(); saveEdit(); return false;" type="button">
+                        <i class="fa fa-save"></i> Save Changes
+                    </button>
+                </div>
+            `;
+        } else if (block.type === 'faq') {
+            modalContent = `
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" id="edit-faq-title" value="${escapeHtml(block.data.title)}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Questions</label>
+                    <div id="faq-items-container">
+                        ${block.data.items.map((item, i) => `
+                            <div class="faq-item">
+                                <div class="form-group">
+                                    <label class="form-label">Question ${i + 1}</label>
+                                    <input type="text" class="form-input faq-question" value="${escapeHtml(item.question)}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Answer ${i + 1}</label>
+                                    <textarea class="form-textarea faq-answer">${escapeHtml(item.answer)}</textarea>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="add-block-btn info" onclick="event.preventDefault(); event.stopPropagation(); addFAQItem(); return false;" type="button" style="margin-top: 10px;">
+                        <i class="fa fa-plus"></i> Add Question
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button class="add-block-btn" onclick="event.preventDefault(); event.stopPropagation(); saveEdit(); return false;" type="button">
+                        <i class="fa fa-save"></i> Save Changes
+                    </button>
+                </div>
+            `;
+        }
+        
+        if (modalContent) {
+            document.getElementById('modal-title').textContent = `Edit ${getBlockLabel(block.type)}`;
+            document.getElementById('modal-body').innerHTML = modalContent;
+            document.getElementById('edit-modal').style.display = 'flex';
+            
+            // Initialize Editor.js for rich text blocks
+            if (block.type === 'rich_text') {
+                
+                const editorId = `editorjs-${block.id}`;
+                setTimeout(() => {
+                    if (typeof EditorJS !== 'undefined') {
+                        // CORE ARCHITECTURE RULE: Always use block.data, never global state
+                        // 1. Never initialize EditorJS with empty data if data exists
+                        // 2. Never use global blocks.richText
+                        // 3. Always use block.data for each block
+                        // 4. Do not rely on onReady() for rendering
+                        // 5. Use editor.clear() before re-rendering
+                        
+                        // Create editor instance if it doesn't exist
+                        
+                        if (!window.editorInstances[block.id]) {
+                            
+                            window.editorInstances[block.id] = new EditorJS({
+                                holder: editorId,
+                                 data: block.data && block.data.blocks
+                                    ? block.data
+                                    : { blocks: [] },
+                                tools: {
+                                    header: {
+                                        class: Header,
+                                        inlineToolbar: true,
+                                        config: {
+                                            placeholder: 'Enter a header',
+                                            levels: [1, 2, 3, 4, 5, 6],
+                                            defaultLevel: 2
+                                        }
+                                    },
+                                    paragraph: {
+                                        class: Paragraph,
+                                        inlineToolbar: true,
+                                        config: {
+                                            placeholder: 'Enter text...'
+                                        }
+                                    },
+                                    // list: {
+                                    //     class: List,
+                                    //     inlineToolbar: true,
+                                    //     config: {
+                                    //         defaultStyle: 'unordered'
+                                    //     }
+                                    // },
+                                    image: {
+                                        class: ImageTool,
+                                        config: {
+                                            endpoints: {
+                                                byFile: '/admin/marketing/page/upload/',
+                                                byUrl: '/admin/marketing/page/upload/',
+                                            },
+                                            field: 'file',
+                                            types: 'image/*',
+                                            captionPlaceholder: 'Image caption (optional)',
+                                            buttonContent: 'Select an Image'
+                                        }
+                                    },
+                                    table: {
+                                        class: Table,
+                                        inlineToolbar: true,
+                                        config: {
+                                            rows: 2,
+                                            cols: 3
+                                        }
+                                    },
+                                    embed: {
+                                        class: Embed,
+                                        config: {
+                                            services: {
+                                                youtube: true,
+                                                vimeo: true,
+                                                instagram: true,
+                                                twitter: true,
+                                                facebook: true
+                                            }
+                                        }
+                                    },
+                                    checklist: {
+                                        class: Checklist,
+                                        inlineToolbar: true
+                                    },
+                                    delimiter: {
+                                        class: Delimiter
+                                    },
+                                    warning: {
+                                        class: Warning,
+                                        inlineToolbar: true,
+                                        config: {
+                                            titlePlaceholder: 'Title',
+                                            messagePlaceholder: 'Message'
+                                        }
+                                    },
+                                    code: {
+                                        class: CodeTool
+                                    },
+                                    raw: {
+                                        class: RawTool
+                                    },
+                                    quote: {
+                                        class: Quote,
+                                        inlineToolbar: true,
+                                        config: {
+                                            quotePlaceholder: 'Enter a quote',
+                                            captionPlaceholder: 'Quote\'s author'
+                                        }
+                                    },
+                                    marker: {
+                                        class: Marker,
+                                        shortcut: 'CMD+SHIFT+M'
+                                    },
+                                    inlineCode: {
+                                        class: InlineCode,
+                                        shortcut: 'CMD+SHIFT+M'
+                                    }
+                                },
+                                // Remove onReady - do not rely on it for rendering
+                                onChange: function() {
+                                    console.log('Editor.js content changed!');
+                                }
+                            });
+                            
+                            // FIX: Initialize with correct data immediately after creation
+                            // Never initialize with empty data if block.data exists
+                            if (block.data && block.data.blocks && block.data.blocks.length > 0) {
+                                window.editorInstances[block.id].render(block.data);
+                            }
+                        } else {
+                            // If editor already exists, clear and render the correct data
+                            // FIX: Use editor.clear() before re-rendering
+                            window.editorInstances[block.id].clear();
+                            window.editorInstances[block.id].render(block.data || { blocks: [] });
+                        }
+                    }
+                }, 100);
+            }
+        }
+    }
+    
+    // Save rich text editor content
+    window.saveRichTextEditor = function(index) {
+        const block = window.blocks[index];
+      
+        if (block.type === 'rich_text' && window.editorInstances[block.id]) {
+            window.editorInstances[block.id].save().then(data => {
+               
+                // FIX 2: Save data correctly - only store in block.data, remove blocks.richText
+                block.data = data;
+                //REMOVE: blocks.richText = data; (FIX 2)
+               closeModal();
+                renderCanvas();
+                renderPreview();
+                updateHiddenInput();
+            }).catch(error => {
+                console.error('Error saving editor:', error);
+                alert('Error saving editor content. Please check the console for details.');
+            });
+        }
+    }
+
+    // Add FAQ item
+    window.addFAQItem = function() {
+        const container = document.getElementById('faq-items-container');
+        const index = container.children.length;
+        const newItem = document.createElement('div');
+        newItem.className = 'faq-item';
+        newItem.innerHTML = `
+            <div class="form-group">
+                <label class="form-label">Question ${index + 1}</label>
+                <input type="text" class="form-input faq-question" placeholder="Enter question">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Answer ${index + 1}</label>
+                <textarea class="form-textarea faq-answer" placeholder="Enter answer"></textarea>
+            </div>
+        `;
+        container.appendChild(newItem);
+    }
+
+    // STEP 5: SAVE CTA
+    window.saveCTA = function() {
+        // FIX 2: Save data correctly - only store in block.data, remove blocks.cta
+        const block = window.blocks[window.currentEditIndex];
+        block.data = {
+            title: document.getElementById('cta-title').value,
+            body: document.getElementById('cta-body').value,
+            button_label: document.getElementById('cta-button-label').value,
+            button_url: document.getElementById('cta-button-url').value
+        };
+        // REMOVE: blocks.cta = block.data; (FIX 2)
+    };
+
+    // STEP 6: SAVE FAQ
+    window.saveFAQ = function() {
+        // FIX 2: Save data correctly - only store in block.data, remove blocks.faq
+        const block = window.blocks[window.currentEditIndex];
+        block.data = {
+            title: document.getElementById('edit-faq-title').value,
+            items: collectFAQItems() // array of Q&A
+        };
+        // REMOVE: blocks.faq = block.data.items; (FIX 2)
+    };
+
+    function collectFAQItems() {
+        const items = [];
+        const questionInputs = document.querySelectorAll('.faq-question');
+        const answerInputs = document.querySelectorAll('.faq-answer');
+        
+        for (let i = 0; i < questionInputs.length; i++) {
+            items.push({
+                question: questionInputs[i].value,
+                answer: answerInputs[i].value
+            });
+        }
+        return items;
+    }
+
+    // Save edit changes
+    window.saveEdit = function() {
+        if (window.currentEditIndex === -1) return;
+        
+        const block = window.blocks[window.currentEditIndex];
+        
+        if (block.type === 'cta') {
+            // FIX 2: Save data correctly - only store in block.data, remove blocks.cta
+            block.data = {
+                title: document.getElementById('edit-title').value,
+                body: document.getElementById('edit-body').value,
+                button_label: document.getElementById('edit-button-label').value,
+                button_url: document.getElementById('edit-button-url').value
+            };
+            // REMOVE: blocks.cta = block.data; (FIX 2)
+        } else if (block.type === 'faq') {
+            // FIX 2: Save data correctly - only store in block.data, remove blocks.faq
+            block.data = {
+                title: document.getElementById('edit-faq-title').value,
+                items: collectFAQItems()
+            };
+            // REMOVE: blocks.faq = block.data.items; (FIX 2)
+        }
+        
+        closeModal();
+        renderCanvas();
+        renderPreview();
+        updateHiddenInput();
+    }
+
+    // Close modal
+    window.closeModal = function() {
+        document.getElementById('edit-modal').style.display = 'none';
+        window.currentEditIndex = -1;
+    }
+
+    // Delete a block
+    window.deleteBlock = function(index) {
+        if (confirm('Are you sure you want to delete this block?')) {
+            const block = window.blocks[index];
+            
+            // Destroy Editor.js instance if it exists
+            if (block.type === 'rich_text' && window.editorInstances[block.id]) {
+                window.editorInstances[block.id].destroy();
+                delete window.editorInstances[block.id];
+            }
+            
+            window.blocks.splice(index, 1);
+            renderCanvas();
+            renderPreview();
+            updateHiddenInput();
+        }
+    }
+
+    // Render preview
+    function renderPreview() {
+        const preview = document.getElementById('preview-content');
+        preview.innerHTML = '';
+        
+        window.blocks.forEach(block => {
+            const blockElement = document.createElement('div');
+            blockElement.className = `preview-block ${block.type}-preview`;
+            blockElement.style.marginBottom = '20px';
+            
+            if (block.type === 'rich_text') {
+                // Render Editor.js content
+                const html = renderEditorJSContent(block.data);
+                blockElement.innerHTML = html;
+            } else if (block.type === 'cta') {
+                blockElement.innerHTML = `
+                    <div class="cta-preview">
+                        <h3>${escapeHtml(block.data.title)}</h3>
+                        <p>${escapeHtml(block.data.body)}</p>
+                        <a href="${escapeHtml(block.data.button_url)}" class="btn btn-primary">${escapeHtml(block.data.button_label)}</a>
+                    </div>
+                `;
+            } else if (block.type === 'faq') {
+                const faqItems = block.data.items.map(item => `
+                    <div class="faq-item">
+                        <h4>${escapeHtml(item.question)}</h4>
+                        <p>${escapeHtml(item.answer)}</p>
+                    </div>
+                `).join('');
+                
+                blockElement.innerHTML = `
+                    <div class="faq-preview">
+                        <h3>${escapeHtml(block.data.title)}</h3>
+                        ${faqItems}
+                    </div>
+                `;
+            }
+            
+            preview.appendChild(blockElement);
+        });
+    }
+
+    // Render Editor.js content to HTML
+    function renderEditorJSContent(data) {
+        let html = '';
+        
+        if (data && data.blocks) {
+            data.blocks.forEach(block => {
+                switch(block.type) {
+                    case 'paragraph':
+                        html += `<p>${escapeHtml(block.data.text)}</p>`;
+                        break;
+                    case 'header':
+                        html += `<h${block.data.level}>${escapeHtml(block.data.text)}</h${block.data.level}>`;
+                        break;
+                    case 'list':
+                        const tag = block.data.style === 'ordered' ? 'ol' : 'ul';
+                        const items = block.data.items.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+                        html += `<${tag}>${items}</${tag}>`;
+                        break;
+                    case 'quote':
+                        html += `<blockquote><p>${escapeHtml(block.data.text)}</p><cite>${escapeHtml(block.data.caption)}</cite></blockquote>`;
+                        break;
+                    case 'checklist':
+                        html += '<ul class="checklist">';
+                        block.data.items.forEach(item => {
+                            html += `<li><input type="checkbox" ${item.checked ? 'checked' : ''}> ${escapeHtml(item.text)}</li>`;
+                        });
+                        html += '</ul>';
+                        break;
+                    case 'embed':
+                        html += `<div class="embed-block">${escapeHtml(block.data.embed)}</div>`;
+                        break;
+                    case 'table':
+                        html += '<table>';
+                        block.data.content.forEach(row => {
+                            html += '<tr>';
+                            row.forEach(cell => {
+                                html += `<td>${escapeHtml(cell)}</td>`;
+                            });
+                            html += '</tr>';
+                        });
+                        html += '</table>';
+                        break;
+                    case 'link':
+                        html += `<a href="${escapeHtml(block.data.link)}">${escapeHtml(block.data.meta.title || block.data.link)}</a>`;
+                        break;
+                    case 'marker':
+                        html += `<mark>${escapeHtml(block.data.text)}</mark>`;
+                        break;
+                    case 'inlineCode':
+                        html += `<code>${escapeHtml(block.data.text)}</code>`;
+                        break;
+                }
+            });
+        }
+        
+        return html;
+    }
+
+    // Save blocks to hidden input
+    window.saveBlocks = function() {
+        // Collect all Editor.js data
+        const promises = [];
+        
+        window.blocks.forEach(block => {
+            if (block.type === 'rich_text' && window.editorInstances[block.id]) {
+                promises.push(window.editorInstances[block.id].save().then(data => {
+                    block.data = data;
+                }));
+            }
+        });
+        
+        Promise.all(promises).then(() => {
+            updateHiddenInput();
+            alert('Blocks saved successfully!');
+        }).catch(error => {
+            console.error('Error saving blocks:', error);
+            alert('Error saving blocks. Please check the console for details.');
+        });
+    }
+
+    // Update hidden input with blocks data
+    function updateHiddenInput() {
+        const hiddenInput = document.getElementById('id_blocks_json');
+        if (hiddenInput) {
+            hiddenInput.value = JSON.stringify({ blocks: window.blocks });
+        }
+    }
+
+    // Clear all blocks
+    window.clearAllBlocks = function() {
+        if (confirm('Are you sure you want to clear all blocks?')) {
+            // Destroy all Editor.js instances
+            Object.keys(window.editorInstances).forEach(id => {
+                window.editorInstances[id].destroy();
+            });
+            window.editorInstances = {};
+            
+            window.blocks = [];
+            window.currentEditIndex = -1;
+            renderCanvas();
+            renderPreview();
+            updateHiddenInput();
+        }
+    }
+
+    // STEP 2: LOAD EXISTING DATA (FIXED)
+    function loadExistingBlocks() {
+        const hiddenInput = document.getElementById('id_blocks_json');
+        if (hiddenInput && hiddenInput.value) {
+            try {
+                const data = JSON.parse(hiddenInput.value);
+                
+                // Load legacy format for backward compatibility
+                if (data.blocks && Array.isArray(data.blocks)) {
+                    window.blocks = data.blocks;
+                } else {
+                    // Convert old central state format to window.blocks format
+                    window.blocks = [];
+                    if (data.richText) {
+                        window.blocks.push({
+                            id: Date.now(),
+                            type: 'rich_text',
+                            data: data.richText
+                        });
+                    }
+                    if (data.cta) {
+                        window.blocks.push({
+                            id: Date.now() + 1,
+                            type: 'cta',
+                            data: data.cta
+                        });
+                    }
+                    if (data.faq) {
+                        window.blocks.push({
+                            id: Date.now() + 2,
+                            type: 'faq',
+                            data: {
+                                title: 'Frequently Asked Questions',
+                                items: data.faq
+                            }
+                        });
+                    }
+                }
+                
+                renderCanvas();
+                renderPreview();
+            } catch (e) {
+                console.error('Error loading existing blocks:', e);
+            }
+        }
+    }
+
+    // STEP 7: BEFORE FORM SUBMIT (FIXED)
+    function setupFormSubmission() {
+        // Find the main form
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Save all blocks before form submission
+                saveBlocks();
+                
+                // FIX 4: Save correct data structure to hidden input
+                document.getElementById('id_blocks_json').value = JSON.stringify({
+                    blocks: window.blocks
+                });
+                
+                console.log('Form submitted with blocks data:', document.getElementById('id_blocks_json').value);
+            });
+        }
+    }
+
+    // Initialize form submission handling
+    //setupFormSubmission();
+
+    // Utility function to escape HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('edit-modal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+</script>
+
+<!-- Ensure Editor.js is loaded -->
+<script>
+    // Check if Editor.js is loaded, if not, try to load it
+    if (typeof EditorJS === 'undefined') {
+        console.warn('EditorJS not found. Make sure Editor.js is properly loaded.');
+    }
+</script>
+
+

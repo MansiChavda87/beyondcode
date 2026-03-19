@@ -1,0 +1,110 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}
+    {{ block.super }}
+    {{ media }}
+    <style>
+        /* Additional admin-specific styles for Editor.js */
+        .form-row.field-blocks_json {
+            margin-bottom: 0;
+        }
+        
+        .form-row.field-blocks_json .field-box {
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* Ensure editor takes full width in admin */
+        .editorjs-container {
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        /* Admin form layout adjustments */
+        .field-blocks_json {
+            clear: both;
+            width: 100%;
+        }
+        
+        /* Make sure other fields are properly spaced */
+        .form-row:not(.field-blocks_json) {
+            margin-bottom: 16px;
+        }
+        
+        /* Category and tag field styling */
+        .field-categories, .field-tags {
+            margin-bottom: 16px;
+        }
+        
+        /* Image upload field styling */
+        .field-primary_image_upload, .field-cover_image_upload {
+            margin-bottom: 16px;
+        }
+    </style>
+{% endblock %}
+
+{% block after_field_sets %}
+    {{ block.super }}
+    <!-- Editor.js Tools Integration -->
+    {% include 'admin/marketing/post/block_builder.html' %}
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    <script>
+        // Additional JavaScript for admin form integration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure all editor instances are properly initialized
+            const editorContainers = document.querySelectorAll('.editorjs-editor');
+            editorContainers.forEach(function(container) {
+                const textarea = container.nextElementSibling;
+                if (textarea && textarea.classList.contains('editorjs-textarea')) {
+                    const editorId = container.id.replace('_editor', '');
+                    if (editorId && !window.editorjsInstances[editorId]) {
+                        // Initialize if not already done
+                        if (typeof initializeEditorJS !== 'undefined') {
+                            initializeEditorJS(editorId, {
+                                tools: window.defaultEditorTools || {},
+                                data: { blocks: [] },
+                                placeholder: 'Start creating your blog post content...',
+                                minHeight: 400
+                            });
+                        }
+                    }
+                }
+            });
+            
+            // Handle form submission validation
+            const form = document.getElementById('post_form') || document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    // Validate all editor instances
+                    let hasErrors = false;
+                    const editorInstances = Object.keys(window.editorjsInstances);
+                    
+                    editorInstances.forEach(function(editorId) {
+                        const editor = window.editorjsInstances[editorId];
+                        if (editor) {
+                            editor.save().then(function(data) {
+                                // Update textarea with latest data
+                                const textarea = document.getElementById(editorId);
+                                if (textarea) {
+                                    textarea.value = JSON.stringify(data);
+                                }
+                            }).catch(function(error) {
+                                console.error('Error saving editor:', error);
+                                hasErrors = true;
+                            });
+                        }
+                    });
+                    
+                    if (hasErrors) {
+                        e.preventDefault();
+                        alert('There was an error saving the editor content. Please try again.');
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

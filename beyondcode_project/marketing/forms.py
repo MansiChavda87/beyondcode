@@ -1,14 +1,111 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from django_editorjs import EditorJsField
 
 from .models import Page, Post, NavMenu, Footer, MediaAsset
+from .widgets import EditorJSAdminWidget
 
 
 class PageForm(forms.ModelForm):
-    body_json = EditorJsField(blank=True, null=True)
-    blocks_json = EditorJsField(blank=True, null=True)
+    blocks_json = EditorJSAdminWidget(
+        tools={
+            'header': {
+                'class': 'Header',
+                'inlineToolbar': True,
+                'config': {
+                    'placeholder': 'Enter a header',
+                    'levels': [1, 2, 3, 4, 5, 6],
+                    'defaultLevel': 2
+                }
+            },
+            'paragraph': {
+                'class': 'Paragraph',
+                'inlineToolbar': True,
+                'config': {
+                    'placeholder': 'Enter text...'
+                }
+            },
+            'list': {
+                'class': 'List',
+                'inlineToolbar': True,
+                'config': {
+                    'defaultStyle': 'unordered'
+                }
+            },
+            'image': {
+                'class': 'ImageTool',
+                'config': {
+                    'endpoints': {
+                        'byFile': '/admin/marketing/page/upload/',
+                        'byUrl': '/admin/marketing/page/upload/',
+                    },
+                    'field': 'file',
+                    'types': 'image/*',
+                    'captionPlaceholder': 'Image caption (optional)',
+                    'buttonContent': 'Select an Image'
+                }
+            },
+            'table': {
+                'class': 'Table',
+                'inlineToolbar': True,
+                'config': {
+                    'rows': 2,
+                    'cols': 3
+                }
+            },
+            'embed': {
+                'class': 'Embed',
+                'config': {
+                    'services': {
+                        'youtube': True,
+                        'vimeo': True,
+                        'instagram': True,
+                        'twitter': True,
+                        'facebook': True
+                    }
+                }
+            },
+            'checklist': {
+                'class': 'Checklist',
+                'inlineToolbar': True
+            },
+            'delimiter': {
+                'class': 'Delimiter'
+            },
+            'warning': {
+                'class': 'Warning',
+                'inlineToolbar': True,
+                'config': {
+                    'titlePlaceholder': 'Title',
+                    'messagePlaceholder': 'Message'
+                }
+            },
+            'code': {
+                'class': 'CodeTool'
+            },
+            'raw': {
+                'class': 'RawTool'
+            },
+            'quote': {
+                'class': 'Quote',
+                'inlineToolbar': True,
+                'config': {
+                    'quotePlaceholder': 'Enter a quote',
+                    'captionPlaceholder': 'Quote\'s author'
+                }
+            },
+            'marker': {
+                'class': 'Marker',
+                'shortcut': 'CMD+SHIFT+M'
+            },
+            'inlineCode': {
+                'class': 'InlineCode',
+                'shortcut': 'CMD+SHIFT+M'
+            }
+        },
+        placeholder="Start creating your page content...",
+        minHeight=400
+    )
 
     class Meta:
         model = Page
@@ -16,7 +113,7 @@ class PageForm(forms.ModelForm):
             'title', 'slug', 'status', 'publish_at', 'unpublish_at',
             'seo_title', 'seo_description', 'og_title', 'og_description',
             'og_image', 'twitter_image', 'primary_image', 'primary_image_upload',
-            'body_json', 'blocks_json',
+            'blocks_json',
         ]
         widgets = {
             'primary_image_upload': forms.ClearableFileInput(attrs={
@@ -24,17 +121,107 @@ class PageForm(forms.ModelForm):
             })
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # body_json is kept in the form for backward compat but hidden;
-        # all content now lives in blocks_json via rich_text blocks.
-        self.fields['body_json'].required = False
-        self.fields['body_json'].widget = forms.HiddenInput()
-
 
 class PostForm(forms.ModelForm):
-    body_json = EditorJsField(blank=True, null=True)
-    blocks_json = EditorJsField(blank=True, null=True)
+    blocks_json = EditorJSAdminWidget(
+        tools={
+            'header': {
+                'class': 'Header',
+                'inlineToolbar': True,
+                'config': {
+                    'placeholder': 'Enter a header',
+                    'levels': [1, 2, 3, 4, 5, 6],
+                    'defaultLevel': 2
+                }
+            },
+            'paragraph': {
+                'class': 'Paragraph',
+                'inlineToolbar': True,
+                'config': {
+                    'placeholder': 'Enter text...'
+                }
+            },
+            'list': {
+                'class': 'List',
+                'inlineToolbar': True,
+                'config': {
+                    'defaultStyle': 'unordered'
+                }
+            },
+            'image': {
+                'class': 'ImageTool',
+                'config': {
+                    'endpoints': {
+                        'byFile': '/admin/marketing/post/upload/',
+                        'byUrl': '/admin/marketing/post/upload/',
+                    },
+                    'field': 'file',
+                    'types': 'image/*',
+                    'captionPlaceholder': 'Image caption (optional)',
+                    'buttonContent': 'Select an Image'
+                }
+            },
+            'table': {
+                'class': 'Table',
+                'inlineToolbar': True,
+                'config': {
+                    'rows': 2,
+                    'cols': 3
+                }
+            },
+            'embed': {
+                'class': 'Embed',
+                'config': {
+                    'services': {
+                        'youtube': True,
+                        'vimeo': True,
+                        'instagram': True,
+                        'twitter': True,
+                        'facebook': True
+                    }
+                }
+            },
+            'checklist': {
+                'class': 'Checklist',
+                'inlineToolbar': True
+            },
+            'delimiter': {
+                'class': 'Delimiter'
+            },
+            'warning': {
+                'class': 'Warning',
+                'inlineToolbar': True,
+                'config': {
+                    'titlePlaceholder': 'Title',
+                    'messagePlaceholder': 'Message'
+                }
+            },
+            'code': {
+                'class': 'CodeTool'
+            },
+            'raw': {
+                'class': 'RawTool'
+            },
+            'quote': {
+                'class': 'Quote',
+                'inlineToolbar': True,
+                'config': {
+                    'quotePlaceholder': 'Enter a quote',
+                    'captionPlaceholder': 'Quote\'s author'
+                }
+            },
+            'marker': {
+                'class': 'Marker',
+                'shortcut': 'CMD+SHIFT+M'
+            },
+            'inlineCode': {
+                'class': 'InlineCode',
+                'shortcut': 'CMD+SHIFT+M'
+            }
+        },
+        placeholder="Start creating your blog post content...",
+        minHeight=400
+    )
 
     class Meta:
         model = Post
@@ -42,7 +229,7 @@ class PostForm(forms.ModelForm):
             'title', 'slug', 'status', 'publish_at', 'author_name', 'excerpt',
             'seo_title', 'seo_description', 'og_title', 'og_description',
             'og_image', 'twitter_image', 'primary_image', 'primary_image_upload',
-            'cover_image', 'cover_image_upload', 'categories', 'tags', 'body_json', 'blocks_json',
+            'cover_image', 'cover_image_upload', 'categories', 'tags', 'blocks_json',
         ]
         widgets = {
             'primary_image_upload': forms.ClearableFileInput(attrs={
@@ -50,13 +237,10 @@ class PostForm(forms.ModelForm):
             }),
             'cover_image_upload': forms.ClearableFileInput(attrs={
                 'accept': 'image/*'
-            })
+            }),
+            'categories': forms.CheckboxSelectMultiple(),
+            'tags': forms.CheckboxSelectMultiple(),
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['body_json'].required = False
-        self.fields['body_json'].widget = forms.HiddenInput()
 
 
 class NavMenuForm(forms.ModelForm):

@@ -1,0 +1,379 @@
+{% load static %}
+<style>
+    /* Editor.js Tools Integration Styles for Posts */
+    .editor-tools-container {
+        margin: 20px 0;
+        padding: 15px;
+        border: 2px dashed #28a745;
+        border-radius: 8px;
+        background: #f8fff9;
+    }
+    
+    .editor-tools-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #d4edda;
+    }
+    
+    .editor-tools-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #155724;
+        margin: 0;
+    }
+    
+    .tools-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .tool-btn {
+        padding: 8px 16px;
+        border: 1px solid #28a745;
+        background: #28a745;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .tool-btn:hover {
+        background: #218838;
+        border-color: #1e7e34;
+        text-decoration: none;
+        color: white;
+    }
+    
+    .tool-btn.secondary {
+        background: #6c757d;
+        border-color: #6c757d;
+    }
+    
+    .tool-btn.secondary:hover {
+        background: #545b62;
+        border-color: #545b62;
+    }
+    
+    .tool-btn.info {
+        background: #17a2b8;
+        border-color: #17a2b8;
+    }
+    
+    .tool-btn.info:hover {
+        background: #117a8b;
+        border-color: #117a8b;
+    }
+    
+    .editor-container {
+        margin-top: 15px;
+    }
+</style>
+
+<div class="editor-tools-container">
+    <div class="editor-tools-header">
+        <h4 class="editor-tools-title">Post Content Builder</h4>
+        <div class="tools-controls">
+            <a href="#" class="tool-btn" onclick="addEditorBlock('paragraph', event)">
+                <i class="fa fa-paragraph"></i> Paragraph
+            </a>
+            <a href="#" class="tool-btn secondary" onclick="addEditorBlock('header', event)">
+                <i class="fa fa-header"></i> Heading
+            </a>
+            <a href="#" class="tool-btn info" onclick="addEditorBlock('list', event)">
+                <i class="fa fa-list"></i> List
+            </a>
+            <a href="#" class="tool-btn" onclick="addEditorBlock('image', event)">
+                <i class="fa fa-image"></i> Image
+            </a>
+            <a href="#" class="tool-btn secondary" onclick="addEditorBlock('table', event)">
+                <i class="fa fa-table"></i> Table
+            </a>
+            <a href="#" class="tool-btn info" onclick="addEditorBlock('quote', event)">
+                <i class="fa fa-quote-left"></i> Quote
+            </a>
+        </div>
+    </div>
+    <div class="editor-container">
+        <!-- Editor.js will be rendered here -->
+        <div id="editorjs-container" style="min-height: 400px;"></div>
+    </div>
+</div>
+
+<script>
+    // Global Editor.js instance for posts
+    let editorInstance = null;
+    let editorInitialized = false;
+
+    // Initialize Editor.js when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        initEditorJS();
+    });
+
+    // Initialize Editor.js
+    function initEditorJS() {
+        if (editorInitialized || typeof EditorJS === 'undefined') {
+            console.log('Editor.js not ready yet, waiting...');
+            setTimeout(initEditorJS, 500);
+            return;
+        }
+
+        // Get existing data from hidden input
+        const hiddenInput = document.getElementById('id_blocks_json');
+        let initialData = { blocks: [] };
+
+        if (hiddenInput && hiddenInput.value) {
+            try {
+                const data = JSON.parse(hiddenInput.value);
+                if (data.blocks && Array.isArray(data.blocks)) {
+                    initialData = data;
+                }
+            } catch (e) {
+                console.error('Error loading existing data:', e);
+            }
+        }
+
+        editorInstance = new EditorJS({
+            holder: 'editorjs-container',
+            tools: {
+                header: {
+                    class: Header,
+                    inlineToolbar: true,
+                    config: {
+                        placeholder: 'Enter a header',
+                        levels: [1, 2, 3, 4, 5, 6],
+                        defaultLevel: 2
+                    }
+                },
+                paragraph: {
+                    class: Paragraph,
+                    inlineToolbar: true,
+                    config: {
+                        placeholder: 'Enter text...'
+                    }
+                },
+                list: {
+                    class: List,
+                    inlineToolbar: true,
+                    config: {
+                        defaultStyle: 'unordered'
+                    }
+                },
+                image: {
+                    class: ImageTool,
+                    config: {
+                        endpoints: {
+                            byFile: '/admin/marketing/post/upload/',
+                            byUrl: '/admin/marketing/post/upload/',
+                        },
+                        field: 'file',
+                        types: 'image/*',
+                        captionPlaceholder: 'Image caption (optional)',
+                        buttonContent: 'Select an Image'
+                    }
+                },
+                table: {
+                    class: Table,
+                    inlineToolbar: true,
+                    config: {
+                        rows: 2,
+                        cols: 3
+                    }
+                },
+                embed: {
+                    class: Embed,
+                    config: {
+                        services: {
+                            youtube: true,
+                            vimeo: true,
+                            instagram: true,
+                            twitter: true,
+                            facebook: true
+                        }
+                    }
+                },
+                checklist: {
+                    class: Checklist,
+                    inlineToolbar: true
+                },
+                delimiter: {
+                    class: Delimiter
+                },
+                warning: {
+                    class: Warning,
+                    inlineToolbar: true,
+                    config: {
+                        titlePlaceholder: 'Title',
+                        messagePlaceholder: 'Message'
+                    }
+                },
+                code: {
+                    class: CodeTool
+                },
+                raw: {
+                    class: RawTool
+                },
+                quote: {
+                    class: Quote,
+                    inlineToolbar: true,
+                    config: {
+                        quotePlaceholder: 'Enter a quote',
+                        captionPlaceholder: 'Quote\'s author'
+                    }
+                },
+                marker: {
+                    class: Marker,
+                    shortcut: 'CMD+SHIFT+M'
+                },
+                inlineCode: {
+                    class: InlineCode,
+                    shortcut: 'CMD+SHIFT+M'
+                }
+            },
+            data: initialData,
+            onReady: function() {
+                console.log('Editor.js is ready!');
+                editorInitialized = true;
+            },
+            onChange: function() {
+                console.log('Editor.js content changed!');
+                updateHiddenInput();
+            }
+        });
+    }
+
+    // Add block to Editor.js
+    window.addEditorBlock = function(type, event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        if (!editorInstance) {
+            console.error('Editor.js not initialized yet');
+            return;
+        }
+
+        let newBlock = null;
+
+        switch(type) {
+            case 'paragraph':
+                newBlock = {
+                    type: 'paragraph',
+                    data: {
+                        text: 'Start typing your paragraph here...'
+                    }
+                };
+                break;
+            case 'header':
+                newBlock = {
+                    type: 'header',
+                    data: {
+                        text: 'Your Heading Here',
+                        level: 2
+                    }
+                };
+                break;
+            case 'list':
+                newBlock = {
+                    type: 'list',
+                    data: {
+                        style: 'unordered',
+                        items: [
+                            'First item',
+                            'Second item',
+                            'Third item'
+                        ]
+                    }
+                };
+                break;
+            case 'image':
+                newBlock = {
+                    type: 'image',
+                    data: {
+                        file: {
+                            url: ''
+                        },
+                        caption: '',
+                        stretched: false,
+                        withBackground: false,
+                        withBorder: false
+                    }
+                };
+                break;
+            case 'table':
+                newBlock = {
+                    type: 'table',
+                    data: {
+                        content: [
+                            ['Cell 1', 'Cell 2'],
+                            ['Cell 3', 'Cell 4']
+                        ]
+                    }
+                };
+                break;
+            case 'quote':
+                newBlock = {
+                    type: 'quote',
+                    data: {
+                        text: 'Your quote text here...',
+                        caption: 'Quote author',
+                        alignment: 'left'
+                    }
+                };
+                break;
+            default:
+                console.error('Unknown block type:', type);
+                return;
+        }
+
+        if (newBlock) {
+            editorInstance.blocks.insert(newBlock.type, newBlock.data);
+            updateHiddenInput();
+        }
+    };
+
+    // Update hidden input with Editor.js data
+    function updateHiddenInput() {
+        if (!editorInstance || !editorInitialized) return;
+
+        editorInstance.save().then(data => {
+            const hiddenInput = document.getElementById('id_blocks_json');
+            if (hiddenInput) {
+                hiddenInput.value = JSON.stringify(data);
+            }
+        }).catch(error => {
+            console.error('Error saving editor data:', error);
+        });
+    }
+
+    // Save editor data before form submission
+    document.addEventListener('submit', function(e) {
+        if (!editorInstance || !editorInitialized) return;
+
+        editorInstance.save().then(data => {
+            const hiddenInput = document.getElementById('id_blocks_json');
+            if (hiddenInput) {
+                hiddenInput.value = JSON.stringify(data);
+            }
+        }).catch(error => {
+            console.error('Error saving editor data before submit:', error);
+            alert('Error saving content. Please try again.');
+            e.preventDefault();
+        });
+    });
+
+    // Handle form reset
+    document.addEventListener('reset', function() {
+        if (editorInstance) {
+            editorInstance.clear();
+            updateHiddenInput();
+        }
+    });
+</script>

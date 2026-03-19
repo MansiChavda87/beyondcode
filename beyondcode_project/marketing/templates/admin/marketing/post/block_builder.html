@@ -1,0 +1,43 @@
+{% extends "admin/marketing/page/block_builder.html" %}
+{% load static %}
+
+<style>
+    /* Post-specific block builder styles */
+    .block-builder-title {
+        color: #28a745;
+        border-bottom-color: #28a745;
+    }
+    
+    .add-block-btn {
+        background: #28a745;
+        border-color: #28a745;
+    }
+    
+    .add-block-btn:hover {
+        background: #1e7e34;
+        border-color: #1e7e34;
+    }
+    
+    .block-builder-container {
+        border-color: #d4edda;
+        background: #f8fff9;
+    }
+</style>
+
+<script>
+    // Post-specific initialization
+    document.addEventListener('DOMContentLoaded', function() {
+        // Call parent initialization
+        if (typeof initDragAndDrop === 'function') {
+            initDragAndDrop();
+        }
+        if (typeof loadExistingBlocks === 'function') {
+            loadExistingBlocks();
+        }
+    });
+</script>
+
+
+
+
+

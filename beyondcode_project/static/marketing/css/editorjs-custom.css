@@ -1,0 +1,478 @@
+/* Editor.js Custom Styles for Django Admin Integration */
+
+/* Container styling */
+.editorjs-container {
+    position: relative;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    min-height: 400px;
+    margin-bottom: 1rem;
+}
+
+.editorjs-editor {
+    padding: 1rem;
+    min-height: 350px;
+}
+
+/* Admin-specific styling */
+.editorjs-admin-widget {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Editor.js toolbar customization */
+.ce-toolbar {
+    background: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 6px 6px 0 0;
+}
+
+.ce-toolbar__content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Block toolbar styling */
+.ce-block-toolbar {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Inline toolbar styling */
+.ce-inline-toolbar {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Block wrapper styling */
+.ce-block {
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.ce-block:hover {
+    background-color: #fafafa;
+}
+
+/* Placeholder styling */
+.ce-constructor__empty-block-message {
+    color: #9ca3af;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+    border: 2px dashed #e5e7eb;
+    border-radius: 6px;
+    background: #fafafa;
+}
+
+/* Tool button styling */
+.ce-toolbox__button {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    color: #374151;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.ce-toolbox__button:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+}
+
+.ce-toolbox__button--active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #ffffff;
+}
+
+/* Settings button styling */
+.ce-settings__button {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    color: #374151;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.ce-settings__button:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+/* Block settings styling */
+.ce-settings {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Input field styling */
+.ce-input {
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.ce-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Image tool styling */
+.editor-js-image-tool {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 1rem;
+    background: #ffffff;
+}
+
+.editor-js-image-tool__image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.editor-js-image-tool__caption {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+/* Table tool styling */
+.editor-js-table {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.editor-js-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.editor-js-table th,
+.editor-js-table td {
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.editor-js-table th {
+    background-color: #f9fafb;
+    font-weight: 600;
+}
+
+/* Checklist styling */
+.editor-js-checklist {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 1rem;
+    background: #ffffff;
+}
+
+.editor-js-checklist__item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.editor-js-checklist__item:last-child {
+    margin-bottom: 0;
+}
+
+.editor-js-checklist__checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d1d5db;
+    border-radius: 3px;
+    margin-right: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.editor-js-checklist__checkbox:checked {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.editor-js-checklist__text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Quote styling */
+.editor-js-quote {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    background: #f8fafc;
+    border-radius: 0 6px 6px 0;
+}
+
+.editor-js-quote__text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.editor-js-quote__caption {
+    font-size: 14px;
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Code tool styling */
+.editor-js-code {
+    background: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 6px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    overflow-x: auto;
+    border: 1px solid #374151;
+}
+
+/* Warning tool styling */
+.editor-js-warning {
+    border: 1px solid #f59e0b;
+    border-left: 4px solid #f59e0b;
+    padding: 1rem;
+    background: #fffbeb;
+    border-radius: 6px;
+    margin: 1rem 0;
+}
+
+.editor-js-warning__title {
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 0.5rem;
+}
+
+.editor-js-warning__message {
+    color: #b45309;
+    line-height: 1.5;
+}
+
+/* Embed tool styling */
+.editor-js-embed {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 1rem;
+    background: #ffffff;
+    text-align: center;
+}
+
+.editor-js-embed__embed {
+    width: 100%;
+    height: 300px;
+    border: none;
+    border-radius: 4px;
+}
+
+/* Delimiter styling */
+.editor-js-delimiter {
+    text-align: center;
+    padding: 1rem;
+    color: #9ca3af;
+    font-size: 24px;
+    line-height: 1;
+}
+
+/* Raw tool styling */
+.editor-js-raw {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 1rem;
+    background: #f3f4f6;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    overflow-x: auto;
+}
+
+/* Marker tool styling */
+.editor-js-marker {
+    background: #fde68a;
+    padding: 0.1rem 0.2rem;
+    border-radius: 3px;
+}
+
+/* Inline code styling */
+.editor-js-inline-code {
+    background: #f3f4f6;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    border: 1px solid #e5e7eb;
+}
+
+/* Drag and drop styling (enhanced) */
+.ce-block.dragging {
+    opacity: 0.7;
+    transform: scale(0.98);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+.ce-block.drag-over {
+    border-top: 2px solid #3b82f6;
+    border-bottom: 2px solid #3b82f6;
+    background-color: #eff6ff;
+    animation: dragOverPulse 0.3s ease-in-out;
+}
+
+@keyframes dragOverPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.editor-js-drag-handle {
+    position: absolute;
+    left: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 10;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.ce-block:hover .editor-js-drag-handle {
+    opacity: 1;
+    transform: translateY(-50%) translateX(-5px);
+}
+
+.editor-js-drag-handle:active {
+    cursor: grabbing;
+    background: #e5e7eb;
+    border-color: #d1d5db;
+}
+
+.editor-js-drag-handle svg {
+    width: 16px;
+    height: 16px;
+    fill: #6b7280;
+    transition: fill 0.2s ease;
+}
+
+.editor-js-drag-handle:hover svg {
+    fill: #374151;
+}
+
+.editor-js-drag-placeholder {
+    border: 2px dashed #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+    min-height: 40px;
+    margin: 0.5rem 0;
+    border-radius: 6px;
+    animation: placeholderBounce 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes placeholderBounce {
+    from { opacity: 0.6; }
+    to { opacity: 1; }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .editorjs-container {
+        min-height: 300px;
+    }
+    
+    .editorjs-editor {
+        padding: 0.5rem;
+        min-height: 250px;
+    }
+    
+    .ce-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    
+    .editor-js-drag-handle {
+        left: -10px;
+        opacity: 1;
+        transform: translateY(-50%);
+    }
+}
+
+/* Focus states for accessibility */
+.ce-block:focus-within {
+    outline: 2px solid #3b82f6;
+    outline-offset: -2px;
+    border-radius: 6px;
+}
+
+/* Loading states */
+.editorjs-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Success/error states for uploads */
+.editor-js-upload-success {
+    border-color: #10b981;
+    background-color: #ecfdf5;
+}
+
+.editor-js-upload-error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+/* Admin form integration */
+.form-row .editorjs-container {
+    margin-bottom: 0;
+}
+
+.form-row .field-blocks_json .editorjs-container,
+.form-row .field-body_json .editorjs-container {
+    margin-top: 0.5rem;
+}
+
+/* Custom scrollbar for long content */
+.editorjs-editor::-webkit-scrollbar {
+    width: 8px;
+}
+
+.editorjs-editor::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.editorjs-editor::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.editorjs-editor::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
