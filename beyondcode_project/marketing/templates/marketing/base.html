@@ -38,6 +38,45 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/marketing/css/main.css">
     
+    <!-- Global Safety CSS -->
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+
+    <!-- GrapesJS Base CSS -->
+    <style>
+        .gjs-row {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .gjs-cell {
+            flex: 1 1 0;
+            min-width: 0;
+            padding: 10px;
+        }
+
+        /* Ensure proper box sizing */
+        .gjs-row > .gjs-cell {
+            box-sizing: border-box;
+        }
+
+        /* Optional responsive improvement */
+        @media (max-width: 768px) {
+            .gjs-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+    
     {% block extra_head %}{% endblock %}
 </head>
 <body>

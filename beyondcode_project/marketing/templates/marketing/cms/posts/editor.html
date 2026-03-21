@@ -152,7 +152,7 @@
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="{{ form.cover_image_upload.id_for_label }}" class="form-label">Cover Image</label>
+                                    <label for="id_cover_image_upload" class="form-label">Cover Image</label>
                                     {{ form.cover_image_upload }}
                                     {% if form.cover_image_upload.errors %}
                                         <div class="text-danger">{{ form.cover_image_upload.errors.0 }}</div>
@@ -217,7 +217,11 @@
                                         </div>
                                         
                                         <!-- Hidden field for blocks JSON -->
-                                        {{ form.blocks_json }}
+                                        {% if post and post.blocks_json %}
+                                            {{ form.blocks_json|add_data:"data-existing-blocks="|add:post.blocks_json|escapejs }}
+                                        {% else %}
+                                            {{ form.blocks_json }}
+                                        {% endif %}
                                         {% if form.blocks_json.errors %}
                                             <div class="text-danger">{{ form.blocks_json.errors.0 }}</div>
                                         {% endif %}
@@ -353,9 +357,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Load existing blocks if editing
-    {% if post and post.blocks_json %}
-        postEditor.loadBlocks(JSON.parse('{{ post.blocks_json|escapejs }}'));
-    {% endif %}
+    const blocksJsonField = document.querySelector('input[name="blocks_json"]');
+    if (blocksJsonField && blocksJsonField.value) {
+        try {
+            const existingBlocks = JSON.parse(blocksJsonField.value);
+            postEditor.loadBlocks(existingBlocks);
+        } catch (e) {
+            console.error('Error loading existing blocks:', e);
+        }
+    }
     
     // Block types configuration
     const blockTypes = [

@@ -1,100 +1,331 @@
 {% extends "admin/change_form.html" %}
-{% load i18n admin_urls static admin_modify %}
+{% load static %}
+
 
 {% block extrahead %}
-    {{ block.super }}
-    {{ media }}
-    <style>
-        /* Additional admin-specific styles for Editor.js */
-        .form-row.field-blocks_json {
-            margin-bottom: 0;
-        }
-        
-        .form-row.field-blocks_json .field-box {
-            padding: 0;
-            margin: 0;
-        }
-        
-        /* Ensure editor takes full width in admin */
-        .editorjs-container {
-            width: 100%;
-            max-width: 100%;
-        }
-        
-        /* Admin form layout adjustments */
-        .field-blocks_json {
-            clear: both;
-            width: 100%;
-        }
-        
-        /* Make sure other fields are properly spaced */
-        .form-row:not(.field-blocks_json) {
-            margin-bottom: 16px;
-        }
-    </style>
-{% endblock %}
-
-{% block after_field_sets %}
-    {{ block.super }}
-    <!-- Editor.js Tools Integration -->
-    {% include 'admin/marketing/page/block_builder.html' %}
-{% endblock %}
-
-{% block submit_buttons_bottom %}
-    {{ block.super }}
-    <script>
-        // Additional JavaScript for admin form integration
-        document.addEventListener('DOMContentLoaded', function() {
-            // Ensure all editor instances are properly initialized
-            const editorContainers = document.querySelectorAll('.editorjs-editor');
-            editorContainers.forEach(function(container) {
-                const textarea = container.nextElementSibling;
-                if (textarea && textarea.classList.contains('editorjs-textarea')) {
-                    const editorId = container.id.replace('_editor', '');
-                    if (editorId && !window.editorjsInstances[editorId]) {
-                        // Initialize if not already done
-                        if (typeof initializeEditorJS !== 'undefined') {
-                            initializeEditorJS(editorId, {
-                                tools: window.defaultEditorTools || {},
-                                data: { blocks: [] },
-                                placeholder: 'Start creating your content...',
-                                minHeight: 400
-                            });
-                        }
-                    }
-                }
-            });
+{{ block.super }}
+<!-- <script src="https://unpkg.com/grapesjs/dist/grapes.min.js"></script> -->
+   <!-- GrapesJS JS -->
+  <link href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" rel="stylesheet"/>
+  <script src="https://unpkg.com/grapesjs"></script>
+<script>
+    // Inline GrapesJS widget initialization to ensure it's available
+    window.initializeGrapesJS = function(editorId, options, initialData) {
+        console.log("JS LOADED ✅");
+        alert(editorId);
+        const editor = grapesjs.init({
+            container: `#${editorId}`,
+            fromElement: false,
+            height: options.height || '600px',
+            width: options.width || 'auto',
+            storageManager: false,
+            plugins: options.plugins || [],
+            pluginsOpts: options.pluginsOpts || {},
             
-            // Handle form submission validation
-            const form = document.getElementById('page_form') || document.querySelector('form');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    // Validate all editor instances
-                    let hasErrors = false;
-                    const editorInstances = Object.keys(window.editorjsInstances);
-                    
-                    editorInstances.forEach(function(editorId) {
-                        const editor = window.editorjsInstances[editorId];
-                        if (editor) {
-                            editor.save().then(function(data) {
-                                // Update textarea with latest data
-                                const textarea = document.getElementById(editorId);
-                                if (textarea) {
-                                    textarea.value = JSON.stringify(data);
-                                }
-                            }).catch(function(error) {
-                                console.error('Error saving editor:', error);
-                                hasErrors = true;
-                            });
-                        }
-                    });
-                    
-                    if (hasErrors) {
-                        e.preventDefault();
-                        alert('There was an error saving the editor content. Please try again.');
+            blockManager: {
+                appendTo: '#blocks-canvas',
+            },
+            
+            styleManager: {
+                sectors: [{
+                    name: 'General',
+                    open: false,
+                    buildProps: ['float', 'display', 'position', 'top', 'right', 'left', 'bottom']
+                }, {
+                    name: 'Flex',
+                    open: false,
+                    buildProps: ['flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'align-content', 'order', 'flex-grow', 'flex-shrink', 'flex-basis']
+                }, {
+                    name: 'Dimension',
+                    open: false,
+                    buildProps: ['width', 'height', 'max-width', 'min-height', 'margin', 'padding']
+                }, {
+                    name: 'Typography',
+                    open: false,
+                    buildProps: ['font-family', 'font-size', 'font-weight', 'letter-spacing', 'color', 'line-height', 'text-align', 'text-shadow']
+                }, {
+                    name: 'Decorations',
+                    open: false,
+                    buildProps: ['border-radius-c', 'background-color', 'border', 'box-shadow', 'background']
+                }, {
+                    name: 'Extra',
+                    open: false,
+                    buildProps: ['transition', 'transform']
+                }],
+            },
+            
+            panels: {
+                defaults: [
+                    {
+                        id: 'commands',
+                        buttons: [
+                            {
+                                id: 'undo',
+                                className: 'fa fa-undo',
+                                command: 'core:undo',
+                                attributes: { title: 'Undo' }
+                            },
+                            {
+                                id: 'redo',
+                                className: 'fa fa-repeat',
+                                command: 'core:redo',
+                                attributes: { title: 'Redo' }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'options',
+                        buttons: [
+                            {
+                                id: 'preview',
+                                className: 'fa fa-eye',
+                                command: 'preview',
+                                attributes: { title: 'Preview' }
+                            },
+                            {
+                                id: 'fullscreen',
+                                className: 'fa fa-arrows-alt',
+                                command: 'fullscreen',
+                                attributes: { title: 'Fullscreen' }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'views',
+                        buttons: [
+                            {
+                                id: 'open-sm',
+                                className: 'fa fa-paint-brush',
+                                command: 'open-sm',
+                                attributes: { title: 'Open Style Manager' }
+                            },
+                            {
+                                id: 'open-tm',
+                                className: 'fa fa-cog',
+                                command: 'open-tm',
+                                attributes: { title: 'Open Layer Manager' }
+                            },
+                            {
+                                id: 'open-blocks',
+                                className: 'fa fa-th-large',
+                                command: 'open-blocks',
+                                attributes: { title: 'Open Blocks' }
+                            }
+                        ]
                     }
-                });
+                ]
+            },
+            
+            blockManager: {
+                appendTo: '#blocks-canvas',
             }
         });
-    </script>
+
+        // Add custom blocks
+        addCustomBlocks(editor);
+        
+        // Add layout blocks
+        addLayoutBlocks(editor);
+        
+        // Handle data loading
+        if (initialData && Object.keys(initialData).length > 0) {
+            if (initialData.html && initialData.css) {
+                editor.setComponents(initialData.html);
+                editor.setStyle(initialData.css);
+            } else if (initialData.html) {
+                editor.setComponents(initialData.html);
+            } else if (initialData.blocks) {
+                editor.setComponents(initialData.blocks);
+            }
+        }
+
+        // Handle data saving
+        const textarea = document.getElementById(`${editorId}_textarea`);
+        
+        editor.on('component:add component:remove component:update', function() {
+            const html = editor.getHtml();
+            const css = editor.getCss();
+            const data = {
+                html: html,
+                css: css,
+                components: editor.getComponents(),
+                style: editor.getStyle()
+            };
+            
+            if (textarea) {
+                textarea.value = JSON.stringify(data);
+            }
+        });
+
+        setTimeout(() => {
+            const html = editor.getHtml();
+            const css = editor.getCss();
+            const data = {
+                html: html,
+                css: css,
+                components: editor.getComponents(),
+                style: editor.getStyle()
+            };
+            
+            if (textarea) {
+                textarea.value = JSON.stringify(data);
+            }
+        }, 100);
+
+        return editor;
+    };
+
+    function addCustomBlocks(editor) {
+        const bm = editor.BlockManager;
+
+        bm.add('section', {
+            label: 'Section',
+            category: 'Layout',
+            content: `<section style="padding: 40px 20px; background: #f8f9fa;">
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <h2>Section Title</h2>
+                    <p>This is a section with some content.</p>
+                </div>
+            </section>`,
+            media: '<svg viewBox="0 0 24 24"><path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4zM4 16h16v2H4z"/></svg>',
+        });
+
+        bm.add('text', {
+            label: 'Text',
+            category: 'Content',
+            content: `<div style="padding: 20px;">
+                <p>This is a text block. You can edit this content by clicking on it.</p>
+            </div>`,
+            media: '<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zM4 10h10v2H4zM4 14h16v2H4zM4 18h10v2H4z"/></svg>',
+        });
+
+        bm.add('heading', {
+            label: 'Heading',
+            category: 'Content',
+            content: `<h2 style="font-size: 2rem; margin: 0 0 10px 0; color: #333;">Your Heading Here</h2>`,
+            media: '<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zM4 10h10v2H4zM4 14h16v2H4zM4 18h10v2H4z"/></svg>',
+        });
+
+        bm.add('paragraph', {
+            label: 'Paragraph',
+            category: 'Content',
+            content: `<p style="line-height: 1.6; color: #666; margin: 0 0 20px 0;">This is a paragraph of text. You can edit this content by clicking on it and typing.</p>`,
+            media: '<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zM4 10h10v2H4zM4 14h16v2H4zM4 18h10v2H4z"/></svg>',
+        });
+
+        bm.add('list', {
+            label: 'List',
+            category: 'Content',
+            content: `<ul style="padding-left: 20px; line-height: 1.6;">
+                <li>First item</li>
+                <li>Second item</li>
+                <li>Third item</li>
+            </ul>`,
+            media: '<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zM4 10h10v2H4zM4 14h16v2H4zM4 18h10v2H4z"/></svg>',
+        });
+
+        bm.add('image', {
+            label: 'Image',
+            category: 'Media',
+            content: `<div style="padding: 20px; text-align: center;">
+                <img src="https://via.placeholder.com/600x400" style="max-width: 100%; height: auto; border-radius: 8px;" alt="Placeholder Image">
+            </div>`,
+            media: '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 4l8 8 8-8M4 20l8-8 8 8"/></svg>',
+        });
+
+        bm.add('button', {
+            label: 'Button',
+            category: 'Elements',
+            content: `<div style="padding: 20px; text-align: center;">
+                <a href="#" style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">Click Me</a>
+            </div>`,
+            media: '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 4l8 8 8-8M4 20l8-8 8 8"/></svg>',
+        });
+
+        bm.add('faq', {
+            label: 'FAQ',
+            category: 'Content',
+            content: `<div style="padding: 20px;">
+                <div style="border-bottom: 1px solid #ddd; padding: 15px 0;">
+                    <h4 style="margin: 0 0 10px 0; color: #333;">Question 1</h4>
+                    <p style="margin: 0; color: #666;">Answer to the first question goes here.</p>
+                </div>
+                <div style="border-bottom: 1px solid #ddd; padding: 15px 0;">
+                    <h4 style="margin: 0 0 10px 0; color: #333;">Question 2</h4>
+                    <p style="margin: 0; color: #666;">Answer to the second question goes here.</p>
+                </div>
+            </div>`,
+            media: '<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zM4 10h10v2H4zM4 14h16v2H4zM4 18h10v2H4z"/></svg>',
+        });
+    }
+
+    function addLayoutBlocks(editor) {
+        const bm = editor.BlockManager;
+
+        bm.add('two-columns', {
+            label: '2 Columns',
+            category: 'Layout',
+            content: `<div style="display: flex; gap: 20px; padding: 20px;">
+                <div style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+                    <h3>Column 1</h3>
+                    <p>Content for the first column.</p>
+                </div>
+                <div style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+                    <h3>Column 2</h3>
+                    <p>Content for the second column.</p>
+                </div>
+            </div>`,
+            media: '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 4l8 8 8-8M4 20l8-8 8 8"/></svg>',
+        });
+
+        bm.add('three-columns', {
+            label: '3 Columns',
+            category: 'Layout',
+            content: `<div style="display: flex; gap: 20px; padding: 20px;">
+                <div style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+                    <h3>Column 1</h3>
+                    <p>Content for the first column.</p>
+                </div>
+                <div style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+                    <h3>Column 2</h3>
+                    <p>Content for the second column.</p>
+                </div>
+                <div style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+                    <h3>Column 3</h3>
+                    <p>Content for the third column.</p>
+                </div>
+            </div>`,
+            media: '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 4l8 8 8-8M4 20l8-8 8 8"/></svg>',
+        });
+    }
+</script>
+{% endblock %}
+
+
+{% block content %}
+  {{ block.super }}
+
+
+
+<script>
+    // Initialize all GrapesJS editors after page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Find all GrapesJS containers and initialize them
+        const containers = document.querySelectorAll('.grapesjs-container');
+        containers.forEach(function(container) {
+            const editorDiv = container.querySelector('.grapesjs-editor');
+            const textarea = container.querySelector('.grapesjs-textarea');
+            
+            if (editorDiv && textarea) {
+                const editorId = editorDiv.id;
+                const initialData = JSON.parse(textarea.value || '{}');
+                alert(typeof initializeGrapesJS);
+                // Initialize the editor
+                if (typeof initializeGrapesJS !== 'undefined') {
+                    initializeGrapesJS(editorId, {height: '1000px', width: 'auto', storageManager: false}, initialData);
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

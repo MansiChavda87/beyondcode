@@ -106,15 +106,29 @@ class Page(SeoFieldsMixin):
         return reverse('marketing:page_detail', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
+        # Handle GrapesJS data format
+        if self.blocks_json:
+            # If blocks_json contains GrapesJS data structure
+            if isinstance(self.blocks_json, dict) and ('html' in self.blocks_json or 'components' in self.blocks_json):
+                # Extract HTML from GrapesJS format
+                if 'html' in self.blocks_json:
+                    self.blocks_html = sanitize_html(self.blocks_json['html'])
+                elif 'components' in self.blocks_json:
+                    # Convert components to HTML if needed
+                    self.blocks_html = sanitize_html(str(self.blocks_json['components']))
+            else:
+                # Legacy format or other format - use blocks_json directly as HTML
+                self.blocks_html = sanitize_html(str(self.blocks_json))
+        else:
+            self.blocks_html = ''
+        
+        # Keep body_json/body_html for backward compatibility but don't process them
         if self.body_json:
             rendered = render_editorjs(self.body_json)
             self.body_html = sanitize_html(rendered)
         else:
             self.body_html = ''
-        if self.blocks_json:
-            from .blocks import render_blocks
-
-            self.blocks_html = sanitize_html(render_blocks(self.blocks_json))
+            
         super().save(*args, **kwargs)
 
     @property
@@ -173,15 +187,29 @@ class Post(SeoFieldsMixin):
         return reverse('marketing:blog_detail', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
+        # Handle GrapesJS data format
+        if self.blocks_json:
+            # If blocks_json contains GrapesJS data structure
+            if isinstance(self.blocks_json, dict) and ('html' in self.blocks_json or 'components' in self.blocks_json):
+                # Extract HTML from GrapesJS format
+                if 'html' in self.blocks_json:
+                    self.blocks_html = sanitize_html(self.blocks_json['html'])
+                elif 'components' in self.blocks_json:
+                    # Convert components to HTML if needed
+                    self.blocks_html = sanitize_html(str(self.blocks_json['components']))
+            else:
+                # Legacy format or other format - use blocks_json directly as HTML
+                self.blocks_html = sanitize_html(str(self.blocks_json))
+        else:
+            self.blocks_html = ''
+        
+        # Keep body_json/body_html for backward compatibility but don't process them
         if self.body_json:
             rendered = render_editorjs(self.body_json)
             self.body_html = sanitize_html(rendered)
         else:
             self.body_html = ''
-        if self.blocks_json:
-            from .blocks import render_blocks
-
-            self.blocks_html = sanitize_html(render_blocks(self.blocks_json))
+            
         super().save(*args, **kwargs)
 
     @property

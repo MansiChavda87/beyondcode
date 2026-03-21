@@ -1,5 +1,6 @@
 {% extends 'marketing/base.html' %}
 {% load to_json %}
+{% load grapesjs_tags %}
 
 {% block title %}{{ post.title }} - BeyondCode AI{% endblock %}
 {% block description %}{{ post.excerpt|default:post.title }}{% endblock %}
@@ -77,15 +78,10 @@
 
                 <!-- Post Content -->
                 <div class="post-content">
-                    {% if post.blocks_json %}
-                        {% for block in post.blocks_json.blocks %}
-                            {% include 'marketing/blocks/block_renderer.html' with block=block %}
-                        {% endfor %}
-                    {% elif post.body_json %}
-                        <!-- Fallback to body_json if blocks_json is not available -->
-                        {% for block in post.body_json.blocks %}
-                            {% include 'marketing/blocks/block_renderer.html' with block=block %}
-                        {% endfor %}
+                    {% if post.blocks_html %}
+                        {{ post.blocks_html|safe }}
+                    {% elif post.body_html %}
+                        {{ post.body_html|safe }}
                     {% else %}
                         <!-- Fallback content if no blocks are available -->
                         <div class="post-body">

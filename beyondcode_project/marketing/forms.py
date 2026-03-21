@@ -3,108 +3,21 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
 from .models import Page, Post, NavMenu, Footer, MediaAsset
-from .widgets import EditorJSAdminWidget
+from .widgets import GrapesJSAdminWidget
 
 
 class PageForm(forms.ModelForm):
-    blocks_json = EditorJSAdminWidget(
-        tools={
-            'header': {
-                'class': 'Header',
-                'inlineToolbar': True,
-                'config': {
-                    'placeholder': 'Enter a header',
-                    'levels': [1, 2, 3, 4, 5, 6],
-                    'defaultLevel': 2
-                }
-            },
-            'paragraph': {
-                'class': 'Paragraph',
-                'inlineToolbar': True,
-                'config': {
-                    'placeholder': 'Enter text...'
-                }
-            },
-            'list': {
-                'class': 'List',
-                'inlineToolbar': True,
-                'config': {
-                    'defaultStyle': 'unordered'
-                }
-            },
-            'image': {
-                'class': 'ImageTool',
-                'config': {
-                    'endpoints': {
-                        'byFile': '/admin/marketing/page/upload/',
-                        'byUrl': '/admin/marketing/page/upload/',
-                    },
-                    'field': 'file',
-                    'types': 'image/*',
-                    'captionPlaceholder': 'Image caption (optional)',
-                    'buttonContent': 'Select an Image'
-                }
-            },
-            'table': {
-                'class': 'Table',
-                'inlineToolbar': True,
-                'config': {
-                    'rows': 2,
-                    'cols': 3
-                }
-            },
-            'embed': {
-                'class': 'Embed',
-                'config': {
-                    'services': {
-                        'youtube': True,
-                        'vimeo': True,
-                        'instagram': True,
-                        'twitter': True,
-                        'facebook': True
-                    }
-                }
-            },
-            'checklist': {
-                'class': 'Checklist',
-                'inlineToolbar': True
-            },
-            'delimiter': {
-                'class': 'Delimiter'
-            },
-            'warning': {
-                'class': 'Warning',
-                'inlineToolbar': True,
-                'config': {
-                    'titlePlaceholder': 'Title',
-                    'messagePlaceholder': 'Message'
-                }
-            },
-            'code': {
-                'class': 'CodeTool'
-            },
-            'raw': {
-                'class': 'RawTool'
-            },
-            'quote': {
-                'class': 'Quote',
-                'inlineToolbar': True,
-                'config': {
-                    'quotePlaceholder': 'Enter a quote',
-                    'captionPlaceholder': 'Quote\'s author'
-                }
-            },
-            'marker': {
-                'class': 'Marker',
-                'shortcut': 'CMD+SHIFT+M'
-            },
-            'inlineCode': {
-                'class': 'InlineCode',
-                'shortcut': 'CMD+SHIFT+M'
+    blocks_json = forms.JSONField(
+        widget=GrapesJSAdminWidget(
+            options={
+                'height': '600px',
+                'width': 'auto',
+                'storageManager': False,
+                'plugins': [],
+                'pluginsOpts': {},
             }
-        },
-        placeholder="Start creating your page content...",
-        minHeight=400
+        ),
+        required=False
     )
 
     class Meta:
@@ -123,104 +36,17 @@ class PageForm(forms.ModelForm):
 
 
 class PostForm(forms.ModelForm):
-    blocks_json = EditorJSAdminWidget(
-        tools={
-            'header': {
-                'class': 'Header',
-                'inlineToolbar': True,
-                'config': {
-                    'placeholder': 'Enter a header',
-                    'levels': [1, 2, 3, 4, 5, 6],
-                    'defaultLevel': 2
-                }
-            },
-            'paragraph': {
-                'class': 'Paragraph',
-                'inlineToolbar': True,
-                'config': {
-                    'placeholder': 'Enter text...'
-                }
-            },
-            'list': {
-                'class': 'List',
-                'inlineToolbar': True,
-                'config': {
-                    'defaultStyle': 'unordered'
-                }
-            },
-            'image': {
-                'class': 'ImageTool',
-                'config': {
-                    'endpoints': {
-                        'byFile': '/admin/marketing/post/upload/',
-                        'byUrl': '/admin/marketing/post/upload/',
-                    },
-                    'field': 'file',
-                    'types': 'image/*',
-                    'captionPlaceholder': 'Image caption (optional)',
-                    'buttonContent': 'Select an Image'
-                }
-            },
-            'table': {
-                'class': 'Table',
-                'inlineToolbar': True,
-                'config': {
-                    'rows': 2,
-                    'cols': 3
-                }
-            },
-            'embed': {
-                'class': 'Embed',
-                'config': {
-                    'services': {
-                        'youtube': True,
-                        'vimeo': True,
-                        'instagram': True,
-                        'twitter': True,
-                        'facebook': True
-                    }
-                }
-            },
-            'checklist': {
-                'class': 'Checklist',
-                'inlineToolbar': True
-            },
-            'delimiter': {
-                'class': 'Delimiter'
-            },
-            'warning': {
-                'class': 'Warning',
-                'inlineToolbar': True,
-                'config': {
-                    'titlePlaceholder': 'Title',
-                    'messagePlaceholder': 'Message'
-                }
-            },
-            'code': {
-                'class': 'CodeTool'
-            },
-            'raw': {
-                'class': 'RawTool'
-            },
-            'quote': {
-                'class': 'Quote',
-                'inlineToolbar': True,
-                'config': {
-                    'quotePlaceholder': 'Enter a quote',
-                    'captionPlaceholder': 'Quote\'s author'
-                }
-            },
-            'marker': {
-                'class': 'Marker',
-                'shortcut': 'CMD+SHIFT+M'
-            },
-            'inlineCode': {
-                'class': 'InlineCode',
-                'shortcut': 'CMD+SHIFT+M'
+    blocks_json = forms.JSONField(
+        widget=GrapesJSAdminWidget(
+            options={
+                'height': '600px',
+                'width': 'auto',
+                'storageManager': False,
+                'plugins': [],
+                'pluginsOpts': {},
             }
-        },
-        placeholder="Start creating your blog post content...",
-        minHeight=400
+        ),
+        required=False
     )
 
     class Meta:

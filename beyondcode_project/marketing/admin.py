@@ -3,7 +3,7 @@ from django.utils.html import format_html
 from django.urls import reverse
 from .models import Page, Post, Category, Tag, NavMenu, NavItem, Footer, MediaAsset
 from .forms import PageForm, PostForm, NavMenuForm, FooterForm, MediaAssetForm
-from .widgets import EditorJSAdminWidget
+from .widgets import GrapesJSAdminWidget
 
 
 @admin.register(MediaAsset)
@@ -94,9 +94,9 @@ class PageAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('title', 'slug', 'status', 'publish_at', 'unpublish_at')
         }),
-        ('Block Builder', {
+        ('Page Builder', {
             'fields': ('blocks_json',),
-            'classes': ('collapse',)
+            'description': 'Use the drag-and-drop editor below to build your page content.',
         }),
         ('Content', {
             'fields': ('primary_image', 'primary_image_upload'),
@@ -155,9 +155,9 @@ class PostAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('title', 'slug', 'status', 'publish_at', 'author_name', 'excerpt')
         }),
-        ('Block Builder', {
+        ('Page Builder', {
             'fields': ('blocks_json',),
-            'classes': ('collapse',)
+            'description': 'Use the drag-and-drop editor below to build your blog post content.',
         }),
         ('Content', {
             'fields': ('cover_image', 'cover_image_upload', 'primary_image', 'primary_image_upload'),
