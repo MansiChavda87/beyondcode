@@ -125,7 +125,7 @@
         }
 
         // Get existing data from hidden input
-        const hiddenInput = document.getElementById('id_blocks_json');
+        const hiddenInput = document.getElementById('id_');
         let initialData = { blocks: [] };
 
         if (hiddenInput && hiddenInput.value) {
@@ -344,7 +344,7 @@
         if (!editorInstance || !editorInitialized) return;
 
         editorInstance.save().then(data => {
-            const hiddenInput = document.getElementById('id_blocks_json');
+            const hiddenInput = document.getElementById('id_');
             if (hiddenInput) {
                 hiddenInput.value = JSON.stringify(data);
             }
@@ -358,7 +358,7 @@
         if (!editorInstance || !editorInitialized) return;
 
         editorInstance.save().then(data => {
-            const hiddenInput = document.getElementById('id_blocks_json');
+            const hiddenInput = document.getElementById('id_');
             if (hiddenInput) {
                 hiddenInput.value = JSON.stringify(data);
             }

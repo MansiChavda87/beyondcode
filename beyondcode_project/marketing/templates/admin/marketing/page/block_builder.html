@@ -1108,7 +1108,7 @@
 
     // Update hidden input with blocks data
     function updateHiddenInput() {
-        const hiddenInput = document.getElementById('id_blocks_json');
+        const hiddenInput = document.getElementById('id_');
         if (hiddenInput) {
             hiddenInput.value = JSON.stringify({ blocks: window.blocks });
         }
@@ -1133,7 +1133,7 @@
 
     // STEP 2: LOAD EXISTING DATA (FIXED)
     function loadExistingBlocks() {
-        const hiddenInput = document.getElementById('id_blocks_json');
+        const hiddenInput = document.getElementById('id_');
         if (hiddenInput && hiddenInput.value) {
             try {
                 const data = JSON.parse(hiddenInput.value);
@@ -1188,11 +1188,11 @@
                 saveBlocks();
                 
                 // FIX 4: Save correct data structure to hidden input
-                document.getElementById('id_blocks_json').value = JSON.stringify({
+                document.getElementById('id_').value = JSON.stringify({
                     blocks: window.blocks
                 });
                 
-                console.log('Form submitted with blocks data:', document.getElementById('id_blocks_json').value);
+                console.log('Form submitted with blocks data:', document.getElementById('id_').value);
             });
         }
     }

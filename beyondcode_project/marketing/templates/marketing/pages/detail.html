@@ -29,9 +29,10 @@
         <section class="page-content section-padding bg-background">
             <div class="container">
                 {% if page.blocks_json %}
-                    {% for block in page.blocks_json.blocks %}
-                        {% include 'marketing/blocks/block_renderer.html' with block=block %}
-                    {% endfor %}
+                   <style>
+                            {{ page.blocks_json.css|safe }}
+                        </style>
+                        {{ page.blocks_html|safe }}
                 {% else %}
                     <!-- Fallback content if no blocks are defined -->
                     <div class="page-content-fallback">

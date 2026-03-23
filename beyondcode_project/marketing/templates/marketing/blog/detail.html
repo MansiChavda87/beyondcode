@@ -79,6 +79,9 @@
                 <!-- Post Content -->
                 <div class="post-content">
                     {% if post.blocks_html %}
+                        <style>
+                            {{ post.blocks_json.css|safe }}
+                        </style>
                         {{ post.blocks_html|safe }}
                     {% elif post.body_html %}
                         {{ post.body_html|safe }}

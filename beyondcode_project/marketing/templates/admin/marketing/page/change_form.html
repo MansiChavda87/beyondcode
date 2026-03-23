@@ -8,11 +8,10 @@
    <!-- GrapesJS JS -->
   <link href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" rel="stylesheet"/>
   <script src="https://unpkg.com/grapesjs"></script>
+
 <script>
     // Inline GrapesJS widget initialization to ensure it's available
     window.initializeGrapesJS = function(editorId, options, initialData) {
-        console.log("JS LOADED ✅");
-        alert(editorId);
         const editor = grapesjs.init({
             container: `#${editorId}`,
             fromElement: false,
@@ -265,12 +264,12 @@
         bm.add('two-columns', {
             label: '2 Columns',
             category: 'Layout',
-            content: `<div style="display: flex; gap: 20px; padding: 20px;">
-                <div style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+            content: `<div class="gjs-row" style="display: flex; gap: 20px; padding: 20px;">
+                <div class="gjs-cell" style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
                     <h3>Column 1</h3>
                     <p>Content for the first column.</p>
                 </div>
-                <div style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+                <div class="gjs-cell" class="gjs-cell" style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
                     <h3>Column 2</h3>
                     <p>Content for the second column.</p>
                 </div>
@@ -281,16 +280,16 @@
         bm.add('three-columns', {
             label: '3 Columns',
             category: 'Layout',
-            content: `<div style="display: flex; gap: 20px; padding: 20px;">
-                <div style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+            content: `<div class="gjs-row" style="display: flex; gap: 20px; padding: 20px;">
+                <div class="gjs-cell" style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
                     <h3>Column 1</h3>
                     <p>Content for the first column.</p>
                 </div>
-                <div style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+                <div class="gjs-cell" style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
                     <h3>Column 2</h3>
                     <p>Content for the second column.</p>
                 </div>
-                <div style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+                <div class="gjs-cell" style="flex: 1; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
                     <h3>Column 3</h3>
                     <p>Content for the third column.</p>
                 </div>
@@ -301,9 +300,8 @@
 </script>
 {% endblock %}
 
-
 {% block content %}
-  {{ block.super }}
+{{ block.super }}
 
 
 
@@ -319,10 +317,10 @@
             if (editorDiv && textarea) {
                 const editorId = editorDiv.id;
                 const initialData = JSON.parse(textarea.value || '{}');
-                alert(typeof initializeGrapesJS);
+                
                 // Initialize the editor
                 if (typeof initializeGrapesJS !== 'undefined') {
-                    initializeGrapesJS(editorId, {height: '1000px', width: 'auto', storageManager: false}, initialData);
+                    initializeGrapesJS(editorId, {height: '600px', width: 'auto', storageManager: false}, initialData);
                 }
             }
         });
