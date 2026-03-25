@@ -92,6 +92,17 @@ class GrapesJSAdminWidget(GrapesJSWidget):
             'storageManager': False,
             'plugins': [],
             'pluginsOpts': {},
+            'assetManager': {
+                'upload': '/upload-image/',
+                'uploadName': 'files',
+                'autoAdd': True,
+                'credentials': 'include', 
+                'dropzone': True,
+                'openAssetsOnDrop': True,
+                'headers': {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }
         }
         if options:
             default_options.update(options)

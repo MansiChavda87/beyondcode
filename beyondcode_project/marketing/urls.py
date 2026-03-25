@@ -2,6 +2,7 @@ from django.urls import path
 from django.shortcuts import render
 from django.contrib.sitemaps.views import sitemap
 from django.http import HttpResponse
+
 from . import views
 
 app_name = 'marketing'
@@ -23,6 +24,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('contact/', views.contact, name='contact'),
     path('contact/submit/', views.contact_submit, name='contact_submit'),
+    path('demo/', views.demo_page, name='demo_page'),
     # Common page shortcuts that redirect to the dynamic page system
     path('about/', views.page_detail, {'slug': 'about'}, name='about'),
     path('pricing/', views.page_detail, {'slug': 'pricing'}, name='pricing'),
@@ -64,4 +66,7 @@ urlpatterns = [
     path('cms/api/media/', views.api_media_list, name='api_media_list'),
     path('cms/api/categories/', views.api_categories, name='api_categories'),
     path('cms/api/tags/', views.api_tags, name='api_tags'),
+    
+    # Image upload for block builder (GrapesJS compatibility)
+    path('upload-image', views.upload_image, name='upload_image'),
 ]

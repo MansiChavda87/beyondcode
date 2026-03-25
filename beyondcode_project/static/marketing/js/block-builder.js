@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     initBlockBuilder();
+    initGrapesJS();
 });
 
 /**
@@ -647,4 +648,166 @@ function initBlockBuilder() {
     // Initialize
     renderCanvas();
     renderPreview();
+}
+
+/**
+ * Initialize GrapesJS Editor
+ */
+function initGrapesJS() {
+    // Check if GrapesJS is available
+    if (typeof grapesjs === 'undefined') {
+        console.warn('GrapesJS not loaded, skipping initialization');
+        return;
+    }
+    
+    // Initialize GrapesJS editor
+    const editor = grapesjs.init({
+        container: '#content-canvas',
+        fromElement: true,
+        height: '600px',
+        width: 'auto',
+        storageManager: false, // Disable default storage
+        assetManager: {
+            upload: '/upload-image/',   // Django endpoint
+            uploadName: 'files',
+            assets: [],
+            autoAdd: true,
+            dropzone: true,
+            credentials: 'include', 
+            openAssetsOnDrop: true,
+            // Configure headers for CSRF protection
+            headers: {
+                'X-CSRFToken': getCsrfToken()
+            }
+        },
+        plugins: ['gjs-blocks-basic'],
+        pluginsOpts: {
+            'gjs-blocks-basic': {}
+        }
+    });
+    
+    // Fix Image Upload Issues for Block Builder
+    fixImageUpload(editor);
+    
+    // Add custom blocks for our content types
+    const blockManager = editor.BlockManager;
+    
+    // Add image block with upload capability
+    blockManager.add('image-upload', {
+        label: 'Image Upload',
+        category: 'Media',
+        content: '<img src="" style="max-width: 100%; height: auto;" />',
+        attributes: { class: 'fa fa-image' },
+        activate: true,
+        select: true
+    });
+    
+    // Add other custom blocks as needed
+    blockManager.add('custom-text', {
+        label: 'Custom Text',
+        category: 'Content',
+        content: '<div class="custom-text">Custom text block</div>',
+        attributes: { class: 'fa fa-text-width' }
+    });
+    
+    console.log('GrapesJS initialized with image upload support');
+    
+    return editor;
+}
+
+/**
+ * Fix Image Upload Issues for Block Builder
+ * Addresses: click not opening file dialog, missing HTML input, drag-drop not working
+ */
+function fixImageUpload(editor) {
+    // Debug: Log the upload URL being used
+    console.log('UPLOAD URL:', '/upload-image/');
+    
+    // 1. Enable file picker manually because default trigger is not working
+    editor.AssetManager.getConfig().uploadFile = function(e) {
+        const files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+        const formData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append('files', files[i]);
+        }
+
+        // Hard override uploadFile to force correct endpoint
+        fetch('/upload-image/', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',   // 🔥 REQUIRED
+            headers: {
+                'X-CSRFToken': getCsrfToken()
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            editor.AssetManager.add(data.data);
+        })
+        .catch(err => console.error('Upload error:', err));
+    };
+
+    // 2. Fix "click not opening file dialog" by forcing input trigger
+    editor.on('asset:open', () => {
+        const input = document.querySelector('.gjs-am-file-input');
+        if (input) {
+            input.click();
+        }
+    });
+
+    // 3. Ensure HTML input exists (GrapesJS sometimes fails to render it)
+    setTimeout(() => {
+        if (!document.querySelector('.gjs-am-file-input')) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.className = 'gjs-am-file-input';
+            input.style.display = 'none';
+            input.accept = 'image/*';
+            document.body.appendChild(input);
+
+            input.addEventListener('change', (e) => {
+                editor.AssetManager.getConfig().uploadFile(e);
+            });
+        }
+    }, 1000);
+
+    // 4. Ensure drag-drop works by configuring asset manager properly
+    const assetManager = editor.AssetManager;
+    const config = assetManager.getConfig();
+    
+    // Make sure dropzone is enabled
+    if (config.dropzone !== true) {
+        config.dropzone = true;
+        config.openAssetsOnDrop = true;
+    }
+
+    // 5. Add event listener for drag and drop on the editor container
+    const editorContainer = document.querySelector('#content-canvas');
+    if (editorContainer) {
+        editorContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        editorContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                editor.AssetManager.getConfig().uploadFile(e);
+            }
+        });
+    }
+}
+
+/**
+ * Get CSRF token for AJAX requests (cookie-based)
+ */
+function getCsrfToken() {
+    return document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken'))
+        ?.split('=')[1];
 }

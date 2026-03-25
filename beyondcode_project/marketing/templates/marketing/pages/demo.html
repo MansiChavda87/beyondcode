@@ -1,0 +1,62 @@
+{% extends 'marketing/base.html' %}
+{% load grapesjs_tags %}
+
+{% block title %}{% if page %}{{ page.title }}{% else %}Demo Page{% endif %} - BeyondCode AI{% endblock %}
+{% block description %}{% if page %}{{ page.seo_description|default:"AI-powered debt collection platform for EU-regulated lenders. Automate outreach while maintaining full compliance." }}{% else %}Demo Page - BeyondCode AI{% endif %}{% endblock %}
+
+{% block content %}
+    {% if page %}
+        {% if page.blocks_json %}
+            <!-- Render GrapesJS content with CSS using template tags -->
+            {{ page.blocks_json|render_grapesjs|safe }}
+        {% else %}
+            <!-- Fallback content if no blocks are defined -->
+            <div class="demo-page-fallback">
+                <div class="container mx-auto px-6 py-12">
+                    <div class="text-center">
+                        {% if page.is_title_display %}
+                            <h1 class="text-4xl md:text-5xl font-bold text-foreground mb-6">
+                                {% if page.title %}{{ page.title }}{% else %}Demo Page{% endif %}
+                            </h1>
+                        {% endif %}
+                        {% if page.primary_image_url %}
+                            <div class="mb-8">
+                                <img src="{{ page.primary_image_url }}" alt="Demo Page Image" class="mx-auto rounded-lg shadow-lg max-w-4xl">
+                            </div>
+                        {% endif %}
+                        {% if page.body_html %}
+                            <div class="demo-content">
+                                {{ page.body_html|safe }}
+                            </div>
+                        {% else %}
+                            <div class="text-muted-foreground">
+                                <p class="text-lg mb-4">This demo page is currently under construction.</p>
+                                <p>Please use the admin panel to create content using GrapesJS.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <!-- No demo page exists yet -->
+        <div class="demo-page-empty">
+            <div class="container mx-auto px-6 py-12">
+                <div class="text-center">
+                    <h1 class="text-4xl md:text-5xl font-bold text-foreground mb-6">Demo Page</h1>
+                    <p class="text-lg text-muted-foreground mb-8">
+                        The demo page hasn't been created yet. Please log in to the admin panel to create it.
+                    </p>
+                    <div class="space-x-4">
+                        <a href="{% url 'marketing:login' %}" class="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors">
+                            Login to Admin
+                        </a>
+                        <a href="{% url 'marketing:home' %}" class="inline-block border border-border px-6 py-3 rounded-lg font-semibold hover:bg-secondary transition-colors">
+                            Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

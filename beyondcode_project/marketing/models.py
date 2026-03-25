@@ -44,6 +44,14 @@ class MediaAsset(models.Model):
     def display_url(self):
         """Return the actual file URL for display"""
         if self.file_upload:
+            # Check if the file actually exists before returning the URL
+            if self.file_upload and hasattr(self.file_upload, 'path'):
+                import os
+                if os.path.exists(self.file_upload.path):
+                    return self.file_upload.url
+                else:
+                    # File doesn't exist, return empty string or a placeholder
+                    return ""
             return self.file_upload.url
         return self.file
 
@@ -93,6 +101,8 @@ class Page(SeoFieldsMixin):
     blocks_html = models.TextField(blank=True)
     primary_image = models.URLField(max_length=500, blank=True)
     primary_image_upload = models.FileField(upload_to='pages/primary_images/', blank=True, null=True)
+    set_homepage = models.BooleanField(default=False, help_text="Set this page as the homepage. Only one page can be the homepage at a time.")
+    is_title_display = models.BooleanField(default=True, help_text="Display the page title on the frontend. When disabled, the title will not be shown.")
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -106,6 +116,12 @@ class Page(SeoFieldsMixin):
         return reverse('marketing:page_detail', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
+        # Handle homepage logic: if this page is being set as homepage, 
+        # ensure no other pages are set as homepage
+        if self.set_homepage:
+            # Set set_homepage=False for all other pages
+            Page.objects.filter(set_homepage=True).exclude(pk=self.pk).update(set_homepage=False)
+        
         # Handle GrapesJS data format
         if self.blocks_json:
             # If blocks_json contains GrapesJS data structure

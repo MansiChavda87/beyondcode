@@ -162,3 +162,80 @@
 .grapesjs-container .gjs-editor {
     pointer-events: auto;
 }
+
+/* Image Upload Fixes */
+/* Ensure asset manager buttons are clickable */
+.gjs-am-file-uploader {
+    pointer-events: auto !important;
+    z-index: 1000 !important;
+}
+
+.gjs-am-file-uploader * {
+    pointer-events: auto !important;
+}
+
+/* Ensure file input is accessible */
+.gjs-am-file-input {
+    display: none !important;
+}
+
+/* Fix potential z-index issues with asset manager */
+.gjs-am-assets {
+    z-index: 1000;
+}
+
+.gjs-am-modal {
+    z-index: 2000;
+}
+
+/* Ensure drag and drop area is clickable */
+.gjs-am-droppable {
+    pointer-events: auto;
+}
+
+/* Fix any overlay issues that might block clicks */
+.gjs-am-overlay {
+    pointer-events: none;
+}
+
+/* Ensure asset manager buttons work properly */
+.gjs-am-btn {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Fix potential issues with asset manager container */
+.gjs-am-container {
+    pointer-events: auto;
+}
+
+/* Ensure the asset manager modal is properly positioned */
+.gjs-am-modal-content {
+    pointer-events: auto;
+}
+
+/* Fix any CSS that might interfere with file picker */
+.gjs-am-file-uploader .gjs-am-file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Ensure drag and drop works on the entire editor area */
+.gjs-cv-canvas {
+    pointer-events: auto;
+}
+
+/* Fix any potential issues with the asset manager panel */
+.gjs-pn-panels .gjs-pn-panel {
+    pointer-events: auto;
+}
+
+/* Ensure the asset manager is always accessible */
+.gjs-am-assets .gjs-am-assets-c {
+    pointer-events: auto;
+}

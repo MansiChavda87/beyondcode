@@ -10,6 +10,14 @@
   <script src="https://unpkg.com/grapesjs"></script>
 
 <script>
+    // Get CSRF token function (cookie-based)
+    function getCSRFToken() {
+        return document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken'))
+            ?.split('=')[1];
+    }
+
     // Inline GrapesJS widget initialization to ensure it's available
     window.initializeGrapesJS = function(editorId, options, initialData) {
         const editor = grapesjs.init({
@@ -20,6 +28,21 @@
             storageManager: false,
             plugins: options.plugins || [],
             pluginsOpts: options.pluginsOpts || {},
+            
+            // Asset Manager Configuration for Image Upload
+            assetManager: {
+                upload: '/upload-image',
+                uploadName: 'files',
+                autoAdd: true,
+                dropzone: true,
+                
+                openAssetsOnDrop: true,
+                credentials: 'same-origin',   // ✅ REQUIRED for Django Admin
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                    'X-Requested-With': 'XMLHttpRequest'   // ✅ REQUIRED
+                }
+            },
             
             blockManager: {
                 appendTo: '#blocks-canvas',
@@ -126,6 +149,9 @@
         // Add layout blocks
         addLayoutBlocks(editor);
         
+        // Fix Image Upload Issues
+        fixImageUpload(editor);
+        
         // Handle data loading
         if (initialData && Object.keys(initialData).length > 0) {
             if (initialData.html && initialData.css) {
@@ -173,6 +199,94 @@
 
         return editor;
     };
+
+    /**
+     * Fix Image Upload Issues
+     * Addresses: click not opening file dialog, missing HTML input, drag-drop not working
+     */
+    function fixImageUpload(editor) {
+        // Debug: Log the upload URL being used
+        console.log('UPLOAD URL:', '/upload-image');
+        
+        // 1. Enable file picker manually because default trigger is not working
+        editor.AssetManager.getConfig().uploadFile = function(e) {
+            const files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+            const formData = new FormData();
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+
+            // Hard override uploadFile to force correct endpoint
+            fetch('/upload-image', {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin',   // ✅ REQUIRED for Django Admin
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                    'X-Requested-With': 'XMLHttpRequest'   // ✅ REQUIRED
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                editor.AssetManager.add(data.data);
+            })
+            .catch(err => console.error('Upload error:', err));
+        };
+
+        // 2. Fix "click not opening file dialog" by forcing input trigger
+        editor.on('asset:open', () => {
+            const input = document.querySelector('.gjs-am-file-input');
+            if (input) {
+                input.click();
+            }
+        });
+
+        // 3. Ensure HTML input exists (GrapesJS sometimes fails to render it)
+        setTimeout(() => {
+            if (!document.querySelector('.gjs-am-file-input')) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.multiple = true;
+                input.className = 'gjs-am-file-input';
+                input.style.display = 'none';
+                input.accept = 'image/*';
+                document.body.appendChild(input);
+
+                input.addEventListener('change', (e) => {
+                    editor.AssetManager.getConfig().uploadFile(e);
+                });
+            }
+        }, 1000);
+
+        // 4. Ensure drag-drop works by configuring asset manager properly
+        const assetManager = editor.AssetManager;
+        const config = assetManager.getConfig();
+        
+        // Make sure dropzone is enabled
+        if (config.dropzone !== true) {
+            config.dropzone = true;
+            config.openAssetsOnDrop = true;
+        }
+
+        // 5. Add event listener for drag and drop on the editor container
+        const editorContainer = document.querySelector(`#${editor.getConfig().container.replace('#', '')}`);
+        if (editorContainer) {
+            editorContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            editorContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    editor.AssetManager.getConfig().uploadFile(e);
+                }
+            });
+        }
+    }
 
     function addCustomBlocks(editor) {
         const bm = editor.BlockManager;

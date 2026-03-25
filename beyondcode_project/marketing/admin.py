@@ -80,8 +80,8 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Page)
 class PageAdmin(admin.ModelAdmin):
     form = PageForm
-    list_display = ['title', 'slug', 'status', 'publish_at', 'primary_image_preview', 'is_published', 'created_at']
-    list_filter = ['status', 'publish_at', 'created_at']
+    list_display = ['title', 'slug', 'status', 'publish_at', 'set_homepage', 'primary_image_preview', 'is_published', 'created_at']
+    list_filter = ['status', 'publish_at', 'created_at', 'set_homepage']
     search_fields = ['title', 'slug']
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ['created_at', 'updated_at', 'primary_image_preview']
@@ -92,7 +92,7 @@ class PageAdmin(admin.ModelAdmin):
     )
     fieldsets = (
         (None, {
-            'fields': ('title', 'slug', 'status', 'publish_at', 'unpublish_at')
+            'fields': ('title', 'slug', 'status', 'publish_at', 'unpublish_at', 'set_homepage', 'is_title_display')
         }),
         ('Page Builder', {
             'fields': ('blocks_json',),

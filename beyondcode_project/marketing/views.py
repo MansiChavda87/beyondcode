@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -16,7 +16,11 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
-
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import os
+import uuid
+from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import Page, Post, NavMenu, Footer, Category, Tag, MediaAsset
 from .forms import PageForm, PostForm, NavMenuForm, FooterForm, MediaAssetForm, LoginForm, RegisterForm
 from .permissions import cms_admin_required
@@ -30,12 +34,14 @@ User = get_user_model()
 # -- Public Views -----------------------------------------------------------
 
 def home(request):
-    """Homepage view - renders the homepage page if it exists."""
-    try:
-        homepage = Page.objects.get(slug='home', status='published')
-    except Page.DoesNotExist:
-        # Fallback to a simple homepage if no 'home' page exists
-        homepage = None
+    """Homepage view - renders the page set as homepage if it exists."""
+    # Try to get the page set as homepage
+    homepage = Page.objects.filter(set_homepage=True, status='published').first()
+    
+    # If no homepage is set, try to get the first published page as fallback
+    if not homepage:
+        homepage = Page.objects.filter(status='published').first()
+    
     
     # Get navigation and footer
     nav_menu = NavMenu.objects.filter(name='Primary').first()
@@ -98,6 +104,26 @@ def page_detail(request, slug):
         'footer': footer,
     }
     return render(request, 'marketing/pages/detail.html', context)
+
+
+def demo_page(request):
+    """Display the Demo Page with dynamic content from database."""
+    try:
+        # Try to get the Demo Page from the database
+        demo_page = Page.objects.get(slug='demo', status='published')
+    except Page.DoesNotExist:
+        # If no Demo Page exists, create a simple fallback
+        demo_page = None
+    
+    nav_menu = NavMenu.objects.filter(name='Primary').first()
+    footer = Footer.objects.filter(label='Default').first()
+    
+    context = {
+        'page': demo_page,
+        'nav_menu': nav_menu,
+        'footer': footer,
+    }
+    return render(request, 'marketing/pages/demo.html', context)
 
 
 def blog_list(request):
@@ -475,6 +501,66 @@ def render_block_preview(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
+# -- Image Upload for Block Builder -----------------------------------------
+
+@csrf_exempt
+@login_required
+@cms_admin_required
+def upload_image(request):
+    
+    """Handle image uploads for the block builder (GrapesJS compatibility)."""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+    try:
+        # Get uploaded files
+        uploaded_files = request.FILES.getlist('files')
+        if not uploaded_files:
+            return JsonResponse({'error': 'No files uploaded'}, status=400)
+        
+        uploaded_images = []
+        
+        for uploaded_file in uploaded_files:
+            # Validate file type
+            if not uploaded_file.content_type.startswith('image/'):
+                continue
+            
+            # Generate unique filename
+            original_filename = uploaded_file.name
+            file_extension = os.path.splitext(original_filename)[1]
+            unique_filename = f"{uuid.uuid4().hex}{file_extension}"
+            
+            # Save file to media directory
+            file_path = os.path.join('uploads', unique_filename)
+            saved_path = default_storage.save(file_path, ContentFile(uploaded_file.read()))
+            
+            # Get the URL for the saved file
+            file_url = default_storage.url(saved_path)
+            
+            # Create MediaAsset record
+            media_asset = MediaAsset.objects.create(
+                alt_text=original_filename,
+                file=file_url,
+                content_type='image',
+                # uploaded_by=request.user
+            )
+            
+            # Add to response data
+            uploaded_images.append({
+                'src': file_url
+            })
+        
+        if not uploaded_images:
+            return JsonResponse({'error': 'No valid images uploaded'}, status=400)
+        
+        return JsonResponse({
+            'data': uploaded_images
+        })
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
 # -- Authentication Views -------------------------------------------------
 
 def login_view(request):
@@ -654,7 +740,7 @@ def robots_view(request):
 @login_required
 @cms_admin_required
 def api_media_list(request):
-    """API endpoint for media assets (used by block builder)."""
+    """API endpoint for media assets (used by block builder).""" 
     media_assets = MediaAsset.objects.all().values('id', 'title', 'file_url', 'file_type')
     return JsonResponse(list(media_assets), safe=False)
 
@@ -673,3 +759,4 @@ def api_tags(request):
     """API endpoint for tags."""
     tags = Tag.objects.all().values('id', 'name', 'slug')
     return JsonResponse(list(tags), safe=False)
+# </environment_details>
